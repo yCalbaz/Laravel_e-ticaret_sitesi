@@ -1,14 +1,14 @@
 <style>
     .custom-navbar {
-        background-color: white !important; /* Arka plan beyaz */
+        background-color: white !important; 
     }
     .navbar-brand {
-        color: orange !important; /* FLO yazısı turuncu */
+        color: #ff671d !important; 
         font-weight: 1000;
         font-size: 55px;
     }
     .navbar-nav .nav-link {
-        color: black !important; /* Giriş ve Sepet yazıları siyah */
+        color: black !important; 
         font-weight: bold;
         font-size: 25px;
     }

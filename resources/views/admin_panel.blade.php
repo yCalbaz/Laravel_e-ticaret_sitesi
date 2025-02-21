@@ -7,7 +7,7 @@
     <!-- Çıkış Butonu Sağ Üste -->
     <form action="{{ route('admin.logout') }}" method="POST" class="logout-form">
         @csrf
-        <a href="{{ route('admin.logout') }}" class="logout-btn">Çıkış</a>
+        <button type="submit" class="logout-btn">Çıkış</button>
     </form>
 </div>
 <br>
@@ -34,17 +34,17 @@
 
 <style>
     body {
-        background-color: white; /* Sayfa arka planı beyaz */
+        background-color: white;
         display: flex;
         flex-direction: column;
         min-height: 100vh;
     }
 
     .header {
-        background-color: white; /* Header beyaz */
+        background-color: white; 
         padding: 20px;
         text-align: center;
-        position: relative; /* Çıkış butonunu sağa almak için */
+        position: relative; 
     }
 
     .logout-form {

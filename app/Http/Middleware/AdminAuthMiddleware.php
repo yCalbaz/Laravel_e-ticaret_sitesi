@@ -16,7 +16,7 @@ class AdminAuthMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // Kullanıcı giriş yapmamışsa admin login sayfasına yönlendir
+        
         if (!Auth::check()) {
             return redirect()->route('admin.login.form');
         }

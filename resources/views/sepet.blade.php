@@ -13,30 +13,9 @@
         <div class="card-body">
             <h2 class="text-center mb-4">Sepet</h2>
 
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Ürün</th>
-                        <th>Fiyat</th>
-                        <th>Adet</th>
-                        <th>Toplam</th>
-                        <th>İşlem</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Ürün 1</td>
-                        <td>100 TL</td>
-                        <td>2</td>
-                        <td>200 TL</td>
-                        <td><button class="btn btn-danger btn-sm">Sil</button></td>
-                    </tr>
+            
                    
 
-            <div class="d-flex justify-content-between mt-4">
-                <h4>Toplam: <span class="fw-bold">675 TL</span></h4>
-                <button class="btn btn-success">Satın Al</button>
-            </div>
         </div>
     </div>
 </div>

@@ -35,11 +35,11 @@
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">Öncelik (1, 2, 3 vb.)</label>
+                    <label class="form-label">Öncelik </label>
                     <input type="number" name="store_priority" class="form-control" min="1" required>
                 </div>
 
-                <button type="submit" class="btn btn-primary w-100">Depoyu Ekle</button>
+                <button type="submit" class="btn btn-primary w-100">Depo Ekle</button>
             </form>
         </div>
     </div>
