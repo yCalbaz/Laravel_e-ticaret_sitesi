@@ -25,6 +25,5 @@ Route::get('/login', [AdminPanelController::class, 'showLoginForm'])->name('admi
 Route::post('/login', [AdminPanelController::class, 'login'])->name('admin.login');
 Route::post('/logout', [AdminPanelController::class, 'logout'])->name('admin.logout');
 
-
 Route::post('/products/store', [ProductController::class, 'store'])->name('products.store'); // Ürün ekleme
 Route::post('/store/store', [StoreController::class, 'store'])->name('store.store');

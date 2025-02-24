@@ -13,9 +13,9 @@ class Stock extends Model
     protected $table = 'stocks';
 
     protected $fillable = [
-        'produc_sku',
+        'product_sku',
         'store_id',
-        'produc_piece'
+        'product_piece'
     ];
 
     public $timestamps = false;

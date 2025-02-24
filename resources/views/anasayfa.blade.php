@@ -16,10 +16,10 @@
         <div class="row">
             @foreach($products as $product)
                 <li>
-                    <img src="{{ asset('storage/'.$product->product_image)}}" alt="{{$product->product_name }}" width="100">
+                    <img src="{{ asset('storage/product_images/'.$product->product_images)}}" alt="{{$product->product_name }}" width="100">
                     <strong>{{ $product->product_name }}</strong><br>
                     Fiyat: {{ $product->product_price }}
-                    
+</li>
             @endforeach
         </div>
     </div>

@@ -11,7 +11,6 @@ class ProductController extends Controller
     public function index()
      {
         $products =Produc::take(10)->get();
-
         return view('anasayfa', compact('products'));
      }
 
@@ -41,13 +40,13 @@ class ProductController extends Controller
             'product_name' => $request->product_name,
             'product_sku' => $request->product_sku,
             'product_price' => $request->product_price,
-            'product_image' => $imagePath,
+            'image' => $imagePath,
         ]);
 
         Stock::create([
-            'produc_sku'=> $request->product_sku,
+            'product_sku'=> $request->product_sku,
             'store_id'=> $request->store_id,
-            'produc_piece'=> $request->product_piece,
+            'product_piece'=> $request->product_piece,
         ]);
 
       

@@ -15,25 +15,29 @@ class AdminPanelController extends Controller
 
     public function login(Request $request)
     {
+        // Kullanıcıdan gelen giriş bilgilerini doğrula
         $credentials = $request->validate([
             'email' => 'required|email',
-            'password' => 'required'
+            'password' => 'required',
         ]);
 
+        // Member modelini kullanarak giriş yap
         if (Auth::guard('web')->attempt($credentials)) {
+            // Giriş başarılıysa admin paneline yönlendir
             return redirect()->route('admin.panel');
         }
 
+        // Eğer giriş başarısızsa, hata mesajı ve tekrar giriş formu
         return back()->withErrors(['email' => 'Giriş bilgileri hatalı.'])->withInput();
     }
 
     public function logout(Request $request)
-    {  
-    Auth::logout();
-    $request->session()->invalidate();
-    $request->session()->regenerateToken();
-
-    return redirect('/');
+    {
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        
+        return redirect('/');
     }
 
 
