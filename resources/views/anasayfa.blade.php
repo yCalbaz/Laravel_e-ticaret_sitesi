@@ -15,17 +15,11 @@
         <h2 class="text-center mb-4">Öne Çıkan Ürünler</h2>
         <div class="row">
             @foreach($products as $product)
-                <div class="col-md-4">
-                    <div class="card mb-4 shadow-sm">
-                        <img src="{{ $product->product_image }}" class="card-img-top" alt="Ürün Resmi">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ $product->product_name }}</h5>
-                            <p class="card-text">Fiyat: {{ $product->product_price }} TL</p>
-                            <p class="card-text">Stok: {{ $product->product_stock }}</p>
-                            <a href="#" class="btn btn-primary">Detay</a>
-                        </div>
-                    </div>
-                </div>
+                <li>
+                    <img src="{{ asset('storage/'.$product->product_image)}}" alt="{{$product->product_name }}" width="100">
+                    <strong>{{ $product->product_name }}</strong><br>
+                    Fiyat: {{ $product->product_price }}
+                    
             @endforeach
         </div>
     </div>

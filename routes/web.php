@@ -6,6 +6,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\StoreController;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Product;
+use App\Models\Store;
 
 
 Route::get('/', function () {
@@ -15,7 +16,7 @@ Route::get('/', function () {
 
 
 Route::get('/urunPanel', [ProductController::class, 'create'])->name('products.create'); // Ürün ekleme formu
-Route::get('/depoPanel', function () { return view('depo_panel'); });
+Route::get('/depoPanel', [StoreController::class, 'create'])->name('stores.create');
 Route::get('/adminPanel', function () { return view('admin_panel'); })->middleware('auth')->name('admin.panel');
 Route::get('/sepet', function () { return view('sepet'); });
 
@@ -26,3 +27,4 @@ Route::post('/logout', [AdminPanelController::class, 'logout'])->name('admin.log
 
 
 Route::post('/products/store', [ProductController::class, 'store'])->name('products.store'); // Ürün ekleme
+Route::post('/store/store', [StoreController::class, 'store'])->name('store.store');
