@@ -5,16 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ana Sayfa</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-   
 </head>
 <body>
 
+@include('layouts.header')
 
-@include('layouts.header') 
 <div class="container mt-5">
-    <h2 class="text-center mb-4">Öne Çıkan Ürünler</h2>
+    <h2 class="text-center mb-4">Ürünler</h2>
 
-    <div class="row"> <!-- Satır açıyoruz -->
+    @if(isset($products) && $products->count() > 0)
+        <div class="row">
         @foreach($products as $product)
             <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-4 d-flex justify-content-center">
                 <div class="card shadow-sm custom-card">
@@ -34,75 +34,68 @@
                 </div>
             </div>
         @endforeach
-    </div> <!-- Satır kapatıyoruz -->
+        </div>
+    @else
+        <p class="text-center text-muted">Ürün bulunmamaktadır.</p>
+    @endif
 </div>
 
+<style>
+    .custom-footer {
+        background-color: #ff671d; 
+        color: white; 
+        padding: 15px 0;
+        text-align: center;
+    }
 
-          
-     
+    .custom-card {
+        width: 100%; 
+        max-width: 250px; 
+        margin: 0 auto; 
+        height: auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center; 
+    }
 
-       
-    
+    .custom-img {
+        width: 100%; 
+        height: 200px; 
+        object-fit: cover; 
+    }
 
-        <style>
-        .custom-footer {
-            background-color: #ff671d; 
-            color: white; 
-            padding: 15px 0;
-            text-align: center;
-        }
-        
-        .custom-card {
-    width: 100%; 
-    max-width: 250px; 
-    margin: 0 auto; 
-    height: auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center; 
-}
+    .card-body {
+        flex-grow: 1; 
+        display: flex;
+        flex-direction: column;
+        justify-content: center; 
+        align-items: center;
+        padding: 1.5rem;
+    }
 
-.custom-img {
-    width: 100%; 
-    height: 200px; 
-    object-fit: cover; 
-}
+    .card-title {
+        font-size: 1.2rem;
+        font-weight: bold;
+        margin: 10px 0;
+    }
 
-.card-body {
-    flex-grow: 1; 
-    display: flex;
-    flex-direction: column;
-    justify-content: center; 
-    align-items: center;
-    padding: 1.5rem;
-}
+    .card-text {
+        font-size: 1rem;
+        margin-bottom: 10px;
+    }
 
-.card-title {
-    font-size: 1.2rem;
-    font-weight: bold;
-    margin: 10px 0;
-}
+    .btn-sm {
+        width: 100%;
+        max-width: 150px;
+    }
 
-.card-text {
-    font-size: 1rem;
-    margin-bottom: 10px;
-}
-
-.btn-sm {
-    width: 100%;
-    max-width: 150px;
-}
-
-            
-           
 </style>
 
 <footer class="custom-footer">
-   
+    <p>&copy; 2025 Şirket Adı - Tüm Hakları Saklıdır.</p>
 </footer>
 
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
