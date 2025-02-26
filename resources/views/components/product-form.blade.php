@@ -16,16 +16,6 @@
 </div>
 
 <div class="mb-3">
-    <label class="form-label"> Ürün adedi </label>
-    <input type="text" name="product_piece" class="form-control" required >
-</div>
-
-<div class="mb-3">
-    <label class="form-label"> Depo id'si  </label>
-    <input type="text" name="store_id" class="form-control" required >
-</div>
-
-<div class="mb-3">
     <label class="form-label"> Ürün resmi </label>
     <input type="file" name="product_image" class="form-control" accept="image/*" required>
 </div>

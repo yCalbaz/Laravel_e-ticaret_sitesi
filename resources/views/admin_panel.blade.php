@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@include('layouts.header')
 @section('content')
 <div class="header">
     <h1>Admin Panel</h1>
@@ -7,7 +7,7 @@
     <!-- Çıkış Butonu Sağ Üste -->
     <form action="{{ route('admin.logout') }}" method="POST" class="logout-form">
         @csrf
-        <button type="submit" class="logout-btn">Çıkış</button>
+        <button type="submit" class="logout-btn" >Çıkış</button>
     </form>
 </div>
 <br>
@@ -15,7 +15,7 @@
 <div class="container text-center">
     <div class="row justify-content-center">
         <div class="col-md-4">
-            <a href="{{ url('/urunPanel') }}" class="panel-box">
+            <a href="{{ route('product.create.form') }}" class="panel-box">
                 <div class="box">
                     <h2>Ürün Paneli</h2>
                 </div>
@@ -23,14 +23,25 @@
         </div>
 
         <div class="col-md-4">
-            <a href="{{ url('/depoPanel') }}" class="panel-box">
+            <a href="{{ route('store.create.form' )}}" class="panel-box">
                 <div class="box">
                     <h2>Depo Paneli</h2>
                 </div>
             </a>
         </div>
+
+        <div class="col-md-4">
+            <a href="{{ route('stock.create.form' )}}" class="panel-box">
+                <div class="box">
+                    <h2>Stok Paneli</h2>
+                </div>
+            </a>
+        </div>
+   
     </div>
 </div>
+
+
 
 <style>
     body {

@@ -10,11 +10,11 @@
 <body>
 
 
-@include('layouts.header') 
+@include('layouts.header')   
 <div class="container mt-5">
     <h2 class="text-center mb-4">Öne Çıkan Ürünler</h2>
 
-    <div class="row"> <!-- Satır açıyoruz -->
+    <div class="row"> 
         @foreach($products as $product)
             <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-4 d-flex justify-content-center">
                 <div class="card shadow-sm custom-card">
@@ -34,7 +34,7 @@
                 </div>
             </div>
         @endforeach
-    </div> <!-- Satır kapatıyoruz -->
+    </div> 
 </div>
 
 
@@ -44,58 +44,56 @@
        
     
 
-        <style>
-        .custom-footer {
-            background-color: #ff671d; 
-            color: white; 
-            padding: 15px 0;
-            text-align: center;
-        }
+<style>
+    .custom-footer {
+        background-color: #ff671d; 
+        color: white; 
+        padding: 15px 0;
+        text-align: center;
+    }
         
-        .custom-card {
-    width: 100%; 
-    max-width: 250px; 
-    margin: 0 auto; 
-    height: auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center; 
-}
+    .custom-card {
+        width: 100%; 
+        max-width: 250px; 
+        margin: 0 auto; 
+        height: auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center; 
+    }
 
-.custom-img {
-    width: 100%; 
-    height: 200px; 
-    object-fit: cover; 
-}
+    .custom-img {
+        width: 100%; 
+        height: 200px; 
+        object-fit: cover; 
+    }
 
-.card-body {
-    flex-grow: 1; 
-    display: flex;
-    flex-direction: column;
-    justify-content: center; 
-    align-items: center;
-    padding: 1.5rem;
-}
+    .card-body {
+        flex-grow: 1; 
+        display: flex;
+        flex-direction: column;
+        justify-content: center; 
+        align-items: center;
+        padding: 1.5rem;
+    }
 
-.card-title {
-    font-size: 1.2rem;
-    font-weight: bold;
-    margin: 10px 0;
-}
+    .card-title {
+        font-size: 1.2rem;
+        font-weight: bold;
+        margin: 10px 0;
+    }
 
-.card-text {
-    font-size: 1rem;
-    margin-bottom: 10px;
-}
+    .card-text {
+        font-size: 1rem;
+        margin-bottom: 10px;
+    }
 
-.btn-sm {
-    width: 100%;
-    max-width: 150px;
-}
-
-            
-           
+    .btn-sm {
+        width: 100%;
+        max-width: 150px;
+    }
+      
 </style>
 
 <footer class="custom-footer">

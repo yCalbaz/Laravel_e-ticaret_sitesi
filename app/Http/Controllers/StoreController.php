@@ -16,7 +16,7 @@ public function store(Request $request)
     $request->validate([
         'store_name'=> 'required|string|max:255',
         'store_max'=> 'required|numeric|min:0',
-        'store_priority'=> 'required|numeric|min:0'
+        'store_priority'=> 'required|numeric|min:0|unique:stores,store_priority'
     ]);
 
 
@@ -26,7 +26,7 @@ public function store(Request $request)
         'store_priority'=> $request->store_priority
     ]);
 
-    return redirect()->route('stores.create')->with('success','Depo başarıyla eklendi :)');
+    return redirect()->route('store.create.form')->with('success','Depo başarıyla eklendi :)');
 
 
 

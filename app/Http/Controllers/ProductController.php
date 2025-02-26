@@ -3,7 +3,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Product;
-use App\Models\Stock;
 
 class ProductController extends Controller
 {
@@ -24,10 +23,8 @@ class ProductController extends Controller
     {
         $request->validate([
             'product_name' => 'required|string|max:255',
-            'product_sku' => 'required|string|unique:products,product_sku',
+            'product_sku' => 'required|string',
             'product_price' => 'required|numeric|min:0',
-            'store_id'=> 'required|numeric|min:0',
-            'product_piece'=>'required|numeric|min:0',
             'product_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
@@ -44,14 +41,10 @@ class ProductController extends Controller
         $product->save();
 
 
-        Stock::create([
-            'product_sku'=> $request->product_sku,
-            'store_id'=> $request->store_id,
-            'product_piece'=> $request->product_piece,
-        ]);
+       
       
 
-        return redirect()->route('products.create')->with('success', 'Ürün başarıyla eklendi.');
+        return redirect()->route('product.create.form')->with('success', 'Ürün başarıyla eklendi.');
     }
 
     private function getImageFullUrl($image){
