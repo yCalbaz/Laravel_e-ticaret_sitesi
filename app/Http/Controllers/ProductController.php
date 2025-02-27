@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Product;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -30,7 +31,7 @@ class ProductController extends Controller
 
         $image = $request->file('product_image');
         $imagePath = $image->store('images');
-        $imageUrl = \Storage::url($imagePath);
+        $imageUrl = Storage::url($imagePath);
 
 
         $product = new Product;
@@ -47,7 +48,5 @@ class ProductController extends Controller
         return redirect()->route('product.create.form')->with('success', 'Ürün başarıyla eklendi.');
     }
 
-    private function getImageFullUrl($image){
-        return "/var/www/app/images". $image;
-    }
+    
 }

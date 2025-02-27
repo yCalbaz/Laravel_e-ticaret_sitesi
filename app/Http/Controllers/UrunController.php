@@ -10,7 +10,7 @@ class UrunController extends Controller
 
     public function index()
      {
-        $products =Produc::take(10)->get();
+        $products =Product::all();
         return view('urun', compact('products'));
      }
 

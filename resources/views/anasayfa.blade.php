@@ -22,14 +22,18 @@
                     <div class="card-body">
                         <h5 class="card-title">{{ $product->product_name }}</h5>
                         <p class="card-text font-weight-bold">{{ $product->product_price }} TL</p>
-                        <form action="{{ route('cart.store') }}" method="POST">
+                        <form action="{{ route('cart.add',$product)}}" method="POST">
                             @csrf
                             <input type="hidden" name="product_name" value="{{ $product->product_name }}">
                             <input type="hidden" name="product_price" value="{{ $product->product_price }}">
                             <input type="hidden" name="product_image" value="{{ $product->image }}">
                             <input type="hidden" name="product_piece" value="1">
-                            <button type="submit" class="btn btn-primary btn-sm">Sepete Ekle</button>
-                        </form>
+                            
+                                @csrf
+                                <input type="hidden" name="quantity" value="1">
+                                <button type="submit" class="btn btn-primary btn-sm">Sepete Ekle</button>
+                            </form>
+                     
                     </div>
                 </div>
             </div>

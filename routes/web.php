@@ -20,8 +20,8 @@ Route::get('/urunPanel', [ProductController::class, 'create'])->middleware('auth
 Route::get('/depoPanel', [StoreController::class, 'create'])->middleware('auth')->name('store.create.form');
 Route::get('/stokPanel', [StockController::class, 'create'])->middleware('auth')->name('stock.create.form');
 Route::get('/adminPanel', function () { return view('admin_panel'); })->middleware('auth')->name('admin.panel');
-Route::get('/sepet', function () { return view('sepet'); });
-Route::get('/urun', function () {  $products = Product::orderBy('id', 'desc')->take(10)->get(); 
+Route::get('/sepet', [CartController::class, 'index'])->name('sepet.index');
+Route::get('/urun', function () {  $products = Product::all(); 
     return view('urun', compact('products'));});
 
 Route::get('/login', [AdminPanelController::class, 'showLoginForm'])->name('login');
@@ -34,8 +34,9 @@ Route::post('/products', [ProductController::class, 'store'])->name('products.st
 Route::post('/store', [StoreController::class, 'store'])->name('store.store');
 Route::post('/stock', [StockController::class, 'store'])->name('stock.store');
 
-
+Route::post('/cart/add/{product}', [CartController::class, 'add'])->name('cart.add');
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 Route::post('/cart', [CartController::class, 'store'])->name('cart.store');
-Route::put('/cart/{id}', [CartController::class, 'update'])->name('cart.update');
-Route::delete('/cart/{id}', [CartController::class, 'destroy'])->name('cart.destroy');
+Route::delete('/cart/{id}', [CartController::class, 'delete'])->name('cart.delete');
+Route::get('/sepet/onay', [CartController::class, 'approvl'])->name('sepet.approvl');
+Route::post('/sepet/onay', [CartController::class, 'approvl'])->name('sepet.approvl');

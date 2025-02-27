@@ -6,15 +6,12 @@
     <title>Ana Sayfa</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
+<body> 
 
-@include('layouts.header')
-
+@include('layouts.header')   
 <div class="container mt-5">
-    <h2 class="text-center mb-4">Ürünler</h2>
 
-    @if(isset($products) && $products->count() > 0)
-        <div class="row">
+    <div class="row"> 
         @foreach($products as $product)
             <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-4 d-flex justify-content-center">
                 <div class="card shadow-sm custom-card">
@@ -22,23 +19,22 @@
                     <div class="card-body">
                         <h5 class="card-title">{{ $product->product_name }}</h5>
                         <p class="card-text font-weight-bold">{{ $product->product_price }} TL</p>
-                        <form action="{{ route('cart.store') }}" method="POST">
+                        <form action="{{ route('cart.add',$product)}}" method="POST">
                             @csrf
                             <input type="hidden" name="product_name" value="{{ $product->product_name }}">
                             <input type="hidden" name="product_price" value="{{ $product->product_price }}">
                             <input type="hidden" name="product_image" value="{{ $product->image }}">
                             <input type="hidden" name="product_piece" value="1">
-                            <button type="submit" class="btn btn-primary btn-sm">Sepete Ekle</button>
-                        </form>
+                            
+                                @csrf
+                                <input type="hidden" name="quantity" value="1">
+                                <button type="submit" class="btn btn-primary btn-sm">Sepete Ekle</button>
+                            </form>
+                     
                     </div>
                 </div>
             </div>
         @endforeach
-        </div>
-    @else
-        <p class="text-center text-muted">Ürün bulunmamaktadır.</p>
-    @endif
-</div>
 
 <style>
     .custom-footer {
