@@ -17,5 +17,6 @@ class OrderBatch extends Model
         'product_price',
         'updated_at',
         'created_at',
+        'order_id',
     ];
 }

@@ -18,5 +18,6 @@ class OrderLive extends Model
         'product_piece',
         'updated_at',
         'created_at',
+        'order_id',
     ];
 }

@@ -26,7 +26,8 @@
                     <input type="password" class="form-control" name="password" required>
                 </div>
                 <button type="submit" class="btn btn-primary w-100" style="margin-bottom: 10px;">Giriş Yap</button>
-                <button type="submit" class="btn btn-primary w-100" onclick="window.location='{{ route('uye_ol')}}'"> Üye ol</button>
+                <button type="submit" class="btn btn-primary w-100"><a href="{{ route('uye_ol') }}" class="btn btn-primary w-100">Üye ol</a></button>
+                
             </form>
         </div>
     </div>

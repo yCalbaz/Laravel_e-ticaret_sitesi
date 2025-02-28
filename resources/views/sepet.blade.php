@@ -46,10 +46,7 @@
             @endphp
             <p class="text-right font-weight-bold"> Toplam: {{ $totalPrice }} TL</p>
 
-            <form action="{{ route('sepet.approvl') }}" method="POST">
-                @csrf
-                <button type="submit" class="btn btn-primary">Sepeti Onayla</button>
-            </form>
+            <a href="{{ route('sepet.approvl') }}" class="btn btn-primary">Sepeti Onayla</a>
         @else
             <p class="text-center text-muted">Sepette ürün yok</p>
         @endif

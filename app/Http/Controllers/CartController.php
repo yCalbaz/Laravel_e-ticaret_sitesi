@@ -8,25 +8,22 @@ use App\Models\Product;
 use App\Models\OrderBatch;
 use App\Models\OrderLive;
 
-
 class CartController extends Controller
 {
-    
     public function index()
     {
         $cartItems = Cart::all();
         return view('sepet', compact('cartItems'));
     }
 
-    public function add(Request $request,Product $product)
+    public function add(Request $request, Product $product)
     {
-        $cartItem = Cart::where('product_sku',$product->product_sku)->first();
+        $cartItem = Cart::where('product_sku', $product->product_sku)->first();
 
-        if($cartItem)
-        {
+        if ($cartItem) {
             $cartItem->product_piece += $request->quantity;
             $cartItem->save();
-        }else{
+        } else {
             Cart::create([
                 'product_name' => $product->product_name,
                 'product_sku' => $product->product_sku,
@@ -34,27 +31,10 @@ class CartController extends Controller
                 'product_price' => $product->product_price,
                 'product_image' => $product->product_image,
             ]);
-        } 
-        return redirect()->back()->with('success','Ürün sepete eklendi');
+        }
+        return redirect()->back()->with('success', 'Ürün sepete eklendi');
     }
 
-    
-    public function store(Request $request)
-    {
-        $request->validate([
-            'product_name'  => 'required|string|max:255',
-            'product_sku'   => 'required|string|max:100',
-            'product_price' => 'required|numeric',
-            'product_image' => 'nullable|string',
-            'product_piece' => 'required|integer|min:1',
-        ]);
-
-        Cart::create($request->all());
-
-        return redirect()->route('cart.index')->with('success', 'Ürün sepete eklendi!');
-    }
-
-    
     public function delete($id)
     {
         $cartItem = Cart::findOrFail($id);
@@ -65,34 +45,43 @@ class CartController extends Controller
 
     public function approvl(Request $request)
     {
-        if($request->isMethod('post'))
-        {
+        if ($request->isMethod('post')) {
             $cartItems = Cart::all();
             $totalPrice = 0;
-            foreach($cartItems as $item)
-            {
+            foreach ($cartItems as $item) {
                 $totalPrice += ($item->product_price * $item->product_piece);
             }
+
             $adSoyad = $request->input('adSoyad');
             $adres = $request->input('adres');
 
             $orderBatch = OrderBatch::create([
-                'customer_name' =>$adSoyad,
-                'customer_address'=>$adres,
-                'product_price'=>$totalPrice,
+                'customer_name' => $adSoyad,
+                'customer_address' => $adres,
+                'product_price' => $totalPrice,
             ]);
 
-            foreach($cartItems as $item)
-            {
+            $orderId = $orderBatch->id;
+
+            $orderBatch->order_id = $orderId;
+            $orderBatch->save();
+
+            foreach ($cartItems as $item) {
                 OrderLive::create([
                     'product_sku' => $item->product_sku,
                     'product_name' => $item->product_name,
-                    'store_id' => 1, 
+                    'store_id' => 1,
                     'product_piece' => $item->product_piece,
+                    'order_id' => $orderId,
                 ]);
             }
-            
-        }
+            Cart::truncate(); 
+
+        return redirect()->route('sepet.approvl')->with('success', 'Siparişiniz başarıyla oluşturuldu.');
+    
+
+             }
+
         $cartItems = Cart::all();
         $totalPrice = 0;
         foreach ($cartItems as $item) {
@@ -101,9 +90,4 @@ class CartController extends Controller
 
         return view('sepet_onay', compact('cartItems', 'totalPrice'));
     }
-        }
-    
-
-    
-    
-
+}

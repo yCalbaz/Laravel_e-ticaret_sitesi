@@ -36,7 +36,6 @@ Route::post('/stock', [StockController::class, 'store'])->name('stock.store');
 
 Route::post('/cart/add/{product}', [CartController::class, 'add'])->name('cart.add');
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
-Route::post('/cart', [CartController::class, 'store'])->name('cart.store');
 Route::delete('/cart/{id}', [CartController::class, 'delete'])->name('cart.delete');
-Route::get('/sepet/onay', [CartController::class, 'approvl'])->name('sepet.approvl');
 Route::post('/sepet/onay', [CartController::class, 'approvl'])->name('sepet.approvl');
+Route::get('/sepet/onay', [CartController::class, 'approvl'])->name('sepet.approvl');

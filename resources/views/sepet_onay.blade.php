@@ -75,7 +75,7 @@
 </style>
 
 <footer class="custom-footer">
-    <p>&copy; 2025 Flo - Tüm Hakları Saklıdır.</p>
+    <p>&copy; 2025 Flo </p>
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
