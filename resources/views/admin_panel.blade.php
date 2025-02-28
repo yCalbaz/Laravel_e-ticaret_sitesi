@@ -1,6 +1,16 @@
-@extends('layouts.app')
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ürün</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="icon" href="{{ asset('storage/images/flo-logo-Photoroom.png') }}" type="image/png">
+</head>
+<body> 
+
+
 @include('layouts.header')
-@section('content')
 <div class="header">
     <h1>Admin Panel</h1>
 
@@ -10,6 +20,7 @@
         <button type="submit" class="logout-btn" >Çıkış</button>
     </form>
 </div>
+
 <br>
 
 <div class="container text-center">
@@ -106,4 +117,5 @@
         color: white; /* Yazılar beyaz */
     }
 </style>
-@endsection
+</body>
+</html>

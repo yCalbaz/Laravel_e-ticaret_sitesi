@@ -34,12 +34,8 @@ class AdminPanelController extends Controller
             return redirect()->route('admin.panel');
         }
 
-        return back()->withErrors(['email' => 'Giriş bilgileri hatalı.'])->withInput();
-        echo "hata ver";
-    }
-
-    public function create(){
-        return view('uye_ol');
+        return back()->withErrors(['email' => 'Giriş bilgileri hatalı.'])->withInput(); //çalışmıyor bu
+        
     }
 
     public function register(Request $request)
@@ -59,10 +55,7 @@ class AdminPanelController extends Controller
 
         return redirect()->route('uye_ol')->with('success','üye eklendi :)');
 
-
-
     }
-
 
     public function logout(Request $request)
     {

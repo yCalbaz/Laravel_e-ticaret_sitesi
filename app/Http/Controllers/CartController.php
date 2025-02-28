@@ -20,6 +20,7 @@ class CartController extends Controller
     {
         $cartItem = Cart::where('product_sku', $product->product_sku)->first();
 
+
         if ($cartItem) {
             $cartItem->product_piece += $request->quantity;
             $cartItem->save();

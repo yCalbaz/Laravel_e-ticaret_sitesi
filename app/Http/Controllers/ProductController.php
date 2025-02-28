@@ -24,7 +24,7 @@ class ProductController extends Controller
     {
         $request->validate([
             'product_name' => 'required|string|max:255',
-            'product_sku' => 'required|string',
+            'product_sku' => 'required|string|unique:products,product_sku',
             'product_price' => 'required|numeric|min:0',
             'product_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
@@ -40,10 +40,6 @@ class ProductController extends Controller
         $product->product_price = $request->product_price;
         $product->product_image = $imageUrl;
         $product->save();
-
-
-       
-      
 
         return redirect()->route('product.create.form')->with('success', 'Ürün başarıyla eklendi.');
     }

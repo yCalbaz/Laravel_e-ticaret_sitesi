@@ -26,7 +26,7 @@ Route::get('/urun', function () {  $products = Product::all();
 
 Route::get('/login', [AdminPanelController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AdminPanelController::class, 'login'])->name('admin.login');
-Route::post('/logout', [AdminPanelController::class, 'logout'])->name('admin.logout');
+Route::post('/logout', [AdminPanelController::class, 'logout'])->name('admin.logout'); 
 Route::get('/register', [AdminPanelController::class, 'showRegistrationForm'])->name('uye_ol');
 Route::post('/register', [AdminPanelController::class, 'register'])->name('admin.uye_ol');
 

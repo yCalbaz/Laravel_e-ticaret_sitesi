@@ -1,3 +1,13 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sayfa Başlığı</title>
+    <link rel="icon" href="{{ asset('storage/images/flo-logo-Photoroom.png') }}" type="image/png">
+</head>
+<body>
+
 <style>
     .custom-navbar {
         background-color: white !important; 
@@ -16,7 +26,9 @@
 
 <nav class="navbar navbar-expand-lg navbar-light custom-navbar">
     <div class="container">
-        <a class="navbar-brand" href="/">FLO</a>
+    <a class="navbar-brand" href="/">
+            <img src="{{ asset('storage/images/flo-logo-Photoroom.png') }}" alt="" height="50">
+        </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -29,3 +41,6 @@
         </div>
     </div>
 </nav>
+
+</body>
+</html>
