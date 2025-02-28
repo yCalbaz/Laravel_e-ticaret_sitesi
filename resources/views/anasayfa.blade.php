@@ -13,6 +13,12 @@
 
 @include('layouts.header')   
 <div class="container mt-5">
+@if(session('error'))
+    <div class="alert alert-danger">
+        {{ session('error') }}
+    </div>
+@endif
+
     <h2 class="text-center mb-4">Öne Çıkan Ürünler</h2>
 
     <div class="row"> 

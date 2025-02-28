@@ -10,7 +10,6 @@ use App\Models\Product;
 
 
 
-
 Route::get('/', function () {
     $products = Product::orderBy('id', 'desc')->take(10)->get(); 
     return view('anasayfa', compact('products'));

@@ -7,6 +7,7 @@ use App\Models\Cart;
 use App\Models\Product;
 use App\Models\OrderBatch;
 use App\Models\OrderLive;
+use Illuminate\Support\Facades\Http;
 
 class CartController extends Controller
 {
@@ -17,24 +18,49 @@ class CartController extends Controller
     }
 
     public function add(Request $request, Product $product)
-    {
-        $cartItem = Cart::where('product_sku', $product->product_sku)->first();
-
-
-        if ($cartItem) {
-            $cartItem->product_piece += $request->quantity;
-            $cartItem->save();
-        } else {
-            Cart::create([
-                'product_name' => $product->product_name,
-                'product_sku' => $product->product_sku,
-                'product_piece' => $request->quantity,
-                'product_price' => $product->product_price,
-                'product_image' => $product->product_image,
-            ]);
-        }
-        return redirect()->back()->with('success', 'Ürün sepete eklendi');
+{
+    $response = Http::get("http://host.docker.internal:3000/stock/{$product->product_sku}");
+    
+    if($response->failed()) {
+        return redirect()->back()->with('error','Stok servise ulasılmadı');
     }
+    
+    $stockData = $response->json();
+    
+    
+    if (!isset($stockData['total_stock'])) {
+        return redirect()->back()->with('error', 'Stok verisi alınamadı.');
+    }
+
+    
+    if ($stockData['total_stock'] < $request->quantity) {
+        return redirect()->back()->with('error', 'Yeterli stok bulunmamaktadır.');
+    }
+    
+   
+    $cartItem = Cart::where('product_sku', $product->product_sku)->first();
+
+   
+    if ($cartItem) {
+        if ($cartItem->product_piece + $request->quantity > $stockData['total_stock']) {
+            return redirect()->back()->with('error', 'Yeterli stok bulunmamaktadır.');
+        }
+
+        $cartItem->product_piece += $request->quantity;
+        $cartItem->save();
+    } else {
+        Cart::create([
+            'product_name' => $product->product_name,
+            'product_sku' => $product->product_sku,
+            'product_piece' => $request->quantity,
+            'product_price' => $product->product_price,
+            'product_image' => $product->product_image,
+        ]);
+    }
+
+    return redirect()->back()->with('success', 'Ürün sepete eklendi');
+}
+
 
     public function delete($id)
     {
