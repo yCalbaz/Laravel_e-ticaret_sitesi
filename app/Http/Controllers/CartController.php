@@ -72,50 +72,68 @@ class CartController extends Controller
 
     public function approvl(Request $request)
     {
-        
-        if ($request->isMethod('post')) {
-            $cartItems = Cart::all();
-            $totalPrice = 0;
-            foreach ($cartItems as $item) {
-                $totalPrice += ($item->product_price * $item->product_piece);
-            }
+       if($request->isMethod('post'))
+       {
+            $cartItems=Cart::all();
+            $totalPrice=0;
+            $stokError=false;
 
-            $adSoyad = $request->input('adSoyad');
-            $adres = $request->input('adres');
+            foreach($cartItems as $item)
+                {
+                    $response =Http::get("http://host.docker.internal:3000/stock/{$item->product_sku}");
 
-            $orderBatch = OrderBatch::create([
-                'customer_name' => $adSoyad,
-                'customer_address' => $adres,
-                'product_price' => $totalPrice,
-            ]);
-
-            $orderId = $orderBatch->id;
-
-            $orderBatch->order_id = $orderId;
-            $orderBatch->save();
-
-            foreach ($cartItems as $item) {
-                OrderLine::create([
-                    'product_sku' => $item->product_sku,
-                    'product_name' => $item->product_name,
-                    'store_id' => 1,
-                    'product_piece' => $item->product_piece,
-                    'order_id' => $orderId,
-                ]);
-            }
-            Cart::truncate(); 
-
-        return redirect()->route('sepet.approvl')->with('success', 'Siparişiniz başarıyla oluşturuldu.');
+                    if($response->failed())
+                    {
+                        return redirect()->with('error' , 'Stok servisine ulaşılmıyor');
+                    }
+                    $stockData=$response->json();
+                    if (!isset($stockData['total_stock'])) {
+                        return redirect()->back()->with('error', 'Stok verisi alınamadı.');
+                    }
     
-
-             }
-
-        $cartItems = Cart::all();
-        $totalPrice = 0;
-        foreach ($cartItems as $item) {
-            $totalPrice += ($item->product_price * $item->product_piece);
+                    if ($stockData['total_stock'] < $item->product_piece) {
+                        $stokHatasi = true; 
+                        break;
+                    }
+                    $totalPrice += ($item->product_price * $item->product_piece);
+                }
+        if($stokError){
+            return redirect()->back()->with('error','yeterli stok yok');
         }
 
-        return view('sepet_onay', compact('cartItems', 'totalPrice'));
+        $adSoyad =$request->input('adSoyad');
+        $adres = $request->input('adres');
+
+        $orderBatch = OrderBatch::create([
+            'customer_name' => $adSoyad,
+            'customer_address' =>$adres,
+            'product_price'=>$totalPrice,
+        ]);
+
+        $orderId = $orderBatch->id;
+
+        $orderBatch->order_id =$orderId;
+        $orderBatch->save();
+
+        foreach($cartItems as $item){
+            OrderLine::create([
+                'product_sku' => $item->product_sku,
+                'product_name' => $item->product_name,
+                'store_id' => 1,
+                'product_piece' => $item->product_piece,
+                'order_id' => $orderId,
+            ]);
+        }
+        Cart::truncate();
+        return redirect()->route('sepet.approvl')->with('success', 'Siparişiniz onaylandı');
+       }
+       $cartItems = Cart::all();
+       $totalPrice=0;
+       foreach($cartItems as $item)
+       {
+        $totalPrice += ($item->product_price * $item->product_piece);
+       }
+        $data = compact('cartItems', 'totalPrice');
+        return view('sepet_onay', $data);
     }
 }
