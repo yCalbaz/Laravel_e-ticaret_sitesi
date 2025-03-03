@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Cart;
 use App\Models\Product;
 use App\Models\OrderBatch;
-use App\Models\OrderLive;
+use App\Models\OrderLine;
 use Illuminate\Support\Facades\Http;
 
 class CartController extends Controller
@@ -72,6 +72,7 @@ class CartController extends Controller
 
     public function approvl(Request $request)
     {
+        
         if ($request->isMethod('post')) {
             $cartItems = Cart::all();
             $totalPrice = 0;
@@ -94,7 +95,7 @@ class CartController extends Controller
             $orderBatch->save();
 
             foreach ($cartItems as $item) {
-                OrderLive::create([
+                OrderLine::create([
                     'product_sku' => $item->product_sku,
                     'product_name' => $item->product_name,
                     'store_id' => 1,

@@ -11,10 +11,16 @@
     
     <div class="container d-flex justify-content-center align-items-center" style="height: 100vh;">
         <div class="card p-4" style="width: 350px;">
+            @if(session('error'))
+                <div class="alert alert-danger">
+                    {{ session('error') }}
+                </div>
+            @endif
         <form action="{{ route('admin.logout') }}" method="POST" class="logout-form">
         @csrf
         <button type="submit" class="logout-btn" >Çıkış</button>
     </form>
+    
             <h2 class="text-center"> Giriş</h2>
             <form action="{{ route('admin.login') }}" method="POST">
                 @csrf

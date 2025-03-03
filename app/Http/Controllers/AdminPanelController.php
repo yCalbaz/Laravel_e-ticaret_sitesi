@@ -34,7 +34,9 @@ class AdminPanelController extends Controller
             return redirect()->route('admin.panel');
         }
 
-        return back()->withErrors(['email' => 'Giriş bilgileri hatalı.'])->withInput(); //çalışmıyor bu
+        return redirect()->back()->with('error', 'Giriş bilgileri hatalı.')->withInput();
+
+       
         
     }
 

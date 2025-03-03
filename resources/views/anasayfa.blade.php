@@ -18,6 +18,11 @@
         {{ session('error') }}
     </div>
 @endif
+@if(session('success'))
+                <div class="alert alert-success">
+                    {{ session('success') }}
+                </div>
+            @endif
 
     <h2 class="text-center mb-4">Öne Çıkan Ürünler</h2>
 

@@ -1,4 +1,4 @@
-@extends('layouts.app')
+
 
 <!DOCTYPE html>
 <html lang="tr">
@@ -16,6 +16,7 @@
                 @csrf
                 <button type="submit" class="logout-btn" >Çıkış</button>
             </form>
+            
             <h2 class="text-center">Üye Ol</h2>
             @include('components.alert')
             <form action="{{ route('admin.uye_ol') }}" method="POST">

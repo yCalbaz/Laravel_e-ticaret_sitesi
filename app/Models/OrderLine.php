@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class OrderLive extends Model
+class OrderLine extends Model
 {
     use HasFactory;
 
-    protected $table = 'order_lives';
+    protected $table = 'order_lines';
 
     protected $fillable = [
         'product_sku',

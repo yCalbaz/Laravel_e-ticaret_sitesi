@@ -28,7 +28,8 @@ public function store(Request $request)
 
     return redirect()->route('stock.create.form')->with('success', 'Stok başarıyla eklendi :)');
 
-
-
 }
+
+
+
 }
