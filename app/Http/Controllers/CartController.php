@@ -30,10 +30,10 @@ class CartController extends Controller
     
     if (!isset($stockData['total_stock'])) {
         return redirect()->back()->with('error', 'Stok verisi alınamadı.');
-    }
+    }  
 
     
-    if ($stockData['total_stock'] < $request->quantity) {
+    if ($stockData['total_stock'] < $request-> quantity) {
         return redirect()->back()->with('error', 'Yeterli stok bulunmamaktadır.');
     }
     
@@ -69,17 +69,20 @@ class CartController extends Controller
 
         return redirect()->route('cart.index')->with('success', 'Ürün sepetten kaldırıldı!');
     }
+    
 
-    public function approvl(Request $request)
+    public function approvl(Request $request) //burası orderline'ye atmıyor
     {
        if($request->isMethod('post'))
        {
             $cartItems=Cart::all();
             $totalPrice=0;
             $stokError=false;
+            $storeId=[];
 
             foreach($cartItems as $item)
                 {
+                    //dd($cartItems); //cartimes doğru verileri alıyor.
                     $response =Http::get("http://host.docker.internal:3000/stock/{$item->product_sku}");
 
                     if($response->failed())
@@ -87,16 +90,22 @@ class CartController extends Controller
                         return redirect()->with('error' , 'Stok servisine ulaşılmıyor');
                     }
                     $stockData=$response->json();
-                    if (!isset($stockData['total_stock'])) {
-                        return redirect()->back()->with('error', 'Stok verisi alınamadı.');
+                    if (!isset($stockData['total_stock']) || !isset($stockData['store_id'])) {
+                        return redirect()->back()->with('error', 'Stok tabloma bağlanamadım');
                     }
     
                     if ($stockData['total_stock'] < $item->product_piece) {
-                        $stokHatasi = true; 
+                        $stokError = true; 
                         break;
                     }
+
+                    $storeId[$item->product_sku] = $stockData['store_id'];
+                    //dd($storeID);  //store idsini alıyor
                     $totalPrice += ($item->product_price * $item->product_piece);
+                    //dd($totalPrice);  //parayı doğru alıyor.
+                    
                 }
+                //dd($storeId);//store idyi doğru alıyor
         if($stokError){
             return redirect()->back()->with('error','yeterli stok yok');
         }
@@ -114,16 +123,26 @@ class CartController extends Controller
 
         $orderBatch->order_id =$orderId;
         $orderBatch->save();
+        //dd($orderId); //batchesteki aynı id doğru
 
-        foreach($cartItems as $item){
-            OrderLine::create([
-                'product_sku' => $item->product_sku,
-                'product_name' => $item->product_name,
-                'store_id' => 1,
-                'product_piece' => $item->product_piece,
-                'order_id' => $orderId,
-            ]);
-        }
+       
+            //dd($cartItems); //cartimesi doğru alıyor
+            //dd($item);
+    
+            try {
+            foreach($cartItems as $item){
+                $orderLine = OrderLine::create([
+                    'product_sku' => $item->product_sku,
+                    'product_name' => $item->product_name,
+                    'store_id' => $storeId[$item->product_sku],
+                    'product_piece' => $item->product_piece,
+                    'order_id' => $orderId,
+                ]);
+            }
+            } catch (\Exception $e) {
+                return redirect()->back()->with('error', 'Sipariş oluşturulurken bir hata oluştu.' . $e->getMessage());
+            }
+            //dd("veritabanı bağlantısı doğru"); //veritabanı bağlantısı doğru
         Cart::truncate();
         return redirect()->route('sepet.approvl')->with('success', 'Siparişiniz onaylandı');
        }
