@@ -19,5 +19,6 @@ class OrderLine extends Model
         'updated_at',
         'created_at',
         'order_id',
+        'order_batch_id',
     ];
 }
