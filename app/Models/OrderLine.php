@@ -15,7 +15,6 @@ class OrderLine extends Model
         'product_sku',
         'product_name',
         'store_id',
-        'product_piece',
         'updated_at',
         'created_at',
         'order_id',
