@@ -5,7 +5,9 @@ use App\Http\Controllers\AdminPanelController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\StoreController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\MusteriGirisController;
 use App\Http\Controllers\StockController;
+use App\Http\Controllers\SaticiGirisController;
 use App\Models\Product;
 
 
@@ -15,19 +17,34 @@ Route::get('/', function () {
     return view('anasayfa', compact('products'));
 });
 
-Route::get('/urunPanel', [ProductController::class, 'create'])->middleware('auth')->name('product.create.form');
-Route::get('/depoPanel', [StoreController::class, 'create'])->middleware('auth')->name('store.create.form');
-Route::get('/stokPanel', [StockController::class, 'create'])->middleware('auth')->name('stock.create.form');
-Route::get('/adminPanel', function () { return view('admin_panel'); })->middleware('auth')->name('admin.panel');
+
+Route::get('/musteri-giris', [MusteriGirisController::class, 'showLoginForm'])->name('musteri_giris');
+Route::post('/musteri-giris', [MusteriGirisController::class, 'login'])->name('musteri_giris.post');
+Route::get('/musteri/uye-ol', [MusteriGirisController::class, 'showRegisterForm'])->name('musteri.uye_ol');
+Route::post('/musteri/uye-ol', [MusteriGirisController::class, 'Register'])->name('musteri.uye_ol.kayit');
+
+Route::get('/satici-giris', [SaticiGirisController::class, 'showLoginForm'])->name('satici_giris');
+Route::post('/satici-giris', [SaticiGirisController::class, 'login'])->name('satici_giris.post');
+Route::get('/satici/uye-ol', [SaticiGirisController::class, 'showRegisterForm'])->name('satici.uye_ol');
+Route::post('/satici/uye-ol', [SaticiGirisController::class, 'Register'])->name('satici.uye_ol.kayit');
+
+Route::get('/admin-giris', [AdminPanelController::class, 'showLoginForm'])->name('admin_giris');
+Route::post('/admin-giris', [AdminPanelController::class, 'login'])->name('admin_giris.post');
+
+Route::post('/logout', [AdminPanelController::class, 'logout'])->name('admin.logout'); 
+
+
+Route::get('/urunPanel', [ProductController::class, 'create'])->name('product.create.form');
+Route::get('/depoPanel', [StoreController::class, 'create'])->name('store.create.form');
+Route::get('/stokPanel', [StockController::class, 'create'])->name('stock.create.form');
+Route::get('/adminPanel', function () {
+    return view('admin_panel');});
+Route::get('/saticiPanel', function () { return view('satici_panel'); });
+
+
 Route::get('/sepet', [CartController::class, 'index'])->name('sepet.index');
 Route::get('/urun', function () {  $products = Product::all(); 
     return view('urun', compact('products'));});
-
-Route::get('/login', [AdminPanelController::class, 'showLoginForm'])->name('login');
-Route::post('/login', [AdminPanelController::class, 'login'])->name('admin.login');
-Route::post('/logout', [AdminPanelController::class, 'logout'])->name('admin.logout'); 
-Route::get('/register', [AdminPanelController::class, 'showRegistrationForm'])->name('uye_ol');
-Route::post('/register', [AdminPanelController::class, 'register'])->name('admin.uye_ol');
 
 Route::post('/products', [ProductController::class, 'store'])->name('products.store'); 
 Route::post('/store', [StoreController::class, 'store'])->name('store.store');

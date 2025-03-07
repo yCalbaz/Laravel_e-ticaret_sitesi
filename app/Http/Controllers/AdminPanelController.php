@@ -4,68 +4,51 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Member; 
-use Illuminate\Support\Facades\Hash; 
+use App\Models\Member;
+use Illuminate\Support\Facades\Hash;
 
 class AdminPanelController extends Controller
 {
-
-    public function showRegistrationForm()
-    {
-        return view('uye_ol'); 
-    }
     
     public function showLoginForm()
     {
-        return view('admin_panel_giris');
+        return view('admin_panel_giris'); 
     }
 
     public function login(Request $request)
     {
-        
         $credentials = $request->validate([
             'email' => 'required|email',
             'password' => 'required',
         ]);
 
-        
         if (Auth::guard('web')->attempt($credentials)) {
-            
-            return redirect()->route('admin.panel');
+            $user = Auth::user();
+
+            if ($user->authority_id == 1) {
+                return redirect()->route('admin.panel'); 
+            }
+
+            Auth::logout(); 
         }
 
         return redirect()->back()->with('error', 'Giriş bilgileri hatalı.')->withInput();
-
-       
-        
     }
 
-    public function register(Request $request)
-    {
-        $request->validate([
-            'name'=> 'required|string|max:255',
-            'email'=> 'required|string|unique:members,email',
-            'password'=> 'required'
-        ]);
-
-
-        Member::create([
-            'name'=> $request->name,
-            'email'=> $request->email,
-            'password'=> Hash::make($request->password),
-        ]);
-
-        return redirect()->route('uye_ol')->with('success','üye eklendi :)');
-
-    }
+    
 
     public function logout(Request $request)
     {
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        
+
         return redirect('/');
     }
+    public function adminPanel()
+    {
+        return view('admin_panel');
+    }
 
+    
 }

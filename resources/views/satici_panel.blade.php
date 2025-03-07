@@ -12,7 +12,7 @@
 
 @include('layouts.header')
 <div class="header">
-    <h1>Admin Panel</h1>
+    <h1>Satıcı Panel</h1>
 
     <!-- Çıkış Butonu Sağ Üste -->
     <form action="{{ route('admin.logout') }}" method="POST" class="logout-form">
@@ -45,22 +45,6 @@
             <a href="{{ route('stock.create.form' )}}" class="panel-box">
                 <div class="box">
                     <h2>Stok Paneli</h2>
-                </div>
-            </a>
-        </div>
-
-        <div class="col-md-4">
-            <a href="{{ route('stock.create.form' )}}" class="panel-box">
-                <div class="box">
-                    <h2>Kullanıcılar</h2>
-                </div>
-            </a>
-        </div>
-
-        <div class="col-md-4">
-            <a href="{{ route('stock.create.form' )}}" class="panel-box">
-                <div class="box">
-                    <h2>Sipariş bilgileri</h2>
                 </div>
             </a>
         </div>
@@ -116,7 +100,7 @@
     }
 
     .box {
-        background-color: #ff671d; /* Kutular turuncu */
+        background-color: #ff671d; 
         padding: 50px;
         border-radius: 10px;
         box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
@@ -130,7 +114,7 @@
     }
 
     h2 {
-        color: white; /* Yazılar beyaz */
+        color: white; 
     }
 </style>
 </body>

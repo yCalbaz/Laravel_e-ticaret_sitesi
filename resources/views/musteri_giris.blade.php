@@ -1,29 +1,20 @@
-<!DOCTYPE html>
+<!DOCTYPE >
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Üye Girişi</title>
+    <title>Müşteri Girişi</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="icon" href="{{ asset('storage/images/flo-logo-Photoroom.png') }}" type="image/png">
 </head>
 <body class="bg-light">
-    
     <div class="container d-flex justify-content-center align-items-center" style="height: 100vh;">
         <div class="card p-4" style="width: 350px;">
-            @if(session('error'))
-                <div class="alert alert-danger">
-                    {{ session('error') }}
-                </div>
-            @endif
-        <form action="{{ route('admin.logout') }}" method="POST" class="logout-form">
-        @csrf
-        <button type="submit" class="logout-btn" >Çıkış</button>
-    </form>
-    
-            <h2 class="text-center"> Giriş</h2>
-            <form action="{{ route('admin_giris') }}" method="POST">
+            <h2 class="text-center">Müşteri Girişi</h2>
+            @include('components.alert')
+            <form action="{{ route('musteri_giris.post') }}" method="POST">
                 @csrf
+                <input type="hidden" name="authority" value="customer">
                 <div class="mb-3">
                     <label for="email" class="form-label">E-Posta</label>
                     <input type="email" class="form-control" name="email" required>
@@ -32,9 +23,8 @@
                     <label for="password" class="form-label">Şifre</label>
                     <input type="password" class="form-control" name="password" required>
                 </div>
-                <button type="submit" class="btn btn-primary w-100" style="margin-bottom: 10px;">Giriş Yap</button>
-                
-                
+                <button type="submit" class="btn btn-primary w-100">Giriş Yap</button><br>
+                <button type="submit" class="btn btn-primary w-100"><a href="{{ route('musteri.uye_ol') }}" class="btn btn-primary w-100">Üye ol</a></button>
             </form>
         </div>
     </div>
