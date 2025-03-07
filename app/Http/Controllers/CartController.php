@@ -30,7 +30,7 @@ class CartController extends Controller
         $stockData = $response->json();
 
         if (!isset($stockData['stores'])) {
-            return redirect()->back()->with('error', 'Stok verisi alınamadı.');
+            return redirect()->back()->with('error', 'Yeterli stok bulunmamaktadır.');
         }
 
         $totalStock = 0;
@@ -89,7 +89,7 @@ class CartController extends Controller
 
                 $stockData = $response->json();
                 if (!isset($stockData['stores'])) {
-                    return redirect()->back()->with('error', 'Stok verisi alınamadı');
+                    return redirect()->back()->with('error', 'Yeterli stok yok');
                 }
 
                 $totalStock = 0;
