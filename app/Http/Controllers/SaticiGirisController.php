@@ -49,7 +49,7 @@ class SaticiGirisController extends Controller
             $user = Auth::user();
 
             if ($user->authority_id == 2) {
-                return redirect('satici_panel');
+                return redirect()->route('saticiPanel');
             }
 
             Auth::logout();

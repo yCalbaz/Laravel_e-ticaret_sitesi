@@ -163,7 +163,7 @@ class CartController extends Controller
                         'store_id' => $store,
                     ]));
 
-                    // Stok kontrolü
+                   
                     $currentStock = DB::table('stocks')
                         ->where('product_sku', $item->product_sku)
                         ->where('store_id', $store)
@@ -180,7 +180,7 @@ class CartController extends Controller
                         return redirect()->back()->with('error', 'Yeterli stok bulunmamaktadır!');
                     }
 
-                    // Stok düşme işlemi
+                    
                     DB::table('stocks')
                         ->where('product_sku', $item->product_sku)
                         ->where('store_id', $store)

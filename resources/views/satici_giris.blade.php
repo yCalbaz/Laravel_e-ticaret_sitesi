@@ -12,7 +12,12 @@
         <div class="card p-4" style="width: 350px;">
             <h2 class="text-center">Satıcı Girişi</h2>
             @include('components.alert')
-            <form action="{{ route('satici_giris.post') }}" method="POST">
+            @if(session('error'))
+                <div class="alert alert-danger">
+                    {{ session('error') }}
+                </div>
+            @endif
+            <form action="{{ route('satici_giris') }}" method="POST">
                 @csrf
                 <input type="hidden" name="authority" value="seller">
                 <div class="mb-3">
@@ -29,4 +34,4 @@
         </div>
     </div>
 </body>
-</html>
+</html> 

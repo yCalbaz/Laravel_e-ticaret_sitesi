@@ -26,7 +26,7 @@ class AdminPanelController extends Controller
             $user = Auth::user();
 
             if ($user->authority_id == 1) {
-                return redirect()->route('admin.panel'); 
+                return redirect()->route('adminPanel'); 
             }
 
             Auth::logout(); 

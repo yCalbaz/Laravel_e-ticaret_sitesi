@@ -5,18 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Cart extends Model
+class Basket extends Model
 {
     use HasFactory;
 
-    protected $table = 'carts'; 
+    protected $table = 'baskets'; 
 
     protected $fillable = [
-        'product_name',
-        'product_sku',
-        'product_price', 
-        'product_piece',
-        'product_image',
+        'customer_id',
+        'cart_id',	
+        'created_at',	
+        'updated_at',	
+
     ];
 
     public $timestamps = false;
