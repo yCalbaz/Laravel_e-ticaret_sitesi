@@ -34,7 +34,7 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
-                <li class="nav-item"><a class="nav-link" href="{{ route('musteri_giris') }}">Giriş</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ route('login') }}">Giriş</a></li>
                 <li class="nav-item"><a class="nav-link" href="sepet">Sepet</a></li>
                 <li class="nav-item"><a class="nav-link" href="urun">Ürünler</a></li>
             </ul>

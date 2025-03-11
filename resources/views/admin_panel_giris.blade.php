@@ -22,7 +22,7 @@
     </form>
     
             <h2 class="text-center"> Giriş</h2>
-            <form action="{{ route('admin_giris') }}" method="POST">
+            <form action="{{ route('login') }}" method="POST">
                 @csrf
                 <div class="mb-3">
                     <label for="email" class="form-label">E-Posta</label>

@@ -18,6 +18,10 @@
         {{ session('error') }}
     </div>
 @endif
+<form action="{{ route('admin.logout') }}" method="POST" class="logout-form">
+        @csrf
+        <button type="submit" class="logout-btn" >Çıkış</button>
+    </form>
 @if(session('success'))
                 <div class="alert alert-success">
                     {{ session('success') }}
@@ -109,6 +113,28 @@
         width: 100%;
         max-width: 150px;
     }
+    .logout-form {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+    }
+
+    .logout-btn {
+        background-color: red;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        text-decoration: none;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .logout-btn:hover {
+        background-color: darkred;
+    }
+
       
 </style>
 

@@ -12,7 +12,7 @@
         <div class="card p-4" style="width: 350px;">
             <h2 class="text-center">Müşteri Girişi</h2>
             @include('components.alert')
-            <form action="{{ route('musteri_giris.post') }}" method="POST">
+            <form action="{{ route('login.post') }}" method="POST">
                 @csrf
                 <input type="hidden" name="authority" value="customer">
                 <div class="mb-3">
