@@ -16,7 +16,7 @@ class AdminPanelController extends Controller
     public function showLoginForm()
     {
         if(Auth::check()){
-            $user = Auth::user();
+            $user = Auth::member();
             Session::put('user_authority', $user->authority_id);
             return $this->redirectUser($user);
         }

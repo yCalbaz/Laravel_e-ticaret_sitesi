@@ -8,6 +8,9 @@ use Illuminate\Support\Facades\Auth;
 
 class Authenticate extends Middleware
 {
+    const ADMIN_ROLE_ID =1;
+    const SATICI_ROLE_ID = 2;
+    const MUSTERI_ROLE_ID=3;
     /**
      * Get the path the user should be redirected to when they are not authenticated.
      */
@@ -23,17 +26,17 @@ class Authenticate extends Middleware
                 return route('login');
             }
             if($request->is('adminPanel')|| $request->is('adminPanel/*')){
-                if($userRore !== 1){
+                if($userRore !== self::ADMIN_ROLE_ID){
                     return route('login');
                 }
             }
             elseif ($request->is('saticiPanel') || $request->is('saticiPanel/*')) {
-                if($userRore !== 2){
+                if($userRore !== self::SATICI_ROLE_ID){
                     return route('login');
                 }
             }
             elseif ($request->is('musteriPanel') || $request->is('musteriPanel/*')){
-                if($userRore !== 3){
+                if($userRore !== self::MUSTERI_ROLE_ID){
                     return route('anasayfa');
                 }
             }

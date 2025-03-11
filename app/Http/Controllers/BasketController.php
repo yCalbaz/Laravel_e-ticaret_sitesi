@@ -13,27 +13,41 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 
 class BasketController extends Controller
 {
     public function index()
     {
-        $cartItems = BasketItem::all();
-        return view('sepet', compact('cartItems'));
+        $customerId = Session::get('customer_id');
+
+        if ($customerId) {
+            $basket = Basket::where('customer_id', $customerId)->where('is_active', 1)->first();
+
+            if ($basket) {
+                $cartItems = BasketItem::where('order_id', $basket->id)->get();
+                return view('sepet', compact('cartItems'));
+            } else {
+                return view('sepet', ['cartItems' => []]); 
+            }
+        } else {
+            return view('sepet', ['cartItems' => []]); 
+        }
     }
+    
 
     public function add(Request $request, Product $product)
     {
         $response = Http::get("http://host.docker.internal:3000/stock/{$product->product_sku}");
 
         if ($response->failed()) {
-            return redirect()->back()->with('error', 'Yeterli stok bulunmamaktadır.');
+            return redirect()->back()->with('error', 'servise ulaşılmadı.');
         }
 
         $stockData = $response->json();
 
         if (!isset($stockData['stores'])) {
-            return redirect()->back()->with('error', 'Yeterli stok bulunmamaktadır.');
+            return redirect()->back()->with('error', 'servise ulaşılmadı.');
         }
 
         $totalStock = 0;
@@ -45,14 +59,18 @@ class BasketController extends Controller
             return redirect()->back()->with('error', 'Yeterli stok bulunmamaktadır.');
         }
 
-        $customerId = null;
-        if (Auth::check()) {
-            $member = Member::where('id', Auth::id())->first();
-            if ($member) {
-                $customerId = $member->customer_id;
+        $customerId = Session::get('customer_id');
+
+        if (!$customerId) {
+            if (Auth::check()) {
+                $member = Member::where('id', Auth::id())->first();
+                if ($member) {
+                    $customerId = $member->customer_id;
+                }
+            } else {
+                $customerId = mt_rand(10000000, 99999999);
             }
-        } else {
-            $customerId = mt_rand(10000000, 99999999);
+            Session::put('customer_id', $customerId);
         }
 
         $basket = Basket::where('customer_id', $customerId)->where('is_active', 1)->first();
@@ -99,8 +117,29 @@ class BasketController extends Controller
 
     public function approvl(Request $request)
     {
+        $customerId = Session::get('customer_id');
+
+        if (!$customerId) {
+            if (Auth::check()) {
+                $member = Member::where('id', Auth::id())->first();
+                if ($member) {
+                    $customerId = $member->customer_id;
+                } else {
+                    $customerId = null;
+                }
+            } else {
+                $customerId = mt_rand(10000000, 99999999);
+            }
+        }
+        
+        $basket = Basket::where('customer_id', $customerId)->where('is_active', 1)->first();
+
+        if (!$basket) {
+            return redirect()->back()->with('error', 'Sepet bulunamadı.');
+        }
+
         if ($request->isMethod('post')) {
-            $cartItems = BasketItem::all();
+            $cartItems = BasketItem::where('order_id', $basket->id)->get(); // Sadece kullanıcının sepetini al
             $totalPrice = 0;
             $stokError = false;
             $storeId = [];
@@ -138,24 +177,12 @@ class BasketController extends Controller
 
             $adSoyad = $request->input('adSoyad');
             $adres = $request->input('adres');
-            if (Auth::check()) {
-                $member = Member::where('id', Auth::id())->first();
-                if ($member) {
-                    $customerId = $member->customer_id; 
-                } else {
-                    $customerId = null; 
-                }
-            } else {
-                
-                $customerId = mt_rand(10000000, 99999999);
-            }
 
             $orderBatch = OrderBatch::create([
-                'customer_id'=>$customerId,
+                'customer_id' => $customerId,
                 'customer_name' => $adSoyad,
                 'customer_address' => $adres,
                 'product_price' => $totalPrice,
-                
             ]);
 
             $orderId = $orderBatch->id;
@@ -201,7 +228,6 @@ class BasketController extends Controller
                         'store_id' => $store,
                     ]));
 
-                   
                     $currentStock = DB::table('stocks')
                         ->where('product_sku', $item->product_sku)
                         ->where('store_id', $store)
@@ -218,7 +244,6 @@ class BasketController extends Controller
                         return redirect()->back()->with('error', 'Yeterli stok bulunmamaktadır!');
                     }
 
-                    
                     DB::table('stocks')
                         ->where('product_sku', $item->product_sku)
                         ->where('store_id', $store)
@@ -230,14 +255,20 @@ class BasketController extends Controller
                         'used_stock' => $item->product_piece,
                         'remaining_stock' => $currentStock - $item->product_piece
                     ]));
+                    
                 }
             }
-
-            BasketItem::truncate();
-            return redirect()->route('sepet.approvl')->with('success', 'Sipariş onaylandı');
+            //Log::info('Sepet pasifleştirilmeden önce');
+            $basket->update(['is_active' => 0]); //burayı düzenle!!
+            //Log::info('Sepet pasifleştirildi');
+            BasketItem::where('order_id', $basket->id)->delete();
+            //Log::info('Sepet öğeleri silindi');
+ 
+            return "Sipariş onaylandı";
+            //return redirect()->route('sepet.approvl')->with('success', 'Sipariş onaylandı');
         }
 
-        $cartItems = BasketItem::all();
+        $cartItems = BasketItem::where('order_id', $basket->id)->get(); 
         $totalPrice = 0;
         foreach ($cartItems as $item) {
             $totalPrice += ($item->product_price * $item->product_piece);
