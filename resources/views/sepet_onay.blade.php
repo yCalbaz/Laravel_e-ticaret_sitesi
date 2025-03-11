@@ -17,7 +17,7 @@
                 </div>
             @endif
     <div class="row"> 
-        @if(isset($cartItems) && $cartItems->count() > 0)
+        @if(isset($cartItems) && (is_array($cartItems) ? count($cartItems) > 0 : $cartItems->count() > 0))
             <div class="col-md-8">
                 <table class="table">
                     <thead>

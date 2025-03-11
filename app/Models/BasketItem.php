@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Cart extends Model
+class BasketItem extends Model
 {
     use HasFactory;
 
-    protected $table = 'carts'; 
+    protected $table = 'basket_items'; 
 
     protected $fillable = [
         'product_name',
@@ -17,8 +17,14 @@ class Cart extends Model
         'product_price', 
         'product_piece',
         'product_image',
+        'order_id',
     ];
 
     public $timestamps = false;
+
+    public function baskets()
+    {
+        return $this->belongsTo(Basket::class, 'order_id'); 
+    }
 }
 

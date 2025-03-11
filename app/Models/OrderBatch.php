@@ -13,6 +13,7 @@ class OrderBatch extends Model
 
     protected $fillable = [
         'id',
+        'customer_id',
         'customer_name',
         'customer_address',
         'product_price',

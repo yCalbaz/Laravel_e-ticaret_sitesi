@@ -14,7 +14,7 @@
     <h2 class="text-center mb-4">Sepetim</h2>
 
     <div class="row"> 
-        @if(isset($cartItems) && $cartItems->count() > 0)
+        @if(isset($cartItems) && (is_array($cartItems) ? count($cartItems) > 0 : $cartItems->count() > 0))
             @foreach($cartItems as $item)
                 <div class="col-12 mb-3"> 
                     <div class="card custom-card">

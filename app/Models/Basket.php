@@ -13,12 +13,17 @@ class Basket extends Model
 
     protected $fillable = [
         'customer_id',
-        'cart_id',	
         'created_at',	
-        'updated_at',	
+        'updated_at',
+        'is_active',	
 
     ];
 
     public $timestamps = false;
+
+    public function items()
+    {
+        return $this->hasMany(BasketItem::class, 'order_id');
+    }
 }
 

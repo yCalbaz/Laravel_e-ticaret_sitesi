@@ -2,20 +2,23 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Basket;
+use App\Models\BasketItem;
 use Illuminate\Http\Request;
-use App\Models\Cart;
+use App\Models\Member;
 use App\Models\Product;
 use App\Models\OrderBatch;
 use App\Models\OrderLine;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
-class CartController extends Controller
+class BasketController extends Controller
 {
     public function index()
     {
-        $cartItems = Cart::all();
+        $cartItems = BasketItem::all();
         return view('sepet', compact('cartItems'));
     }
 
@@ -42,22 +45,44 @@ class CartController extends Controller
             return redirect()->back()->with('error', 'Yeterli stok bulunmamaktadır.');
         }
 
-        $cartItem = Cart::where('product_sku', $product->product_sku)->first();
+        $customerId = null;
+        if (Auth::check()) {
+            $member = Member::where('id', Auth::id())->first();
+            if ($member) {
+                $customerId = $member->customer_id;
+            }
+        } else {
+            $customerId = mt_rand(10000000, 99999999);
+        }
 
-        if ($cartItem) {
-            if ($cartItem->product_piece + $request->quantity > $totalStock) {
+        $basket = Basket::where('customer_id', $customerId)->where('is_active', 1)->first();
+
+        if (!$basket) {
+            $basket = Basket::create([
+                'customer_id' => $customerId,
+                'is_active' => 1,
+            ]);
+        }
+
+        $basketItem = BasketItem::where('order_id', $basket->id)
+            ->where('product_sku', $product->product_sku)
+            ->first();
+
+        if ($basketItem) {
+            if ($basketItem->product_piece + $request->quantity > $totalStock) {
                 return redirect()->back()->with('error', 'Yeterli stok bulunmamaktadır.');
             }
 
-            $cartItem->product_piece += $request->quantity;
-            $cartItem->save();
+            $basketItem->product_piece += $request->quantity;
+            $basketItem->save();
         } else {
-            Cart::create([
+            BasketItem::create([
                 'product_name' => $product->product_name,
                 'product_sku' => $product->product_sku,
                 'product_piece' => $request->quantity,
                 'product_price' => $product->product_price,
                 'product_image' => $product->product_image,
+                'order_id' => $basket->id,
             ]);
         }
 
@@ -66,7 +91,7 @@ class CartController extends Controller
 
     public function delete($id)
     {
-        $cartItem = Cart::findOrFail($id);
+        $cartItem = BasketItem::findOrFail($id);
         $cartItem->delete();
 
         return redirect()->route('cart.index')->with('success', 'Ürün sepetten kaldırıldı!');
@@ -75,7 +100,7 @@ class CartController extends Controller
     public function approvl(Request $request)
     {
         if ($request->isMethod('post')) {
-            $cartItems = Cart::all();
+            $cartItems = BasketItem::all();
             $totalPrice = 0;
             $stokError = false;
             $storeId = [];
@@ -113,11 +138,24 @@ class CartController extends Controller
 
             $adSoyad = $request->input('adSoyad');
             $adres = $request->input('adres');
+            if (Auth::check()) {
+                $member = Member::where('id', Auth::id())->first();
+                if ($member) {
+                    $customerId = $member->customer_id; 
+                } else {
+                    $customerId = null; 
+                }
+            } else {
+                
+                $customerId = mt_rand(10000000, 99999999);
+            }
 
             $orderBatch = OrderBatch::create([
+                'customer_id'=>$customerId,
                 'customer_name' => $adSoyad,
                 'customer_address' => $adres,
                 'product_price' => $totalPrice,
+                
             ]);
 
             $orderId = $orderBatch->id;
@@ -195,11 +233,11 @@ class CartController extends Controller
                 }
             }
 
-            Cart::truncate();
+            BasketItem::truncate();
             return redirect()->route('sepet.approvl')->with('success', 'Sipariş onaylandı');
         }
 
-        $cartItems = Cart::all();
+        $cartItems = BasketItem::all();
         $totalPrice = 0;
         foreach ($cartItems as $item) {
             $totalPrice += ($item->product_price * $item->product_piece);
