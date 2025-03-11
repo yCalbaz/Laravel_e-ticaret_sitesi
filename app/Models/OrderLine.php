@@ -20,4 +20,9 @@ class OrderLine extends Model
         'order_id',
         'order_batch_id',
     ];
+    
+    public function orderBatch()
+    {
+        return $this->belongsTo(OrderBatch::class, 'order_batch_id', 'id'); 
+    }
 }

@@ -5,6 +5,8 @@ use App\Http\Controllers\AdminPanelController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\StoreController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\MemberController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\StockController;
 use App\Models\Product;
 
@@ -32,6 +34,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/urunPanel', [ProductController::class, 'create'])->name('product.create.form');
     Route::get('/depoPanel', [StoreController::class, 'create'])->name('store.create.form');
     Route::get('/stokPanel', [StockController::class, 'create'])->name('stock.create.form');
+    Route::get('/members', [MemberController::class, 'index'])->name('members.index');
+    Route::delete('/members/{id}', [MemberController::class, 'delete'])->name('members.delete');
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
 });
 
 

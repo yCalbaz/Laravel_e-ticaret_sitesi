@@ -14,7 +14,7 @@
 <div class="header">
     <h1>Admin Panel</h1>
 
-    <!-- Çıkış Butonu Sağ Üste -->
+   
     <form action="{{ route('admin.logout') }}" method="POST" class="logout-form">
         @csrf
         <button type="submit" class="logout-btn" >Çıkış</button>
@@ -50,7 +50,7 @@
         </div>
 
         <div class="col-md-4">
-            <a href="{{ route('stock.create.form' )}}" class="panel-box">
+            <a href="{{ route('members.index' )}}" class="panel-box">
                 <div class="box">
                     <h2>Kullanıcılar</h2>
                 </div>
@@ -58,7 +58,7 @@
         </div>
 
         <div class="col-md-4">
-            <a href="{{ route('stock.create.form' )}}" class="panel-box">
+            <a href="{{ route('orders.index' )}}" class="panel-box">
                 <div class="box">
                     <h2>Sipariş bilgileri</h2>
                 </div>

@@ -12,6 +12,7 @@ class OrderBatch extends Model
     protected $table = 'order_batches';
 
     protected $fillable = [
+        'id',
         'customer_name',
         'customer_address',
         'product_price',
@@ -19,4 +20,8 @@ class OrderBatch extends Model
         'created_at',
         'order_id',
     ];
+    public function orderLines()
+    {
+        return $this->hasMany(OrderLine::class, 'order_batch_id', 'id'); 
+    }
 }
