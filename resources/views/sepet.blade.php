@@ -12,6 +12,11 @@
 @include('layouts.header')   
 <div class="container mt-5">
     <h2 class="text-center mb-4">Sepetim</h2>
+    @if(session('success'))
+                <div class="alert alert-success">
+                    {{ session('success') }}
+                </div>
+            @endif
 
     <div class="row"> 
         @if(isset($cartItems) && (is_array($cartItems) ? count($cartItems) > 0 : $cartItems->count() > 0))

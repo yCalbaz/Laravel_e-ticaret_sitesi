@@ -27,10 +27,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/adminPanel', [AdminPanelController::class, 'showAdminPanel'])->name('adminPanel'); 
     Route::get('/saticiPanel', [AdminPanelController::class, 'showSaticiPanel'])->name('saticiPanel');
     Route::get('/musteriPanel', [AdminPanelController::class, 'showMusteriPanel'])->name('musteriPanel'); 
-
-
-
-    
+ 
     Route::get('/urunPanel', [ProductController::class, 'create'])->name('product.create.form');
     Route::get('/depoPanel', [StoreController::class, 'create'])->name('store.create.form');
     Route::get('/stokPanel', [StockController::class, 'create'])->name('stock.create.form');
@@ -53,3 +50,6 @@ Route::get('/cart', [BasketController::class, 'index'])->name('cart.index');
 Route::delete('/cart/{id}', [BasketController::class, 'delete'])->name('cart.delete');
 Route::post('/sepet/onay', [BasketController::class, 'approvl'])->name('sepet.approvl');
 Route::get('/sepet/onay', [BasketController::class, 'approvl'])->name('sepet.approvl');
+
+Route::get('/musteri/uye-ol', [AdminPanelController::class, 'showRegisterForm'])->name('musteri.uye_ol');
+ Route::post('/musteri/uye-ol', [AdminPanelController::class, 'customerRegister'])->name('musteri.uye_ol.kayit');

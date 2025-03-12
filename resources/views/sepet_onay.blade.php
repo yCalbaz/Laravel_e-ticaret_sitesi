@@ -11,11 +11,7 @@
 
 @include('layouts.header')   
 <div class="container mt-5">
-@if(session('success'))
-                <div class="alert alert-success">
-                    {{ session('success') }}
-                </div>
-            @endif
+
     <div class="row"> 
         @if(isset($cartItems) && (is_array($cartItems) ? count($cartItems) > 0 : $cartItems->count() > 0))
             <div class="col-md-8">

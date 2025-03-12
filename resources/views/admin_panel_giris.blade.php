@@ -33,6 +33,7 @@
                     <input type="password" class="form-control" name="password" required>
                 </div>
                 <button type="submit" class="btn btn-primary w-100" style="margin-bottom: 10px;">Giriş Yap</button>
+                <button type="submit" class="btn btn-primary w-100"><a href="{{ route('musteri.uye_ol') }}" class="btn btn-primary w-100">Üye ol</a></button>
                 
                 
             </form>

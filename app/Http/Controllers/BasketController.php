@@ -33,7 +33,9 @@ class BasketController extends Controller
         } else {
             return view('sepet', ['cartItems' => []]); 
         }
+        return view('sepet', ['cartItems' => []]);
     }
+
     
 
     public function add(Request $request, Product $product)
@@ -177,7 +179,7 @@ class BasketController extends Controller
 
             $adSoyad = $request->input('adSoyad');
             $adres = $request->input('adres');
-
+ 
             $orderBatch = OrderBatch::create([
                 'customer_id' => $customerId,
                 'customer_name' => $adSoyad,

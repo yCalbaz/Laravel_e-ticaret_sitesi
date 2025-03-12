@@ -10,7 +10,7 @@
 <body> 
 
 
-@include('layouts.header')
+@include('layouts.panel_header')
 <div class="header">
     <h1>Satıcı Panel</h1>
 

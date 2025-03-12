@@ -9,7 +9,7 @@
 </head>
 <body> 
 
-@include('layouts.header')
+@include('layouts.panel_header')
 
 <div class="container mt-5">
     <div class="card shadow-sm">

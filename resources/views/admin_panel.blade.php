@@ -8,9 +8,9 @@
     <link rel="icon" href="{{ asset('storage/images/flo-logo-Photoroom.png') }}" type="image/png">
 </head>
 <body> 
+    
 
-
-@include('layouts.header')
+@include('layouts.panel_header')
 <div class="header">
     <h1>Admin Panel</h1>
 
