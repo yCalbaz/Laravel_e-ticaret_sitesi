@@ -139,7 +139,7 @@ class BasketController extends Controller
         }
 
         if ($request->isMethod('post')) {
-            $cartItems = BasketItem::where('order_id', $basket->id)->get(); // Sadece kullanıcının sepetini al
+            $cartItems = BasketItem::where('order_id', $basket->id)->get(); 
             $totalPrice = 0;
             $stokError = false;
             $storeId = [];
@@ -258,14 +258,10 @@ class BasketController extends Controller
                     
                 }
             }
-            //Log::info('Sepet pasifleştirilmeden önce');
-            $basket->update(['is_active' => 0]); //burayı düzenle!!
-            //Log::info('Sepet pasifleştirildi');
+            $basket->update(['is_active' => 0]); 
             BasketItem::where('order_id', $basket->id)->delete();
-            //Log::info('Sepet öğeleri silindi');
- 
-            return "Sipariş onaylandı";
-            //return redirect()->route('sepet.approvl')->with('success', 'Sipariş onaylandı');
+            return redirect()->route('cart.index')->with('success', 'Sipariş onaylandı!');
+            
         }
 
         $cartItems = BasketItem::where('order_id', $basket->id)->get(); 
