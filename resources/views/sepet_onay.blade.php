@@ -11,6 +11,11 @@
 
 @include('layouts.header')   
 <div class="container mt-5">
+@if(session('error'))
+                <div class="alert alert-error">
+                    {{ session('error') }}
+                </div>
+            @endif
 
     <div class="row"> 
         @if(isset($cartItems) && (is_array($cartItems) ? count($cartItems) > 0 : $cartItems->count() > 0))
