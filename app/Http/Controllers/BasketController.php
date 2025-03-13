@@ -19,21 +19,24 @@ class BasketController extends Controller
 {
     public function index()
     {
-        $customerId = Session::get('customer_id');
-
-        if ($customerId) {
-            $basket = Basket::where('customer_id', $customerId)->where('is_active', 1)->first();
-
-            if ($basket) {
-                $cartItems = BasketItem::where('order_id', $basket->id)->get();
-                return view('sepet', compact('cartItems'));
-            } else {
-                return view('sepet', ['cartItems' => []]); 
-            }
-        } else {
-            return view('sepet', ['cartItems' => []]); 
+        if (Auth::check()) {
+            $customer = Auth::user(); 
+            Session::put('customer_id', $customer->customer_id); 
         }
-        return view('sepet', ['cartItems' => []]);
+        $customer = Session::get('customer_id');
+      
+    if (!$customer) {
+        return view('sepet', ['cartItems' => []]); 
+    }
+
+    $basket = Basket::where('customer_id', $customer)->where('is_active', 1)->first();
+
+    if (!$basket) {
+        return view('sepet', ['cartItems' => []]); 
+    }
+
+    $cartItems = BasketItem::where('order_id', $basket->id)->get();
+    return view('sepet', compact('cartItems'));
     }
 
     
