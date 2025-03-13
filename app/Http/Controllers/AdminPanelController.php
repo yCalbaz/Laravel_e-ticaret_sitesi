@@ -18,7 +18,7 @@ class AdminPanelController extends Controller
     public function showLoginForm()
     {
         if(Auth::check()){
-            $user = Auth::member();
+            $user = Auth::user();
             Session::put('user_authority', $user->authority_id);
             return $this->redirectUser($user);
         }
@@ -40,10 +40,12 @@ class AdminPanelController extends Controller
 
         return redirect()->back()->with('error', 'Giriş bilgileri hatalı.')->withInput();
     }
+
     public function showRegisterForm()
      {
          return view('musteri_uye_ol');
      }
+
     public function customerRegister(Request $request)
     {
         $request->validate([
@@ -52,8 +54,7 @@ class AdminPanelController extends Controller
             'password' => 'required',
         ]);
 
-        $lastCustomer = Member::whereNotNull('customer_id')->orderBy('customer_id', 'desc')->first();
-        $customer_id = $lastCustomer ? $lastCustomer->customer_id + 1 : 1;
+        $customer_id = $this->databaseCustomerId();
 
         Member::create([
             'name' => $request->name,
@@ -65,6 +66,13 @@ class AdminPanelController extends Controller
 
         return redirect()->route('musteri.uye_ol')->with('success', 'Müşteri üye eklendi :)');
     }
+
+    protected function databaseCustomerId()
+    {
+        $lastCustomer = Member::whereNotNull('customer_id')->orderBy('customer_id', 'desc')->first();
+        return $lastCustomer ? $lastCustomer->customer_id + 1 : 1;
+    }
+
 
     protected function redirectUser($user)
     {
@@ -111,9 +119,14 @@ class AdminPanelController extends Controller
         if(session('user_authority') !== self::MUSTERI_ROLE_ID){
             return redirect()->route('login');
         }
-        $products = Product::orderBy('id', 'desc')->take(10)->get(); 
+        $products =  $this->getProduct();
         return view('anasayfa', compact('products'));
     }
+    protected function getProduct()
+    {
+        return Product::orderBy('id', 'desc')->take(10)->get();
+    }
+    
 
     
 }

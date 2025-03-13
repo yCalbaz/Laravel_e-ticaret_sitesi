@@ -37,7 +37,6 @@ Route::middleware(['auth'])->group(function () {
 });
 
 
-Route::get('/sepet', [BasketController::class, 'index'])->name('sepet.index');
 Route::get('/urun', function () {  $products = Product::all(); 
     return view('urun', compact('products'));});
 
@@ -45,6 +44,7 @@ Route::post('/products', [ProductController::class, 'store'])->name('products.st
 Route::post('/store', [StoreController::class, 'store'])->name('store.store');
 Route::post('/stock', [StockController::class, 'store'])->name('stock.store');
 
+Route::get('/sepet', [BasketController::class, 'index'])->name('sepet.index');
 Route::post('/cart/add/{product}', [BasketController::class, 'add'])->name('cart.add');
 Route::get('/cart', [BasketController::class, 'index'])->name('cart.index');
 Route::delete('/cart/{id}', [BasketController::class, 'delete'])->name('cart.delete');
