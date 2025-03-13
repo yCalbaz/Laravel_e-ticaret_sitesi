@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Session;
 
 class AuthController extends Controller
 {
+    const ADMIN_ROLE_ID = 1;
+    const SATICI_ROLE_ID = 2;
     const MUSTERI_ROLE_ID = 3;
 
     public function showLoginForm()
@@ -75,9 +77,9 @@ class AuthController extends Controller
     {
         $authority = Session::get('user_authority');
         switch ($authority) {
-            case 1:
+            case  self::ADMIN_ROLE_ID:
                 return redirect()->route('adminPanel');
-            case 2:
+            case self::SATICI_ROLE_ID:
                 return redirect()->route('saticiPanel');
             case self::MUSTERI_ROLE_ID:
                 return redirect()->route('musteriPanel');
