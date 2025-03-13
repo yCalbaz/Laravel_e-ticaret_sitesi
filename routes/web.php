@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminPanelController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\StoreController;
 use App\Http\Controllers\BasketController;
@@ -17,11 +18,11 @@ Route::get('/', function () {
     return view('anasayfa', compact('products'));
 });
 
-    Route::get('/login', [AdminPanelController::class, 'showLoginForm'])->name('login'); 
-    Route::post('/login', [AdminPanelController::class, 'login'])->name('login.post'); 
+    Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login'); 
+    Route::post('/login', [AuthController::class, 'login'])->name('login.post'); 
 
 
-Route::post('/logout', [AdminPanelController::class, 'logout'])->name('admin.logout'); 
+Route::post('/logout', [AuthController::class, 'logout'])->name('admin.logout'); 
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/adminPanel', [AdminPanelController::class, 'showAdminPanel'])->name('adminPanel'); 
