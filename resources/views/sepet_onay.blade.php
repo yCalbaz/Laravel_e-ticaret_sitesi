@@ -16,6 +16,15 @@
                     {{ session('error') }}
                 </div>
             @endif
+            @if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
 
     <div class="row"> 
         @if(isset($cartItems) && (is_array($cartItems) ? count($cartItems) > 0 : $cartItems->count() > 0))
@@ -55,11 +64,28 @@
                     @csrf
                     <div class="mb-3">
                         <label for="adSoyad" class="form-label">Ad Soyad</label>
-                        <input type="text" class="form-control" id="adSoyad" name="adSoyad" required>
+                        <input type="text" class="form-control" id="name" name="name" required>
                     </div>
                     <div class="mb-3">
                         <label for="adres" class="form-label">Adres</label>
-                        <textarea class="form-control" id="adres" name="adres" rows="3" required></textarea>
+                        <textarea class="form-control" id="address" name="address" rows="3" required></textarea>
+                    </div>
+                    <h5>Ödeme Bilgileri</h5>
+                    <div class="mb-3">
+                        <label for="cardNumber" class="form-label">Kart Numarası</label>
+                        <input type="text" class="form-control" id="cardNumber" name="cardNumber" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="expiryDate" class="form-label">Son Kullanma Tarihi</label>
+                        <input type="text" class="form-control" id="expiryDate" name="expiryDate" placeholder="MM/YY" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="cvv" class="form-label">CVV</label>
+                        <input type="text" class="form-control" id="cvv" name="cvv" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="cardHolderName" class="form-label">Kart Sahibi</label>
+                        <input type="text" class="form-control" id="cardHolderName" name="cardHolderName" required>
                     </div>
                     <div class="text-center">
                         <button type="submit" class="btn btn-success">Siparişi Tamamla</button>

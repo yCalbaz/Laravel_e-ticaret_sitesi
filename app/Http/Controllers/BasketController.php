@@ -146,8 +146,43 @@ class BasketController extends Controller
     if ($request->isMethod('post')) {
 
         $request->validate([
-            'adSoyad' => 'required|string|min:3|max:255',
-            'adres' => 'required|string|min:3|max:255',
+           
+            'name' => ['required', 'string', 'min:3', 'max:255'],
+            'address' => ['required', 
+                          'string', 
+                          'min:3', 
+                          'max:255', 
+                          'regex:/^([a-zA-ZÇçĞğİıÖöŞşÜü\s]+),\s*([a-zA-ZÇçĞğİıÖöŞşÜü\s]+),\s*([a-zA-ZÇçĞğİıÖöŞşÜü\s]+),\s*([a-zA-ZÇçĞğİıÖöŞşÜü\s]+),\s*(\d+),\s*([a-zA-ZÇçĞğİıÖöŞşÜü\s]+)$/u'
+            ],
+            
+            'cardNumber' => ['required', 'digits:16', 'regex:/^[0-9]{16}$/'],
+            'expiryDate' => ['required', 'regex:/^(0[1-9]|1[0-2])\/([0-9]{2})$/'], 
+            'cvv' => ['required', 'digits:3', 'regex:/^[0-9]{3}$/'],
+            'cardHolderName' => ['required', 'string', 'min:3', 'max:255']
+        ], [
+            
+            'name.required' => 'Ad Soyad zorunludur.',
+            'name.string' => 'Ad Soyad geçerli bir metin olmalıdır.',
+            'name.min' => 'Ad Soyad en az 3 karakter olmalıdır.',
+            'name.max' => 'Ad Soyad en fazla 255 karakter olabilir.',
+            
+            'address.required' => 'Adres zorunludur.',
+            'address.regex' => 'Adres formatı geçersiz. Lütfen şu şekilde giriniz: İl, İlçe, Mahalle, Sokak, No, Ülke.',
+            
+            'cardNumber.required' => 'Kart numarası zorunludur.',
+            'cardNumber.digits' => 'Kart numarası 16 haneli olmalıdır.',
+            'cardNumber.regex' => 'Geçerli bir kart numarası giriniz.',
+            
+            'expiryDate.required' => 'Son kullanma tarihi zorunludur.',
+            'expiryDate.regex' => 'Geçerli bir son kullanma tarihi giriniz (MM/YY).',
+            
+            'cvv.required' => 'CVV kodu zorunludur.',
+            'cvv.digits' => 'CVV kodu 3 haneli olmalıdır.',
+            'cvv.regex' => 'Geçerli bir CVV kodu giriniz.',
+            
+            'cardHolderName.required' => 'Kart sahibi ismi zorunludur.',
+            'cardHolderName.min' => 'Kart sahibi ismi en az 3 karakter olmalıdır.',
+            'cardHolderName.max' => 'Kart sahibi ismi en fazla 255 karakter olabilir.'
         ]);
 
         $cartItems = BasketItem::where('order_id', $basket->id)->get();
@@ -186,13 +221,18 @@ class BasketController extends Controller
             return redirect()->back()->with('error', 'Yeterli stok yok');
         }
 
-        $adSoyad = $request->input('adSoyad');
-        $adres = $request->input('adres');
+        $name = $request->input('name');
+        $address = $request->input('address');
+
+        $cardNumber = $request->input('cardNumber');
+        $expiryDate = $request->input('expiryDate');
+        $cvv = $request->input('cvv');
+        $cardHolderName = $request->input('cardHolderName');
 
         $orderBatch = OrderBatch::create([
             'customer_id' => $customerId,
-            'customer_name' => $adSoyad,
-            'customer_address' => $adres,
+            'customer_name' => $name,
+            'customer_address' => $address,
             'product_price' => $totalPrice,
         ]);
 

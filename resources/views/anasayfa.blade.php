@@ -19,8 +19,12 @@
     </div>
 @endif
 <form action="{{ route('admin.logout') }}" method="POST" class="logout-form">
+@auth
+    <form action="{{ route('admin.logout') }}" method="POST" class="logout-form">
         @csrf
-        <button type="submit" class="logout-btn" >Çıkış</button>
+        <button type="submit" class="logout-btn">Çıkış</button>
+    </form>
+    @endauth
     </form>
 @if(session('success'))
                 <div class="alert alert-success">

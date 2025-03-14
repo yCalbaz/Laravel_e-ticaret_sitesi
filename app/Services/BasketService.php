@@ -53,7 +53,7 @@ class BasketService
         }
     }
 
-    public function processOrder($basket, $customerId, $adSoyad, $adres, $cartItems)
+    public function processOrder($basket, $customerId, $name, $addres, $cartItems)
     {
         $totalPrice = 0;
         $storeIds = [];
@@ -70,7 +70,7 @@ class BasketService
                 throw new \Exception('Yeterli stok yok');
             }
 
-            // Envanteri azaltmak için kullanılacak mağazaları belirle
+            
             foreach ($stockData['stores'] as $store) {
                 if ($item->product_piece > 0 && $store['stock'] > 0) {
                     $deductQuantity = min($store['stock'], $item->product_piece);
@@ -88,8 +88,8 @@ class BasketService
 
         $orderBatch = OrderBatch::create([
             'customer_id' => $customerId,
-            'customer_name' => $adSoyad,
-            'customer_address' => $adres,
+            'customer_name' => $name,
+            'customer_address' => $addres,
             'product_price' => $totalPrice,
         ]);
 
