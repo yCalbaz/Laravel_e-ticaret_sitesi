@@ -62,6 +62,7 @@
             <div class="col-md-4">
                 <form action="{{ route('sepet.approvl') }}" method="POST">
                     @csrf
+                    <h5>Müşteri Bilgileri</h5>
                     <div class="mb-3">
                         <label for="adSoyad" class="form-label">Ad Soyad</label>
                         <input type="text" class="form-control" id="name" name="name" required>

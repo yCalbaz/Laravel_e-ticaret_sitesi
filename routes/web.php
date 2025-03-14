@@ -1,11 +1,11 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AdminPanelController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\StoreController;
 use App\Http\Controllers\BasketController;
+use App\Http\Controllers\ManagerController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\StockController;
@@ -25,9 +25,9 @@ Route::get('/', function () {
 Route::post('/logout', [AuthController::class, 'logout'])->name('admin.logout'); 
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/adminPanel', [AdminPanelController::class, 'showAdminPanel'])->name('adminPanel'); 
-    Route::get('/saticiPanel', [AdminPanelController::class, 'showSaticiPanel'])->name('saticiPanel');
-    Route::get('/musteriPanel', [AdminPanelController::class, 'showMusteriPanel'])->name('musteriPanel'); 
+    Route::get('/adminPanel', [ManagerController::class, 'showAdminPanel'])->name('adminPanel'); 
+    Route::get('/saticiPanel', [ManagerController::class, 'showSaticiPanel'])->name('saticiPanel');
+    Route::get('/musteriPanel', [ManagerController::class, 'showMusteriPanel'])->name('musteriPanel'); 
  
     Route::get('/urunPanel', [ProductController::class, 'create'])->name('product.create.form');
     Route::get('/depoPanel', [StoreController::class, 'create'])->name('store.create.form');
@@ -52,5 +52,5 @@ Route::delete('/cart/{id}', [BasketController::class, 'delete'])->name('cart.del
 Route::post('/sepet/onay', [BasketController::class, 'approvl'])->name('sepet.approvl');
 Route::get('/sepet/onay', [BasketController::class, 'approvl'])->name('sepet.approvl');
 
-Route::get('/musteri/uye-ol', [AdminPanelController::class, 'showRegisterForm'])->name('musteri.uye_ol');
- Route::post('/musteri/uye-ol', [AdminPanelController::class, 'customerRegister'])->name('musteri.uye_ol.kayit');
+Route::get('/musteri/uye-ol', [ManagerController::class, 'showRegisterForm'])->name('musteri.uye_ol');
+ Route::post('/musteri/uye-ol', [ManagerController::class, 'customerRegister'])->name('musteri.uye_ol.kayit');

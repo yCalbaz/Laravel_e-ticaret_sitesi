@@ -5,7 +5,7 @@ use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
-class AdminPanelController extends Controller
+class ManagerController extends Controller
 {
     const ADMIN_ROLE_ID = 1;
     const SATICI_ROLE_ID = 2;
