@@ -7,8 +7,8 @@ use App\Models\Stock;
 
 class StockController extends Controller
 {
-public function create(){
-    return view('stok_panel');
+public function index(){
+    return view('stock_panel');
 }
 
 public function store(Request $request)
@@ -26,7 +26,7 @@ public function store(Request $request)
         'product_piece'=> $request->product_piece
     ]);
 
-    return redirect()->route('stock.create.form')->with('success', 'Stok başarıyla eklendi :)');
+    return redirect()->route('stock.index.form')->with('success', 'Stok başarıyla eklendi :)');
 
 }
 

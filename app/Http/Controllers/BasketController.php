@@ -26,17 +26,17 @@ class BasketController extends Controller
         $customer = Session::get('customer_id');
       
     if (!$customer) {
-        return view('sepet', ['cartItems' => []]); 
+        return view('cart', ['cartItems' => []]); 
     }
 
     $basket = Basket::where('customer_id', $customer)->where('is_active', 1)->first();
 
     if (!$basket) {
-        return view('sepet', ['cartItems' => []]); 
+        return view('cart', ['cartItems' => []]); 
     }
 
     $cartItems = BasketItem::where('order_id', $basket->id)->get();
-    return view('sepet', compact('cartItems'));
+    return view('cart', compact('cartItems'));
     }
 
     
@@ -324,6 +324,6 @@ class BasketController extends Controller
         $totalPrice += ($item->product_price * $item->product_piece);
     }
     $data = compact('cartItems', 'totalPrice');
-    return view('sepet_onay', $data);
+    return view('cart_approve', $data);
 }
 }

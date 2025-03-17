@@ -11,6 +11,6 @@ class OrderController extends Controller
     {
         $orders = OrderBatch::with('orderLines')->get(); 
 
-        return view('order', compact('orders'));
+        return view('order_panel', compact('orders'));
     }
 }

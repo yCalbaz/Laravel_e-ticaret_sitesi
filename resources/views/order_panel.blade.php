@@ -13,7 +13,7 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th>Sipariş ID</th>
+                    <th>Sipariş ID</th> 
                     <th>Müşteri Adı</th>
                     <th>Müşteri Adresi</th>
                     <th>Tarih</th>

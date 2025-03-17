@@ -24,7 +24,7 @@ class ManagerController extends Controller
         if(session('user_authority') !== self::SATICI_ROLE_ID){
             return redirect()->route('login');
         }
-        return view('satici_panel');
+        return view('seller_panel');
     }
 
     public function showMusteriPanel()
@@ -33,7 +33,7 @@ class ManagerController extends Controller
             return redirect()->route('login');
         }
         $products = $this->getProduct();
-        return view('anasayfa', compact('products'));
+        return view('home', compact('products'));
     }
 
     protected function getProduct()

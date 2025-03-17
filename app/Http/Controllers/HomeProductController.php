@@ -5,19 +5,15 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use Illuminate\Support\Facades\Storage;
 
-class ProductController extends Controller
+class HomeProductController extends Controller 
 {
 
-    public function index()
-     {
-        $products =Product::take(10)->get();
-        return view('anasayfa', compact('products'));
-     }
+    
 
     
-    public function create()
+    public function index()
     {
-        return view('urun_panel'); 
+        return view('product_panel'); 
     }
 
     public function store(Request $request)
@@ -41,7 +37,7 @@ class ProductController extends Controller
         $product->product_image = $imageUrl;
         $product->save();
 
-        return redirect()->route('product.create.form')->with('success', 'Ürün başarıyla eklendi.');
+        return redirect()->route('product.index.form')->with('success', 'Ürün başarıyla eklendi.');
     }
 
     

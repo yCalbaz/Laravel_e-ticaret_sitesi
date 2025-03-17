@@ -14,7 +14,6 @@
 <div class="header">
     <h1>Satıcı Panel</h1>
 
-    <!-- Çıkış Butonu Sağ Üste -->
     <form action="{{ route('admin.logout') }}" method="POST" class="logout-form">
         @csrf
         <button type="submit" class="logout-btn" >Çıkış</button>

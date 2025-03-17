@@ -29,11 +29,11 @@
 @if(session('success'))
                 <div class="alert alert-success">
                     {{ session('success') }}
-                </div>
+                </div> 
             @endif
 
     <h2 class="text-center mb-4">Öne Çıkan Ürünler</h2>
-
+      
     <div class="row"> 
         @foreach($products as $product)
             <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-4 d-flex justify-content-center">

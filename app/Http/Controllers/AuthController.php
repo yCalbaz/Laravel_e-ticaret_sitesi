@@ -20,7 +20,7 @@ class AuthController extends Controller
             Session::put('user_authority', $user->authority_id);
             return $this->redirectUser($user);
         }
-        return view('admin_panel_giris'); 
+        return view('admin_panel_login'); 
     }
 
     public function login(Request $request)
@@ -41,7 +41,7 @@ class AuthController extends Controller
 
     public function showRegisterForm()
     {
-        return view('musteri_uye_ol');
+        return view('customer_sing_up');
     }
 
     public function customerRegister(Request $request)

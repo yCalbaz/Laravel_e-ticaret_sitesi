@@ -7,8 +7,8 @@ use App\Models\Store;
 
 class StoreController extends Controller
 {
-public function create(){
-    return view('depo_panel');
+public function index(){
+    return view('store_panel');
 }
 
 public function store(Request $request)
@@ -26,7 +26,7 @@ public function store(Request $request)
         'store_priority'=> $request->store_priority
     ]);
 
-    return redirect()->route('store.create.form')->with('success','Depo başarıyla eklendi :)');
+    return redirect()->route('store.index.form')->with('success','Depo başarıyla eklendi :)');
 
 
 
