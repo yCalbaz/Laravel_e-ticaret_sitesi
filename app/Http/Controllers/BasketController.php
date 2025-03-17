@@ -41,83 +41,75 @@ class BasketController extends Controller
 
     
 
-    public function add(Request $request, Product $product)
-    {
-        $response = Http::get("http://host.docker.internal:3000/stock/{$product->product_sku}");
+    public function add(Request $request, $product_sku)
+{
+    $product = Product::where('product_sku', $product_sku)->first();
 
-        if ($response->failed()) {
-            return redirect()->back()->with('error', 'servise ulaşılmadı.');
-        }
-
-        $stockData = $response->json();
-
-        if (!isset($stockData['stores'])) {
-            return redirect()->back()->with('error', 'servise ulaşılmadı.');
-        }
-
-        $totalStock = 0;
-        foreach ($stockData['stores'] as $store) {
-            $totalStock += $store['stock'];
-        }
-
-        if ($totalStock < $request->quantity) {
-            return redirect()->back()->with('error', 'Yeterli stok bulunmamaktadır.');
-        }
-
-        $customerId = Session::get('customer_id');
-
-        if (!$customerId) {
-            if (Auth::check()) {
-                $member = Member::where('id', Auth::id())->first();
-                if ($member) {
-                    $customerId = $member->customer_id;
-                }
-            } else {
-                $customerId = mt_rand(10000000, 99999999);
-            }
-            Session::put('customer_id', $customerId);
-        }
-
-        $basket = Basket::where('customer_id', $customerId)->where('is_active', 1)->first();
-
-        if (!$basket) {
-            $basket = Basket::create([
-                'customer_id' => $customerId,
-                'is_active' => 1,
-            ]);
-        }
-
-        $basketItem = BasketItem::where('order_id', $basket->id)
-            ->where('product_sku', $product->product_sku)
-            ->first();
-
-        if ($basketItem) {
-            if ($basketItem->product_piece + $request->quantity > $totalStock) {
-                return redirect()->back()->with('error', 'Yeterli stok bulunmamaktadır.');
-            }
-
-            $basketItem->product_piece += $request->quantity;
-            $basketItem->save();
-        } else {
-            BasketItem::create([
-                'product_name' => $product->product_name,
-                'product_sku' => $product->product_sku,
-                'product_piece' => $request->quantity,
-                'product_price' => $product->product_price,
-                'product_image' => $product->product_image,
-                'order_id' => $basket->id,
-            ]);
-        }
-
-        return redirect()->back()->with('success', 'Ürün sepete eklendi');
+    if (!$product) {
+        return response()->json(['error' => 'Ürün bulunamadı'], 404);
     }
+
+    $response = Http::get("http://host.docker.internal:3000/stock/{$product->product_sku}");
+
+    if ($response->failed()) {
+        return response()->json(['error' => 'Servise ulaşılamadı'], 500);
+    }
+
+    $stockData = $response->json();
+    if (!isset($stockData['stores'])) {
+        return response()->json(['error' => 'Servis yanıtı geçersiz'], 500);
+    }
+
+    $totalStock = collect($stockData['stores'])->sum('stock');
+    if ($totalStock < $request->quantity) {
+        return response()->json(['error' => 'Yeterli stok bulunmamaktadır.'], 400);
+    }
+
+    $customerId = Session::get('customer_id');
+    if (!$customerId) {
+        if (Auth::check()) {
+            $customerId = Auth::id();
+        } else {
+            $customerId = mt_rand(10000000, 99999999);
+        }
+        Session::put('customer_id', $customerId);
+    }
+
+    $basket = Basket::firstOrCreate([
+        'customer_id' => $customerId,
+        'is_active' => 1
+    ]);
+
+    $basketItem = BasketItem::where('order_id', $basket->id)
+        ->where('product_sku', $product->product_sku)
+        ->first();
+
+    if ($basketItem) {
+        if ($basketItem->product_piece + $request->quantity > $totalStock) {
+            return response()->json(['error' => 'Yeterli stok yok.'], 400);
+        }
+        $basketItem->increment('product_piece', $request->quantity);
+    } else {
+        BasketItem::create([
+            'product_name' => $product->product_name,
+            'product_sku' => $product->product_sku,
+            'product_piece' => $request->quantity,
+            'product_price' => $product->product_price,
+            'product_image' => $product->product_image,
+            'order_id' => $basket->id,
+        ]);
+    }
+
+    return response()->json(['success' => 'Ürün sepete eklendi!']);
+}
+
 
     public function delete($id)
     {
         $cartItem = BasketItem::findOrFail($id);
         $cartItem->delete();
 
-        return redirect()->route('cart.index')->with('success', 'Ürün sepetten kaldırıldı!');
+        return response()->json(['message' => 'Ürün sepetten kaldırıldı!'], 200);
     }
 
     public function approvl(Request $request)

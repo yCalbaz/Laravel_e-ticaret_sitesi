@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sepet</title>
-    @vite(['resources/css/style.css'])
+    @vite(['resources/js/app.js' , 'resources/css/style.css'])
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="icon" href="{{ asset('storage/images/flo-logo-Photoroom.png') }}" type="image/png">
 </head>
@@ -35,11 +35,11 @@
                                     <p class="card-text"> Fiyat: {{ $item->product_price }} TL</p>
                                     <p class="card-text">Adet: {{ $item->product_piece }} </p>
                                 </div>
-                                <form action="{{ route('cart.delete', $item->id) }}" method="POST">
+                                
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn btn-danger btn-sm">Sil</button>
-                                </form>
+                                    <button type="submit" class="btn btn-danger btn-sm" onclick="cartDelete(' {{ $item->id}}')">Sil</button>
+                                
                             </div>
                         </div>
                     </div>
@@ -67,3 +67,23 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    function cartDelete(productId){
+    $.ajax({
+        url:"{{ route('cart.delete', ':id') }}".replace(':id', productId),
+        type:"DELETE",
+        data:{
+            _token: "{{ csrf_token() }}",
+        },
+        success: function(response){
+            alert("Ürün silindi");
+            location.reload();
+        },
+        error: function(xhr ){
+            console.log(xhr);
+            alert("hata oluştu" + xhr.responseText);
+        }
+
+    });}
+</script>

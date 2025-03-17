@@ -72,7 +72,9 @@
 
 
 <style>
-    
+    h2{
+        color: white;
+    }
 </style>
 </body>
 </html>
