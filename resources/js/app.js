@@ -1,4 +1,4 @@
 import './bootstrap';
-alert('test');
+
 
 

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sepet</title>
+    @vite(['resources/css/style.css'])
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="icon" href="{{ asset('storage/images/flo-logo-Photoroom.png') }}" type="image/png">
 </head>
@@ -22,10 +23,10 @@
         @if(isset($cartItems) && (is_array($cartItems) ? count($cartItems) > 0 : $cartItems->count() > 0))
             @foreach($cartItems as $item)
                 <div class="col-12 mb-3"> 
-                    <div class="card custom-card">
+                    <div class="card custom-card-2">
                         <div class="row g-0">
                             <div class="col-md-3"> 
-                                <img src="{{ $item->product_image }}" class="img-fluid rounded-start custom-img" alt="{{ $item->product_name }}">
+                                <img src="{{ $item->product_image }}" class="img-fluid rounded-start custom-img-2" alt="{{ $item->product_name }}">
                             </div>
                             <div class="col-md-9 d-flex justify-content-between align-items-center"> 
                                 <div class="card-body">
@@ -58,24 +59,6 @@
         @endif
     </div>
 </div>
-
-<style>
-    .custom-footer {
-        background-color: #ff671d; 
-        color: white; 
-        padding: 15px 0;
-        text-align: center;
-    }
-
-    .custom-card {
-        max-width: 50%; 
-    }
-
-    .custom-img {
-        height: 120px; 
-        object-fit: cover;
-    }
-</style>
 
 <footer class="custom-footer">
     <p>&copy; 2025 Flo - Tüm Hakları Saklıdır.</p>

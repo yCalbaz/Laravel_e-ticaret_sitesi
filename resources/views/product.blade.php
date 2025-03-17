@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ürün</title>
+    @vite(['resources/css/style.css'])
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="icon" href="{{ asset('storage/images/flo-logo-Photoroom.png') }}" type="image/png">
 </head>
@@ -48,57 +49,7 @@
     @endforeach
 </div>
 </div>
-<style>
-    .custom-footer {
-        background-color: #ff671d; 
-        color: white; 
-        padding: 15px 0;
-        text-align: center;
-    }
-
-    .custom-card {
-        width: 100%; 
-        max-width: 250px; 
-        margin: 0 auto; 
-        height: auto;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        text-align: center; 
-    }
-
-    .custom-img {
-        width: 100%; 
-        height: 200px; 
-        object-fit: cover; 
-    }
-
-    .card-body {
-        flex-grow: 1; 
-        display: flex;
-        flex-direction: column;
-        justify-content: center; 
-        align-items: center;
-        padding: 1.5rem;
-    }
-
-    .card-title {
-        font-size: 1.2rem;
-        font-weight: bold;
-        margin: 10px 0;
-    }
-
-    .card-text {
-        font-size: 1rem;
-        margin-bottom: 10px;
-    }
-
-    .btn-sm {
-        width: 100%;
-        max-width: 150px;
-    }
-
-</style>
+<
 
 <footer class="custom-footer">
     <p>&copy; 2025 Şirket Adı - Tüm Hakları Saklıdır.</p>

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Üyeler</title>
+    @vite(['resources/css/style.css'])
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
@@ -54,24 +55,9 @@
         </div>
     </div>
 </div>
-    
 <style>
-    .logout-form {
-        position: absolute;
-        top: 20px;
-        right: 20px;
-    }
-
-    .logout-btn {
-        background-color: red;
+    h2{
         color: white;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 5px;
-        text-decoration: none;
-        font-weight: bold;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
     }
 </style>
 </body>
