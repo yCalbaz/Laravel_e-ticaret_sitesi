@@ -53,7 +53,6 @@ Route::delete('/cart/{id}', [BasketController::class, 'delete'])->name('cart.del
 Route::post('/sepet/onay', [BasketController::class, 'approvl'])->name('sepet.approvl');
 Route::get('/sepet/onay', [BasketController::class, 'approvl'])->name('sepet.approvl');
 
-Route::get('/order_details', [OrderDetailController::class, 'index'])->name('orders.index');
 
 Route::get('/musteri/uye-ol', [AuthController::class, 'showRegisterForm'])->name('musteri.uye_ol');
 Route::post('/musteri/uye-ol', [AuthController::class, 'customerRegister'])->name('musteri.uye_ol.kayit');
@@ -62,4 +61,12 @@ Route::post('/order/return', [OrderDetailController::class, 'processReturn'])->n
 
 Route::get('/product/{sku}', [ProductController::class, 'showDetails'])->name('product.details');
 Route::post('/basket/update/{id}', [BasketController::class, 'update'])->name('cart.update');
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/siparisler', [OrderDetailController::class, 'index'])->name('orders.index');
+    Route::get('/siparis/{orderId}/detaylar', [OrderDetailController::class, 'showDetails'])->name('order.showDetails');
+    Route::get('/siparis/{orderId}/iade', [OrderDetailController::class, 'showReturnForm'])->name('order.returnForm');
+    Route::post('/siparis/iade', [OrderDetailController::class, 'processReturn'])->name('order.processReturn');
+});
+
     

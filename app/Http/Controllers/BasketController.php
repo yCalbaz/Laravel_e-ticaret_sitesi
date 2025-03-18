@@ -232,7 +232,7 @@ class BasketController extends Controller
         ]);
 
         $orderId = $orderBatch->id;
-        $orderBatch->order_id = $orderId;
+        $orderBatch->order_id = $orderId; 
         $orderBatch->save();
 
         $groupedItems = [];
@@ -255,6 +255,7 @@ class BasketController extends Controller
                         'store_id' => $store,
                         'order_id' => (count($groupedItems) > 1) ? $orderId . '-' . $subOrderId : $orderId,
                         'order_batch_id' => $orderId,
+                        
                     ];
                 }
             }
