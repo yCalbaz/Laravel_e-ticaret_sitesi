@@ -53,10 +53,9 @@ class BasketService
         }
     }
 
-    public function processOrder($basket, $customerId, $name, $addres, $cartItems)
+    public function processOrder( $customerId, $name, $addres, $cartItems)
     {
         $totalPrice = 0;
-        $storeIds = [];
         $stockResponses = [];
         $stockUpdates = [];
 
