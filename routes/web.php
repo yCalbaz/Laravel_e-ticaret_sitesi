@@ -9,6 +9,7 @@ use App\Http\Controllers\ManagerController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\StockController;
+use App\Http\Controllers\OrderDetailController;
 use App\Models\Product; 
 
 
@@ -51,5 +52,9 @@ Route::delete('/cart/{id}', [BasketController::class, 'delete'])->name('cart.del
 Route::post('/sepet/onay', [BasketController::class, 'approvl'])->name('sepet.approvl');
 Route::get('/sepet/onay', [BasketController::class, 'approvl'])->name('sepet.approvl');
 
+Route::get('/order_details', [OrderDetailController::class, 'index'])->name('orders.index');
+
 Route::get('/musteri/uye-ol', [AuthController::class, 'showRegisterForm'])->name('musteri.uye_ol');
 Route::post('/musteri/uye-ol', [AuthController::class, 'customerRegister'])->name('musteri.uye_ol.kayit');
+Route::get('/order/return', [OrderDetailController::class, 'showReturnForm'])->name('order.returnForm');
+Route::post('/order/return', [OrderDetailController::class, 'processReturn'])->name('order.processReturn');

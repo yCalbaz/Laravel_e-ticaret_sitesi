@@ -10,7 +10,15 @@
 </head>
 <body> 
 
-@include('layouts.header')   
+@include('layouts.header')    
+<form action="{{ route('admin.logout') }}" method="POST" class="logout-form">
+@auth
+    <form action="{{ route('admin.logout') }}" method="POST" class="logout-form">
+        @csrf
+        <button type="submit" class="logout-btn">Çıkış</button>
+    </form>
+    @endauth
+    </form>
 <div class="container mt-5">
     <h2 class="text-center mb-4">Sepetim</h2>
     @if(session('success'))
@@ -43,7 +51,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> 
             @endforeach
             @php
                 $totalPrice = 0;
