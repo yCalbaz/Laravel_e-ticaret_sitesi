@@ -8,8 +8,8 @@ use Illuminate\Support\Facades\Session;
 class ManagerController extends Controller
 {
     const ADMIN_ROLE_ID = 1;
-    const SATICI_ROLE_ID = 2;
-    const MUSTERI_ROLE_ID = 3;
+    const SELLER_ROLE_ID = 2;
+    const CUSTOMER_ROLE_ID = 3;
 
     public function showAdminPanel()
     {
@@ -21,7 +21,7 @@ class ManagerController extends Controller
 
     public function showSaticiPanel()
     {
-        if(session('user_authority') !== self::SATICI_ROLE_ID){
+        if(session('user_authority') !== self::SELLER_ROLE_ID){
             return redirect()->route('login');
         }
         return view('seller_panel');
@@ -29,7 +29,7 @@ class ManagerController extends Controller
 
     public function showMusteriPanel()
     {
-        if(session('user_authority') !== self::MUSTERI_ROLE_ID){
+        if(session('user_authority') !== self::CUSTOMER_ROLE_ID){
             return redirect()->route('login');
         }
         $products = $this->getProduct();

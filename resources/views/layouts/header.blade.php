@@ -34,10 +34,10 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
-                <li class="nav-item"><a class="nav-link" href="/login">Giriş</a></li>
-                <li class="nav-item"><a class="nav-link" href="/sepet">Sepet</a></li>
-                <li class="nav-item"><a class="nav-link" href="/urun">Ürünler</a></li>
-                <li class="nav-item"><a class="nav-link" href="/siparisler">Siparişlerim</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{route('login')}}">Giriş</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{route('sepet.index')}}">Sepet</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{route('urun')}}">Ürünler</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{route('orders.index')}}">Siparişlerim</a></li>
             </ul>
         </div>
     </div>

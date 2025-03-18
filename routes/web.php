@@ -21,7 +21,7 @@ Route::get('/', function () {
 });
 
 Route::get('/urun', function () {  $products = Product::all(); 
-    return view('product', compact('products'));});
+    return view('product', compact('products'));})->name('urun');
 
 
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login'); 
@@ -41,6 +41,7 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/uyeler/{id}', [MemberController::class, 'delete'])->name('members.delete');
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
 });
+
 
 Route::post('/products', [HomeProductController::class, 'store'])->name('products.store'); 
 Route::post('/store', [StoreController::class, 'store'])->name('store.store');

@@ -49,6 +49,7 @@
                             @csrf
                             <input type="hidden" name="quantity" value="1">
                             <button type="submit" class="btn btn-primary btn-sm" onclick="addCart( '{{$product->product_sku }}')">Sepete Ekle</button>
+                            <a href="{{ route('product.details', ['sku' => $product->product_sku]) }}" class="btn btn-secondary btn-sm mt-2">İncele</a>
                         
                      
                 </div>
