@@ -63,7 +63,7 @@ class OrderDetailController extends Controller
             
         ]);
 
-        return redirect()->route('order.returnForm')->with('success', 'İade talebiniz alındı.');
+        return redirect()->route('order.index')->with('success', 'İade talebiniz alındı.');
     }
 }
 

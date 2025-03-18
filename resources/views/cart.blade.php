@@ -11,21 +11,13 @@
 <body> 
 
 @include('layouts.header')    
-<form action="{{ route('admin.logout') }}" method="POST" class="logout-form">
-@auth
-    <form action="{{ route('admin.logout') }}" method="POST" class="logout-form">
-        @csrf
-        <button type="submit" class="logout-btn">Çıkış</button>
-    </form>
-    @endauth
-    </form>
 <div class="container mt-5">
     <h2 class="text-center mb-4">Sepetim</h2>
     @if(session('success'))
-                <div class="alert alert-success">
-                    {{ session('success') }}
-                </div>
-            @endif
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
 
     <div class="row"> 
         @if(isset($cartItems) && (is_array($cartItems) ? count($cartItems) > 0 : $cartItems->count() > 0))
@@ -38,16 +30,14 @@
                             </div>
                             <div class="col-md-9 d-flex justify-content-between align-items-center"> 
                                 <div class="card-body">
-                                    
                                     <h5 class="card-title"> {{ $item->product_name }}</h5>
                                     <p class="card-text"> Fiyat: {{ $item->product_price }} TL</p>
-                                    <p class="card-text">Adet: {{ $item->product_piece }} </p>
-                                </div>
+                                    <p class="card-text">Adet: <span id="adet-{{ $item->id }}">{{ $item->product_piece }}</span></p>
+                                    
+                                     </div>
                                 
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger btn-sm" onclick="cartDelete(' {{ $item->id}}')">Sil</button>
-                                
+                                @csrf
+                                <button type="button" class="btn btn-danger btn-sm" onclick="cartDelete('{{ $item->id }}')">Sil</button>
                             </div>
                         </div>
                     </div>
@@ -59,7 +49,7 @@
                     $totalPrice += ($item->product_price * $item->product_piece);
                 }
             @endphp
-            <p class="text-right font-weight-bold"> Toplam: {{ $totalPrice }} TL</p>
+            <p class="text-right font-weight-bold"> Toplam: <span id="total-price">{{ $totalPrice }}</span> TL</p>
 
             <a href="{{ route('sepet.approvl') }}" class="btn btn-primary">Sepeti Onayla</a>
         @else
@@ -73,9 +63,8 @@
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <script>
     function cartDelete(productId){
     $.ajax({
@@ -92,6 +81,10 @@
             console.log(xhr);
             alert("hata oluştu" + xhr.responseText);
         }
-
-    });}
+    }); }
+    
+   
 </script>
+
+</body>
+</html>

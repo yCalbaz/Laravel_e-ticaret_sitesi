@@ -9,11 +9,7 @@
 <body>
     <div class="container mt-5">
         <h2>Ürün İade Formu</h2>
-        @if(session('success'))
-                <div class="alert alert-success">
-                    {{ session('success') }}
-                </div>
-            @endif
+        
         <form action="{{ route('order.processReturn') }}" method="POST">
             @csrf
             <input type="hidden" name="order_id" value="{{ request('order_id') }}">

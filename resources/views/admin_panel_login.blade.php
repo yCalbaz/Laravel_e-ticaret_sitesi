@@ -17,11 +17,7 @@
                     {{ session('error') }}
                 </div>
             @endif
-        <form action="{{ route('admin.logout') }}" method="POST" class="logout-form">
-        @csrf
-        <button type="submit" class="logout-btn" >Çıkış</button>
-    </form>
-    
+        
             <h2 class="text-center"> Giriş</h2>
             <form action="{{ route('login') }}" method="POST">
                 @csrf

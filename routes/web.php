@@ -10,6 +10,7 @@ use App\Http\Controllers\MemberController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\StockController;
 use App\Http\Controllers\OrderDetailController;
+use App\Http\Controllers\ProductController;
 use App\Models\Product; 
 
 
@@ -58,3 +59,7 @@ Route::get('/musteri/uye-ol', [AuthController::class, 'showRegisterForm'])->name
 Route::post('/musteri/uye-ol', [AuthController::class, 'customerRegister'])->name('musteri.uye_ol.kayit');
 Route::get('/order/return', [OrderDetailController::class, 'showReturnForm'])->name('order.returnForm');
 Route::post('/order/return', [OrderDetailController::class, 'processReturn'])->name('order.processReturn');
+
+Route::get('/product/{sku}', [ProductController::class, 'showDetails'])->name('product.details');
+Route::post('/basket/update/{id}', [BasketController::class, 'update'])->name('cart.update');
+    

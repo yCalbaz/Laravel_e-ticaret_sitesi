@@ -10,6 +10,11 @@
 </head>
 <body>
 @include('layouts.header') 
+@if(session('success'))
+                <div class="alert alert-success">
+                    {{ session('success') }}
+                </div>
+            @endif
 
 <form action="{{ route('admin.logout') }}" method="POST" class="logout-form">
 @auth

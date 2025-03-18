@@ -29,36 +29,7 @@
 
     <div class="row"> 
         @if(isset($cartItems) && (is_array($cartItems) ? count($cartItems) > 0 : $cartItems->count() > 0))
-            <div class="col-md-8">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Resim</th>
-                            <th>Ürün Adı</th>
-                            <th>Fiyat</th>
-                            <th>Adet</th>
-                            <th>Toplam</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($cartItems as $item)
-                            <tr>
-                                <td><img src="{{ $item->product_image }}" class="img-fluid" style="max-width: 100px;"></td>
-                                <td>{{ $item->product_name }}</td>
-                                <td>{{ $item->product_price }} TL</td>
-                                <td>{{ $item->product_piece }}</td>
-                                <td>{{ $item->product_price * $item->product_piece }} TL</td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <td colspan="4" class="text-right"><strong>Toplam:</strong></td>
-                            <td><strong>{{ $totalPrice }} TL</strong></td>
-                        </tr>
-                    </tfoot>
-                </table>
-            </div>
+            
 
             <div class="col-md-4">
                 <form action="{{ route('sepet.approvl') }}" method="POST">

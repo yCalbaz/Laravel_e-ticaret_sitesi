@@ -318,4 +318,26 @@ class BasketController extends Controller
     $data = compact('cartItems', 'totalPrice');
     return view('cart_approve', $data);
 }
+public function update(Request $request, $productId)
+{
+    $quantity = $request->input('quantity');
+    $cart = session()->get('cart', []);
+
+    if(isset($cart[$productId])){
+        $cart[$productId]['product_piece'] = $quantity;
+        session()->put('cart', $cart);
+
+       
+        $totalPrice = 0;
+        foreach($cart as $item) {
+            $totalPrice += ($item['product_price'] * $item['product_piece']);
+        }
+
+        return response()->json(['success' => 'Sepet güncellendi', 'totalPrice' => $totalPrice]);
+        
+    }
+
+    return response()->json(['error' => 'Ürün bulunamadı'], 400);
+    
+}
 }
