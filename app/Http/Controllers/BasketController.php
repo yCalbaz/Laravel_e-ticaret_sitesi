@@ -317,26 +317,24 @@ class BasketController extends Controller
     
     
 
-public function update(Request $request, $productId)
+    public function update(Request $request, $id)
 {
-    $quantity = $request->input('quantity');
-    $cart = session()->get('cart', []);
+    $basketItem = BasketItem::find($id);
 
-    if(isset($cart[$productId])){
-        $cart[$productId]['product_piece'] = $quantity;
-        session()->put('cart', $cart);
+    if ($basketItem) {
+        $basketItem->product_piece = $request->adet;
+        $basketItem->save();
 
-       
+        $basket = Basket::find($basketItem->order_id);
+        $cartItems = BasketItem::where('order_id', $basket->id)->get();
+
         $totalPrice = 0;
-        foreach($cart as $item) {
-            $totalPrice += ($item['product_price'] * $item['product_piece']);
+        foreach ($cartItems as $item) {
+            $totalPrice += ($item->product_price * $item->product_piece);
         }
 
-        return response()->json(['success' => 'Sepet güncellendi', 'totalPrice' => $totalPrice]);
-        
+        return response()->json(['success' => 'Sepet güncellendi.', 'totalPrice' => $totalPrice]);
     }
 
-    return response()->json(['error' => 'Ürün bulunamadı'], 400);
-    
-}
-}
+    return response()->json(['error' => 'Ürün bulunamadı.'], 404);
+}}

@@ -32,11 +32,13 @@
                                 <div class="card-body">
                                     <h5 class="card-title"> {{ $item->product_name }}</h5>
                                     <p class="card-text"> Fiyat: {{ $item->product_price }} TL</p>
-                                    <p class="card-text">Adet: <span id="adet-{{ $item->id }}">{{ $item->product_piece }}</span></p>
-                                    
+                                    <div class="d-flex align-items-center">
+                                    <label for="adet-{{ $item['id'] }}" class="me-2">Adet:</label>
+                                    <input type="number" name="adet" id="adet-{{ $item['id'] }}" value="{{ $item['product_piece'] }}" min="1" class="form-control form-control-sm" style="width: 70px;" onchange="updateCart('{{ $item['id']}}',this.value)">
+                                </div>
                                      </div>
                                 
-                                @csrf
+                                
                                 <button type="button" class="btn btn-danger btn-sm" onclick="cartDelete('{{ $item->id }}')">Sil</button>
                             </div>
                         </div>
@@ -82,6 +84,25 @@
             alert("hata oluştu" + xhr.responseText);
         }
     }); }
+    function updateCart(productId, adet) {
+        $.ajax({
+            url: "{{ route('cart.update', ':id') }}".replace(':id', productId),
+            type: "PUT",
+            data: {
+                _token: "{{ csrf_token() }}",
+                adet: adet,
+            },
+            success: function(response) {
+                $('#total-price').text(response.totalPrice);
+                alert("Sepet güncellendi");
+            },
+            error: function(xhr) {
+                console.log(xhr);
+                alert("Hata oluştu: " + xhr.responseText);
+            }
+        });
+    }
+
     
    
 </script>
