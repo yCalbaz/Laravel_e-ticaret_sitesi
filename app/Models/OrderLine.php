@@ -19,6 +19,7 @@ class OrderLine extends Model
         'created_at',
         'order_id',
         'order_batch_id',
+        'quantity',
     ];
     
     public function orderBatch()

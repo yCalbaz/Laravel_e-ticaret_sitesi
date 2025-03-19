@@ -113,212 +113,210 @@ class BasketController extends Controller
     }
 
     public function approvl(Request $request)
-{
-    $customerId = Session::get('customer_id');
-
-    if (!$customerId) {
-        if (Auth::check()) {
-            $member = Member::where('id', Auth::id())->first();
-            if ($member) {
-                $customerId = $member->customer_id;
+    {
+        $customerId = Session::get('customer_id');
+    
+        if (!$customerId) {
+            if (Auth::check()) {
+                $member = Member::where('id', Auth::id())->first();
+                if ($member) {
+                    $customerId = $member->customer_id;
+                } else {
+                    $customerId = null;
+                }
             } else {
-                $customerId = null;
+                $customerId = mt_rand(10000000, 99999999);
             }
-        } else {
-            $customerId = mt_rand(10000000, 99999999);
         }
-    }
-
-    $basket = Basket::where('customer_id', $customerId)->where('is_active', 1)->first();
-
-    if (!$basket) {
-        return redirect()->back()->with('error', 'Sepet bulunamadı.');
-    }
-
-    if ($request->isMethod('post')) {
-
-        $request->validate([
-           
-            'name' => ['required', 'string', 'min:3', 'max:255'],
-            'address' => ['required', 
-                          'string', 
-                          'min:3', 
-                          'max:255', 
-                          'regex:/^([a-zA-ZÇçĞğİıÖöŞşÜü\s]+),\s*([a-zA-ZÇçĞğİıÖöŞşÜü\s]+),\s*([a-zA-ZÇçĞğİıÖöŞşÜü\s]+),\s*([a-zA-ZÇçĞğİıÖöŞşÜü\s]+),\s*(\d+),\s*([a-zA-ZÇçĞğİıÖöŞşÜü\s]+)$/u'
-            ],
-            
-            'cardNumber' => ['required', 'digits:16', 'regex:/^[0-9]{16}$/'],
-            'expiryDate' => ['required', 'regex:/^(0[1-9]|1[0-2])\/([0-9]{2})$/'], 
-            'cvv' => ['required', 'digits:3', 'regex:/^[0-9]{3}$/'],
-            'cardHolderName' => ['required', 'string', 'min:3', 'max:255']
-        ], [
-            
-            'name.required' => 'Ad Soyad zorunludur.',
-            'name.string' => 'Ad Soyad geçerli bir metin olmalıdır.',
-            'name.min' => 'Ad Soyad en az 3 karakter olmalıdır.',
-            'name.max' => 'Ad Soyad en fazla 255 karakter olabilir.',
-            
-            'address.required' => 'Adres zorunludur.',
-            'address.regex' => 'Adres formatı geçersiz. Lütfen şu şekilde giriniz: İl, İlçe, Mahalle, Sokak, No, Ülke.',
-            
-            'cardNumber.required' => 'Kart numarası zorunludur.',
-            'cardNumber.digits' => 'Kart numarası 16 haneli olmalıdır.',
-            'cardNumber.regex' => 'Geçerli bir kart numarası giriniz.',
-            
-            'expiryDate.required' => 'Son kullanma tarihi zorunludur.',
-            'expiryDate.regex' => 'Geçerli bir son kullanma tarihi giriniz (MM/YY).',
-            
-            'cvv.required' => 'CVV kodu zorunludur.',
-            'cvv.digits' => 'CVV kodu 3 haneli olmalıdır.',
-            'cvv.regex' => 'Geçerli bir CVV kodu giriniz.',
-            
-            'cardHolderName.required' => 'Kart sahibi ismi zorunludur.',
-            'cardHolderName.min' => 'Kart sahibi ismi en az 3 karakter olmalıdır.',
-            'cardHolderName.max' => 'Kart sahibi ismi en fazla 255 karakter olabilir.'
-        ]);
-
-        $cartItems = BasketItem::where('order_id', $basket->id)->get();
-        $totalPrice = 0;
-        $stokError = false;
-        $storeId = [];
-
-        foreach ($cartItems as $item) {
-            $response = Http::get("http://host.docker.internal:3000/stock/{$item->product_sku}");
-
-            if ($response->failed()) {
-                return redirect()->with('error', 'Stok servisine ulaşılmıyor');
+    
+        $basket = Basket::where('customer_id', $customerId)->where('is_active', 1)->first();
+    
+        if (!$basket) {
+            return redirect()->back()->with('error', 'Sepet bulunamadı.');
+        }
+    
+        if ($request->isMethod('post')) {
+            $request->validate([
+                'name' => ['required', 'string', 'min:3', 'max:255'],
+                'address' => ['required', 
+                              'string', 
+                              'min:3', 
+                              'max:255', 
+                              'regex:/^([a-zA-ZÇçĞğİıÖöŞşÜü\s]+),\s*([a-zA-ZÇçĞğİıÖöŞşÜü\s]+),\s*([a-zA-ZÇçĞğİıÖöŞşÜü\s]+),\s*([a-zA-ZÇçĞğİıÖöŞşÜü\s]+),\s*(\d+),\s*([a-zA-ZÇçĞğİıÖöŞşÜü\s]+)$/u'
+                ],
+                'cardNumber' => ['required', 'digits:16', 'regex:/^[0-9]{16}$/'],
+                'expiryDate' => ['required', 'regex:/^(0[1-9]|1[0-2])\/([0-9]{2})$/'], 
+                'cvv' => ['required', 'digits:3', 'regex:/^[0-9]{3}$/'],
+                'cardHolderName' => ['required', 'string', 'min:3', 'max:255']
+            ]);
+    
+            $cartItems = BasketItem::where('order_id', $basket->id)->get();
+            $totalPrice = 0;
+            $stokError = false;
+            $storeId = [];
+    
+            foreach ($cartItems as $item) {
+                $response = Http::get("http://host.docker.internal:3000/stock/{$item->product_sku}");
+    
+                if ($response->failed()) {
+                    return redirect()->with('error', 'Stok servisine ulaşılmıyor');
+                }
+    
+                $stockData = $response->json();
+                if (!isset($stockData['stores'])) {
+                    return redirect()->back()->with('error', 'Yeterli stok yok');
+                }
+    
+                // Depoları önceliğe göre sıralama
+                usort($stockData['stores'], function($a, $b) {
+                    return $a['store_priority'] - $b['store_priority'];
+                });
+    
+                $totalStock = 0;
+                $requestedQuantity = $item->product_piece;
+                foreach ($stockData['stores'] as $store) {
+                    // Günlük sipariş miktarını kontrol et
+                    $dailyTotal = DB::table('order_lines')
+                    ->where('store_id', $store['store_id']) // Depo ID
+                    ->where('product_sku', $item->product_sku) // Ürün SKU
+                    ->whereDate('created_at', today()) // Bugün yapılan siparişler
+                    ->sum('quantity'); // O gün için toplam sipariş miktarı
+    
+                    // Depo max satış adetini kontrol et
+                    $maxSales = $store['store_max'];
+                    $availableStock = min($store['stock'], $requestedQuantity, $maxSales - $dailyTotal);
+    
+                    // Yeterli stok varsa
+                    if ($availableStock > 0) {
+                        // Stok güncellemeyi planla
+                        $storeId[$item->product_sku] = $store['store_id'];
+                        $totalStock += $availableStock;
+                        $requestedQuantity -= $availableStock;
+    
+                        // Eğer istenen miktar sağlandıysa, bu depoyu kullan
+                        if ($requestedQuantity <= 0) {
+                            break;
+                        }
+                    }
+                }
+    
+                if ($totalStock < $item->product_piece) {
+                    $stokError = true;
+                    break;
+                }
+    
+                $totalPrice += ($item->product_price * $item->product_piece);
             }
-
-            $stockData = $response->json();
-            if (!isset($stockData['stores'])) {
+    
+            if ($stokError) {
                 return redirect()->back()->with('error', 'Yeterli stok yok');
             }
-
-            $totalStock = 0;
-            foreach ($stockData['stores'] as $store) {
-                $totalStock += $store['stock'];
-
-                $storeId[$item->product_sku] = $store['store_id'];
+    
+            $name = $request->input('name');
+            $address = $request->input('address');
+            $cardNumber = $request->input('cardNumber');
+            $expiryDate = $request->input('expiryDate');
+            $cvv = $request->input('cvv');
+            $cardHolderName = $request->input('cardHolderName');
+    
+            $orderBatch = OrderBatch::create([
+                'customer_id' => $customerId,
+                'customer_name' => $name,
+                'customer_address' => $address,
+                'product_price' => $totalPrice,
+            ]);
+    
+            $orderId = $orderBatch->id;
+            $orderBatch->order_id = $orderId;
+            $orderBatch->save();
+    
+            $groupedItems = [];
+            foreach ($cartItems as $item) {
+                $store = $storeId[$item->product_sku];
+                if (!isset($groupedItems[$store])) {
+                    $groupedItems[$store] = [];
+                }
+                $groupedItems[$store][] = $item;
             }
-
-            if ($totalStock < $item->product_piece) {
-                $stokError = true;
-                break;
+    
+            $subOrderId = 1;
+            foreach ($groupedItems as $store => $items) {
+                $orderLinesData = [];
+                foreach ($items as $item) {
+                    for ($i = 0; $i < $item->product_piece; $i++) {
+                        $orderLinesData[] = [
+                            'product_sku' => $item->product_sku,
+                            'product_name' => $item->product_name,
+                            'store_id' => $store,
+                            'order_id' => (count($groupedItems) > 1) ? $orderId . '-' . $subOrderId : $orderId,
+                            'order_batch_id' => $orderId,
+                            'quantity' => $item->product_piece,
+                            
+                        ];
+                        //dd($orderLinesData);
+                    }
+                }
+                try {
+                    OrderLine::insert($orderLinesData);
+                } catch (\Exception $e) {
+                    return redirect()->back()->with('error', 'Sipariş oluşturulurken hata oldu.' . $e->getMessage());
+                }
+                $subOrderId++;
             }
-
+    
+            foreach ($groupedItems as $store => $items) {
+                foreach ($items as $item) {
+                    Log::info("Stok Güncelleme İşlemi Başlatılıyor: " . json_encode([
+                        'product_sku' => $item->product_sku,
+                        'product_piece' => $item->product_piece,
+                        'store_id' => $store,
+                    ]));
+    
+                    $currentStock = DB::table('stocks')
+                        ->where('product_sku', $item->product_sku)
+                        ->where('store_id', $store)
+                        ->value('product_piece');
+    
+                    if ($currentStock < $item->product_piece) {
+                        Log::error("Stok Yetersiz! " . json_encode([
+                            'product_sku' => $item->product_sku,
+                            'store_id' => $store,
+                            'current_stock' => $currentStock,
+                            'requested_stock' => $item->product_piece,
+                        ]));
+    
+                        return redirect()->back()->with('error', 'Yeterli stok bulunmamaktadır!');
+                    }
+    
+                    DB::table('stocks')
+                        ->where('product_sku', $item->product_sku)
+                        ->where('store_id', $store)
+                        ->decrement('product_piece', $item->product_piece);
+    
+                    Log::info("Stok Güncellendi: " . json_encode([
+                        'product_sku' => $item->product_sku,
+                        'store_id' => $store,
+                        'used_stock' => $item->product_piece,
+                        'remaining_stock' => $currentStock - $item->product_piece
+                    ]));
+                }
+            }
+            $basket->update(['is_active' => 0]);
+            BasketItem::where('order_id', $basket->id)->delete();
+            return redirect()->route('cart.index')->with('success', 'Sipariş onaylandı!');
+        }
+    
+        $cartItems = BasketItem::where('order_id', $basket->id)->get();
+        $totalPrice = 0;
+        foreach ($cartItems as $item) {
             $totalPrice += ($item->product_price * $item->product_piece);
         }
-
-        if ($stokError) {
-            return redirect()->back()->with('error', 'Yeterli stok yok');
-        }
-
-        $name = $request->input('name');
-        $address = $request->input('address');
-
-        $cardNumber = $request->input('cardNumber');
-        $expiryDate = $request->input('expiryDate');
-        $cvv = $request->input('cvv');
-        $cardHolderName = $request->input('cardHolderName');
-
+        $data = compact('cartItems', 'totalPrice');
+        return view('cart_approve', $data);
+    }
+    
     
 
-
-        $orderBatch = OrderBatch::create([
-            'customer_id' => $customerId,
-            'customer_name' => $name,
-            'customer_address' => $address,
-            'product_price' => $totalPrice,
-        ]);
-
-        $orderId = $orderBatch->id;
-        $orderBatch->order_id = $orderId; 
-        $orderBatch->save();
-
-        $groupedItems = [];
-        foreach ($cartItems as $item) {
-            $store = $storeId[$item->product_sku];
-            if (!isset($groupedItems[$store])) {
-                $groupedItems[$store] = [];
-            }
-            $groupedItems[$store][] = $item;
-        }
-
-        $subOrderId = 1;
-        foreach ($groupedItems as $store => $items) {
-            $orderLinesData = [];
-            foreach ($items as $item) {
-                for ($i = 0; $i < $item->product_piece; $i++) {
-                    $orderLinesData[] = [
-                        'product_sku' => $item->product_sku,
-                        'product_name' => $item->product_name,
-                        'store_id' => $store,
-                        'order_id' => (count($groupedItems) > 1) ? $orderId . '-' . $subOrderId : $orderId,
-                        'order_batch_id' => $orderId,
-                        
-                    ];
-                }
-            }
-            try {
-                OrderLine::insert($orderLinesData);
-            } catch (\Exception $e) {
-                return redirect()->back()->with('error', 'Sipariş oluşturulurken hata oludu.' . $e->getMessage());
-            }
-            $subOrderId++;
-        }
-
-        foreach ($groupedItems as $store => $items) {
-            foreach ($items as $item) {
-                Log::info("Stok Güncelleme İşlemi Başlatılıyor: " . json_encode([
-                    'product_sku' => $item->product_sku,
-                    'product_piece' => $item->product_piece,
-                    'store_id' => $store,
-                ]));
-
-                $currentStock = DB::table('stocks')
-                    ->where('product_sku', $item->product_sku)
-                    ->where('store_id', $store)
-                    ->value('product_piece');
-
-                if ($currentStock < $item->product_piece) {
-                    Log::error("Stok Yetersiz! " . json_encode([
-                        'product_sku' => $item->product_sku,
-                        'store_id' => $store,
-                        'current_stock' => $currentStock,
-                        'requested_stock' => $item->product_piece,
-                    ]));
-
-                    return redirect()->back()->with('error', 'Yeterli stok bulunmamaktadır!');
-                }
-
-                DB::table('stocks')
-                    ->where('product_sku', $item->product_sku)
-                    ->where('store_id', $store)
-                    ->decrement('product_piece', $item->product_piece);
-
-                Log::info("Stok Güncellendi: " . json_encode([
-                    'product_sku' => $item->product_sku,
-                    'store_id' => $store,
-                    'used_stock' => $item->product_piece,
-                    'remaining_stock' => $currentStock - $item->product_piece
-                ]));
-
-            }
-        }
-        $basket->update(['is_active' => 0]);
-        BasketItem::where('order_id', $basket->id)->delete();
-        return redirect()->route('cart.index')->with('success', 'Sipariş onaylandı!');
-
-    }
-
-    $cartItems = BasketItem::where('order_id', $basket->id)->get();
-    $totalPrice = 0;
-    foreach ($cartItems as $item) {
-        $totalPrice += ($item->product_price * $item->product_piece);
-    }
-    $data = compact('cartItems', 'totalPrice');
-    return view('cart_approve', $data);
-}
 public function update(Request $request, $productId)
 {
     $quantity = $request->input('quantity');
