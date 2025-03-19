@@ -1,41 +1,41 @@
 .custom-footer {
-    background-color: #ff671d; 
-    color: white; 
+    background-color: #ff671d;
+    color: white;
     padding: 15px 0;
     text-align: center;
 }
 
 .custom-card {
-    width: 100%; 
-    max-width: 250px; 
-    margin: 0 auto; 
+    width: 100%;
+    max-width: 250px;
+    margin: 0 auto;
     height: auto;
     display: flex;
     flex-direction: column;
     align-items: center;
-    text-align: center; 
+    text-align: center;
 }
 
 .custom-img {
-    width: 100%; 
-    height: 200px; 
-    object-fit: cover; 
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
 }
 
 .custom-card-2 {
-    max-width: 50%; 
+    max-width: 50%;
 }
 
 .custom-img-2 {
-    height: 120px; 
+    height: 120px;
     object-fit: cover;
 }
 
 .card-body {
-    flex-grow: 1; 
+    flex-grow: 1;
     display: flex;
     flex-direction: column;
-    justify-content: center; 
+    justify-content: center;
     align-items: center;
     padding: 1.5rem;
 }
@@ -64,17 +64,16 @@ body {
 }
 
 .header {
-    background-color: white; 
+    background-color: white;
     padding: 20px;
     text-align: center;
-    position: relative; 
+    position: relative;
 }
 
 .logout-form {
     position: absolute;
     top: 20px;
     right: 20px;
-    
 }
 
 .logout-btn {
@@ -102,7 +101,7 @@ body {
 }
 
 .box {
-    background-color: #ff671d; 
+    background-color: #ff671d;
     padding: 50px;
     border-radius: 10px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
@@ -115,6 +114,49 @@ body {
     box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3);
 }
 
+.custom-header {
+    background-color: #f8f9fa; /* Arka plan rengi */
+}
 
+.custom-header .navbar-brand img {
+    height: 50px; /* Logo yüksekliği */
+}
 
+.custom-header .navbar-nav .nav-link {
+    padding: 0.5rem 1rem; /* Nav link boşlukları */
+}
 
+.search-form {
+    width: 300px;
+    height: 40px;
+    margin-left: 20px;
+}
+
+.search-input {
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+    border-radius: 20px;
+    border: 1px solid #ced4da; /* Kenarlık */
+    font-size: 16px;
+    color: #333;
+}
+
+.search-input::placeholder {
+    color: #999;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #80bdff; /* Odaklandığında kenarlık rengi */
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25); /* Odaklandığında gölge */
+}
+
+.secondary-nav {
+    background-color: #e9ecef; /* İkinci navigasyon arka plan rengi */
+    padding: 10px 0;
+}
+
+.secondary-nav .nav-link {
+    color: #333; /* İkinci navigasyon link rengi */
+}

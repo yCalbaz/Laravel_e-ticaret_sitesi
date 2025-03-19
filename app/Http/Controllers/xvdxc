@@ -15,7 +15,11 @@
         <a class="navbar-brand" href="/">
             <img src="{{ asset('storage/images/flo-logo-Photoroom.png') }}" alt="" height="50">
         </a>
-        
+        <ul class="navbar-nav me-auto">
+            <li class="nav-item"><a class="nav-link" href="#">Kadın</a></li>
+            <li class="nav-item"><a class="nav-link" href="#">Erkek</a></li>
+            <li class="nav-item"><a class="nav-link" href="#">Çocuk</a></li>
+        </ul>
         <form class="search-form" id="searchForm" action="{{ route('search') }}" method="GET">
             <input class="search-input" type="search" name="query" placeholder="Ara" aria-label="Ara">
         </form>

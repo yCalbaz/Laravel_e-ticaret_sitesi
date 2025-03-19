@@ -71,5 +71,6 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::put('/sepet/guncelle/{id}', [BasketController::class, 'update'])->name('cart.update');
+Route::get('/search', [App\Http\Controllers\ProductController::class, 'search'])->name('search');
 
     
