@@ -193,7 +193,7 @@ class BasketController extends Controller
                         $totalStock += $availableStock;
                         $requestedQuantity -= $availableStock;
     
-                        
+                        // Eğer istenen miktar sağlandıysa, bu depoyu kullan
                         if ($requestedQuantity <= 0) {
                             break;
                         }
