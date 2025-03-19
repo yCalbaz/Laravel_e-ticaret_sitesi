@@ -167,7 +167,7 @@ class BasketController extends Controller
                     return redirect()->back()->with('error', 'Yeterli stok yok');
                 }
     
-                // Depoları önceliğe göre sıralama
+                
                 usort($stockData['stores'], function($a, $b) {
                     return $a['store_priority'] - $b['store_priority'];
                 });
@@ -175,25 +175,25 @@ class BasketController extends Controller
                 $totalStock = 0;
                 $requestedQuantity = $item->product_piece;
                 foreach ($stockData['stores'] as $store) {
-                    // Günlük sipariş miktarını kontrol et
+                    
                     $dailyTotal = DB::table('order_lines')
-                    ->where('store_id', $store['store_id']) // Depo ID
-                    ->where('product_sku', $item->product_sku) // Ürün SKU
-                    ->whereDate('created_at', today()) // Bugün yapılan siparişler
-                    ->sum('quantity'); // O gün için toplam sipariş miktarı
+                    ->where('store_id', $store['store_id']) 
+                    ->where('product_sku', $item->product_sku) 
+                    ->whereDate('created_at', today()) 
+                    ->sum('quantity'); 
     
-                    // Depo max satış adetini kontrol et
+                    
                     $maxSales = $store['store_max'];
                     $availableStock = min($store['stock'], $requestedQuantity, $maxSales - $dailyTotal);
     
-                    // Yeterli stok varsa
+                    
                     if ($availableStock > 0) {
-                        // Stok güncellemeyi planla
+                       
                         $storeId[$item->product_sku] = $store['store_id'];
                         $totalStock += $availableStock;
                         $requestedQuantity -= $availableStock;
     
-                        // Eğer istenen miktar sağlandıysa, bu depoyu kullan
+                        
                         if ($requestedQuantity <= 0) {
                             break;
                         }
