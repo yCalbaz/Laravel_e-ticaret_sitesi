@@ -26,7 +26,7 @@
 
 <nav class="navbar navbar-expand-lg navbar-light custom-navbar">
     <div class="container">
-    <a class="navbar-brand" href="/">
+    <a class="navbar-brand" >
             <img src="{{ asset('storage/images/flo-logo-Photoroom.png') }}" alt="" height="50">
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">

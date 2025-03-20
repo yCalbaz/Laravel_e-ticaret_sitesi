@@ -32,10 +32,10 @@
         @endif
 
 <div class="row"> 
-    @foreach($products as $product)
+    @foreach($urunler as $product)
         <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-4 d-flex justify-content-center">
            <div class="card shadow-sm custom-card">
-                <img src="{{ asset($product->product_image) }}" class="card-img-top custom-img">
+           <a href="{{ route('product.details', ['sku' => $product->product_sku]) }}"><img src="{{ asset($product->product_image) }}" class="card-img-top custom-img"></a>
                 <div class="card-body">
                     <h5 class="card-title">{{ $product->product_name }}</h5>
                     <p class="card-text font-weight-bold">{{ $product->product_price }} TL</p>
@@ -49,7 +49,6 @@
                             @csrf
                             <input type="hidden" name="quantity" value="1">
                             <button type="submit" class="btn btn-primary btn-sm" onclick="addCart( '{{$product->product_sku }}')">Sepete Ekle</button>
-                            <a href="{{ route('product.details', ['sku' => $product->product_sku]) }}" class="btn btn-secondary btn-sm mt-2">İncele</a>
                         
                      
                 </div>

@@ -115,7 +115,16 @@ body {
 }
 
 .custom-header {
-    background-color: #f8f9fa; /* Arka plan rengi */
+    background-color: #fff; /* Beyaz arka plan */
+}
+
+.custom-header .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
 }
 
 .custom-header .navbar-brand img {
@@ -152,11 +161,95 @@ body {
     box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25); /* Odaklandığında gölge */
 }
 
-.secondary-nav {
-    background-color: #e9ecef; /* İkinci navigasyon arka plan rengi */
+.category-menu {
+    background-color: #f8f9fa; /* Açık gri arka plan */
     padding: 10px 0;
+    border-bottom: 1px solid #eee; /* Alt çizgi eklendi */
 }
 
-.secondary-nav .nav-link {
-    color: #333; /* İkinci navigasyon link rengi */
+.category-menu .container {
+    display: flex;
+    justify-content: center; /* Kategorileri ortala */
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.category-menu a {
+    text-decoration: none;
+    color: #333;
+    margin: 0 15px;
+    font-weight: 500;
+}
+
+.category-menu a:hover {
+    text-decoration: underline; /* Üzerine gelindiğinde alt çizgi */
+}
+.menu {
+    display: flex;
+    align-items: center;
+}
+
+.menu a {
+    text-decoration: none;
+    color: #333;
+    margin: 0 15px;
+    font-weight: 500;
+    padding: 5px 10px; /* Opsiyonel: Bağlantılara dolgu ekleyebilirsiniz */
+}
+
+.menu a:hover {
+    text-decoration: underline; /* Opsiyonel: Üzerine gelindiğinde alt çizgi */
+}
+
+.filter-section {
+    padding: 20px;
+    border-right: 1px solid #ddd;
+}
+
+.product-list {
+    padding: 20px;
+}
+
+.custom-card {
+    width: 100%;
+    max-width: 250px;
+    margin: 0 auto;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.custom-img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.card-body {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 1.5rem;
+}
+
+.card-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+.card-text {
+    font-size: 1rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.btn-sm {
+    width: 100%;
+    max-width: 150px;
 }

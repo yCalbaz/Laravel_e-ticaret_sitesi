@@ -15,19 +15,16 @@ use App\Models\Product;
 
 
 
-Route::get('/', function () {
-    $products = Product::orderBy('id', 'desc')->take(10)->get(); 
-    return view('home', compact('products'));
-});
+Route::get('/', [HomeProductController::class, 'productHome']);
 
-Route::get('/urun', function () {  $products = Product::all(); 
-    return view('product', compact('products'));})->name('urun');
-
+Route::get('/urun', [ProductController::class, 'index'])->name('urun');
 
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login'); 
 Route::post('/login', [AuthController::class, 'login'])->name('login.post'); 
 
-Route::post('/logout', [AuthController::class, 'logout'])->name('admin.logout'); 
+Route::post('/logout', [AuthController::class, 'logout'])->name('admin.logout');
+
+
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/adminPanel', [ManagerController::class, 'showAdminPanel'])->name('adminPanel'); 
@@ -73,4 +70,5 @@ Route::middleware(['auth'])->group(function () {
 Route::put('/sepet/guncelle/{id}', [BasketController::class, 'update'])->name('cart.update');
 Route::get('/search', [App\Http\Controllers\ProductController::class, 'search'])->name('search');
 
-    
+Route::get('/kategori/{category_slug}', [ProductController::class, 'productCategory'])->name('kategori.urunler');
+

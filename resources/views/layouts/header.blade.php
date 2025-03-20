@@ -8,14 +8,22 @@
 </head>
 <body>
 
-
+<nav class="category-menu">
+<div class="container">
+</div>
+</nav>
 
 <nav class="navbar navbar-expand-lg navbar-light custom-header">
     <div class="container d-flex align-items-center">
         <a class="navbar-brand" href="/">
             <img src="{{ asset('storage/images/flo-logo-Photoroom.png') }}" alt="" height="50">
         </a>
-        
+    
+        <div class="menu">
+            <a href="{{ route('kategori.urunler', ['category_slug' => 'kadın']) }}">Kadın</a>
+            <a href="{{ route('kategori.urunler', ['category_slug' => 'erkek']) }}">Erkek</a>
+            <a href="{{ route('kategori.urunler', ['category_slug' => 'çocuk']) }}">Çocuk</a>
+        </div>
         <form class="search-form" id="searchForm" action="{{ route('search') }}" method="GET">
             <input class="search-input" type="search" name="query" placeholder="Ara" aria-label="Ara">
         </form>
@@ -26,6 +34,16 @@
         </ul>
     </div>
     
+</nav>
+
+<nav class="category-menu">
+    <div class="container">
+        <a href="{{ route('kategori.urunler', ['category_slug' => 'ayakkabi']) }}">Ayakkabı</a>
+        <a href="{{ route('kategori.urunler', ['category_slug' => 'giyim']) }}">Giyim</a>
+        <a href="{{ route('kategori.urunler', ['category_slug' => 'canta']) }}">Çanta, Aksesuar</a>
+        <a href="{{ route('kategori.urunler', ['category_slug' => 'markalar']) }}">Markalar</a>
+        <a href="{{ route('urun') }}">Tüm Ürünler</a>
+    </div>
 </nav>
 
 <script>

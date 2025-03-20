@@ -17,8 +17,14 @@ class Product extends Model
         'product_price', 
         'product_image',
         'details',
+        'category_id'
     ];
 
     public $timestamps = false;
+    
+    public function categories()
+    {
+        return $this->belongsToMany(Category::class, 'category_product', 'product_id', 'category_id');
+    }
 }
 
