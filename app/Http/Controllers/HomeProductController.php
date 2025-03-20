@@ -12,7 +12,7 @@ class HomeProductController extends Controller
 
     public function productHome()
     {
-        $products = Product::orderBy('id', 'desc')->take(10)->get()->map(function($product) {
+        $products = Product::orderBy('id', 'desc')->take(5)->get()->map(function($product) {
             try {
                 $response = Http::timeout(5)->get("http://host.docker.internal:3000/stock/{$product->product_sku}");
                 

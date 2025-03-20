@@ -10,11 +10,39 @@
   
 </head>
 <body>
-
+ 
 
 @include('layouts.header')   
-<div class="container mt-5">
-    
+
+<div class="container-fluid mt-5">
+<div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+        </div>
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <a href=""><img src="{{ asset('storage/images/slaydir.png') }}" class="d-block w-100" alt="Slider 1"></a>
+            </div>
+            <div class="carousel-item">
+                <a href=""><img src="{{ asset('storage/images/slaydir2.png') }}" class="d-block w-100" alt="Slider 2"></a>
+            </div>
+            <div class="carousel-item">
+                <a href=""><img src="{{ asset('storage/images/slaydir3.png') }}" class="d-block w-100" alt="Slider 3"></a>
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+    </div>
+    <div class="container mt-5">
 @if(session('error'))
     <div class="alert alert-danger">
         {{ session('error') }}
@@ -58,6 +86,10 @@
             </div>
         @endforeach
     </div> 
+    <div class="mt-4">
+        <a href=""><img src="{{ asset('storage/images/banner.png') }}" class="img-fluid" alt="Banner"></a>
+    </div>
+<br>
 </div>
 
 <footer class="custom-footer">
