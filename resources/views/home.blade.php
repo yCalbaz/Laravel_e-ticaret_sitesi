@@ -48,12 +48,7 @@
         {{ session('error') }}
     </div>
 @endif
-@auth
-    <form action="{{ route('admin.logout') }}" method="POST" class="logout-form">
-        @csrf
-        <button type="submit" class="logout-btn">Çıkış</button>
-    </form>
-    @endauth
+
     </form>
 @if(session('success'))
                 <div class="alert alert-success">
@@ -61,7 +56,6 @@
                 </div> 
             @endif
 
-    <h2 class="text-center mb-4">Öne Çıkan Ürünler</h2>
       
     <div class="row"> 
         @foreach($products as $product)

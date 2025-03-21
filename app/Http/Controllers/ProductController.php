@@ -35,6 +35,9 @@ class ProductController extends Controller
 
         $products = Product::where('product_name', 'LIKE', "%$query%")
             ->orWhere('details', 'LIKE', "%$query%")
+            ->orWhereHas('categories', function ($q) use ($query) {
+                $q->where('category_name', 'LIKE', "%$query%");
+            })
             ->get();
 
         return view('search-results', compact('products', 'query'));
@@ -61,6 +64,21 @@ class ProductController extends Controller
         return view('category_product', ['urunler' => $urunler, 'kategori' => $kategori ? $kategori->category_name : $altKategori->category_name]);
     }
 
+    public function getProductsByCategory(Request $request)
+{
+    $categories = $request->categories; 
+
+    if (empty($categories)) {
+        $urunler = Product::all(); 
+    } else {
+        $urunler = Product::whereHas('categories', function ($query) use ($categories) {
+            $query->whereIn('category_slug', $categories);
+        })->get();
+    }
+
+    return response()->json($urunler);
+}
+
     public function filterProducts(Request $request)
 {
     $categories = $request->input('categories', []);
@@ -83,4 +101,5 @@ class ProductController extends Controller
     return view('partials.product_list', ['urunler' => $urunler]);
 }
     
+
 }

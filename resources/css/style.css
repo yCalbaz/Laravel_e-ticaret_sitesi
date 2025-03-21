@@ -253,3 +253,11 @@ body {
     width: 100%;
     max-width: 150px;
 }
+.category-list-scrollable {
+    max-height: 400px; 
+    overflow-y: auto; 
+}
+
+.category-list-scrollable .list-group-item {
+    white-space: nowrap; 
+}

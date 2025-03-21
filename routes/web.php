@@ -70,5 +70,7 @@ Route::middleware(['auth'])->group(function () {
 Route::put('/sepet/guncelle/{id}', [BasketController::class, 'update'])->name('cart.update');
 Route::get('/search', [App\Http\Controllers\ProductController::class, 'search'])->name('search');
 
-Route::get('/kategori/{category_slug}', [ProductController::class, 'productCategory'])->name('kategori.urunler');
+Route::get('/kategori/{category_slug}', [ProductController::class, 'productCategory'])->name('category.product');
+Route::get('/get-products-by-category', [ProductController::class, 'getProductsByCategory'])->name('get.products.by.category');
+
 
