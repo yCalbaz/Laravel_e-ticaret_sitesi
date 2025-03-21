@@ -66,10 +66,10 @@ class ProductController extends Controller
 
     public function getProductsByCategory(Request $request)
 {
-    $categories = $request->categories; 
+    $categories = $request->categories;
 
     if (empty($categories)) {
-        $urunler = Product::all(); 
+        $urunler = Product::all();
     } else {
         $urunler = Product::whereHas('categories', function ($query) use ($categories) {
             $query->whereIn('category_slug', $categories);

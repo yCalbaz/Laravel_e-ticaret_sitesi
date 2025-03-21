@@ -66,8 +66,8 @@
                 </li>
                 
                 <li class="list-group-item">
-                    <input type="checkbox" class="category-filter" value="kadın" id="kadın">
-                    <label for="kadın">Kadın</label>
+                    <input type="checkbox" class="category-filter" value="kadin" id="kadin">
+                    <label for="kadin">Kadın</label>
                 </li>
                 <li class="list-group-item">
                     <input type="checkbox" class="category-filter" value="kadın-ayakkabı" id="kadın-ayakkabı">
