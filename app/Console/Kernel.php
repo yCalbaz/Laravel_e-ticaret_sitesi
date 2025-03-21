@@ -16,5 +16,9 @@ class Kernel extends ConsoleKernel
     protected function commands()
     {
         $this->load(__DIR__.'/Commands');
+ 
     }
+    protected $routeMiddleware = [
+        'admin.auth' => \App\Http\Middleware\AdminAuthMiddleware::class,
+    ];
 }

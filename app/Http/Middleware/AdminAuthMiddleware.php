@@ -6,7 +6,7 @@ use Illuminate\Auth\Middleware\Authenticate as Middleware;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class Authenticate extends Middleware
+class AdminAuthMiddleware extends Middleware
 {
     const ADMIN_ROLE_ID =1;
     const SATICI_ROLE_ID = 2;
