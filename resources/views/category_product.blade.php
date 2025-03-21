@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $kategori }} Ürünleri</title>
+    <title>{{ $kategori }} </title>
     @vite(['resources/js/app.js' ,'resources/css/style.css'])
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="icon" href="{{ asset('storage/images/flo-logo-Photoroom.png') }}" type="image/png">
@@ -20,12 +20,12 @@
                     <label for="ayakkabı">Ayakkabı</label>
                 </li>
                 <li class="list-group-item">
-                    <input type="checkbox" class="category-filter" value="günlük ayakkabı" id="günlük ayakkabı">
-                    <label for="günlük ayakkabı">Günlük Ayakkabısı</label>
+                    <input type="checkbox" class="category-filter" value="günlük-ayakkabı" id="günlük-ayakkabı">
+                    <label for="günlük-ayakkabı">Günlük Ayakkabısı</label>
                 </li>
                 <li class="list-group-item">
-                    <input type="checkbox" class="category-filter" value="spor" id="spor">
-                    <label for="spor">Spor Ayakkabı</label>
+                    <input type="checkbox" class="category-filter" value="spor-ayakkabı" id="spor-ayakkabı">
+                    <label for="spor-ayakkabı">Spor Ayakkabı</label>
                 </li>
                 <li class="list-group-item">
                     <input type="checkbox" class="category-filter" value="bot" id="bot">
@@ -44,10 +44,7 @@
                     <input type="checkbox" class="category-filter" value="eşofman" id="eşofman">
                     <label for="eşofman">Eşofman</label>
                 </li>
-                <li class="list-group-item">
-                    <input type="checkbox" class="category-filter" value="markalar" id="markalar">
-                    <label for="markalar">Markalar</label>
-                </li>
+                
                 <li class="list-group-item">
                     <input type="checkbox" class="category-filter" value="adidas" id="adidas">
                     <label for="adidas">Adidas</label>

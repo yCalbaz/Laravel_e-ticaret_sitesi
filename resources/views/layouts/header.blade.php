@@ -29,7 +29,10 @@
         </form>
         <ul class="navbar-nav ms-auto">
             <li class="nav-item"><a class="nav-link" href="{{route('login')}}"><i class="fas fa-user"></i> Giriş Yap</a></li>
-            <li class="nav-item"><a class="nav-link" href="{{route('sepet.index')}}"><i class="fas fa-shopping-cart"></i> Sepetim</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{route('sepet.index')}}">
+                    <i class="fas fa-shopping-cart"></i> Sepetim
+                    <span id="sepet-sayisi" class="badge bg-danger">{{ $sepetSayisi ?? 0 }}</span>
+                </a></li>
             <li class="nav-item"><a class="nav-link" href="{{route('orders.index')}}"><i class="fas fa-shopping-cart"></i>Siparişlerim</a></li>
             @auth
     <form action="{{ route('admin.logout') }}" method="POST" class="logout-form">

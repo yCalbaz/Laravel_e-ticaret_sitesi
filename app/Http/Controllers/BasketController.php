@@ -24,21 +24,22 @@ class BasketController extends Controller
             Session::put('customer_id', $customer->customer_id); 
         }
         $customer = Session::get('customer_id');
-      
-    if (!$customer) {
-        return view('cart', ['cartItems' => []]); 
+          
+        if (!$customer) {
+            return view('cart', ['cartItems' => [], 'sepetSayisi' => 0]); 
+        }
+    
+        $basket = Basket::where('customer_id', $customer)->where('is_active', 1)->first();
+    
+        if (!$basket) {
+            return view('cart', ['cartItems' => [], 'sepetSayisi' => 0]); 
+        }
+    
+        $cartItems = BasketItem::where('order_id', $basket->id)->get();
+        $sepetSayisi = BasketItem::where('order_id', $basket->id)->sum('product_piece');
+    
+        return view('cart', compact('cartItems', 'sepetSayisi'));
     }
-
-    $basket = Basket::where('customer_id', $customer)->where('is_active', 1)->first();
-
-    if (!$basket) {
-        return view('cart', ['cartItems' => []]); 
-    }
-
-    $cartItems = BasketItem::where('order_id', $basket->id)->get();
-    return view('cart', compact('cartItems'));
-    }
-
     
 
     public function add(Request $request, $product_sku)
@@ -337,4 +338,7 @@ class BasketController extends Controller
     }
 
     return response()->json(['error' => 'Ürün bulunamadı.'], 404);
-}}
+}
+
+
+}

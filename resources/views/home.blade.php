@@ -58,6 +58,7 @@
 
       
     <div class="row"> 
+        <H2>Popüler Ürünler</H2>
         @foreach($products as $product)
             <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-4 d-flex justify-content-center">
                 <div class="card shadow-sm custom-card">
