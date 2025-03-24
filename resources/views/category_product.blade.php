@@ -117,16 +117,22 @@
                             <div class="card-body">
                                 <h5 class="card-title">{{ $urun->product_name }}</h5>
                                 <p class="card-text">{{ $urun->product_price }} TL</p>
-                                <button type="submit" class="btn btn-primary btn-sm" onclick="addCart('{{ $urun->product_sku }}')">Sepete Ekle</button>
+                                <button type="submit" class=" cart-add-btn" onclick="addCart('{{ $urun->product_sku }}')">Sepete Ekle</button>
                             </div>
                         </div>
                     </div>
                 @endforeach
+
+
+
+               
             </div>
         </div>
     </div>
 </div>
-
+<footer class="custom-footer">
+        <p>&copy; 2025 flo - Tüm Hakları Saklıdır.</p>
+    </footer>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>

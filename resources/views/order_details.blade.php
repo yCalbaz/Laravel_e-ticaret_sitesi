@@ -11,12 +11,7 @@
 <body>
 
 @include('layouts.header') 
-@auth
-    <form action="{{ route('admin.logout') }}" method="POST" class="logout-form">
-        @csrf
-        <button type="submit" class="logout-btn">Çıkış</button>
-    </form>
-    @endauth
+
 
 @if(session('success'))
     <div class="alert alert-success">

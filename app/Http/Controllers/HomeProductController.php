@@ -12,30 +12,24 @@ class HomeProductController extends Controller
 
     public function productHome()
     {
-        $products = Product::orderBy('id', 'desc')->take(5)->get()->map(function($product) {
-            try {
-                $response = Http::timeout(5)->get("http://host.docker.internal:3000/stock/{$product->product_sku}");
-                
-                if ($response->successful()) {
-                    $stockData = $response->json();
-                    $stock = $stockData['stores'][0]['stock'] ?? 0; 
-                    if ($stock > 0) {
-                        $product->stock = $stock;
-                        return $product; 
+        
+            $products = Product::orderBy('id', 'desc')->get()->filter(function($product) {
+                try {
+                    $response = Http::timeout(4)->get("http://host.docker.internal:3000/stock/{$product->product_sku}");
+                    
+                    if ($response->successful()) {
+                        $stockData = $response->json();
+                        $stock = $stockData['stores'][0]['stock'] ?? 0; 
+                        return $stock > 0;
                     }
+                } catch (\Exception $e) {
+                    
                 }
-            } catch (\Exception $e) {
-                
-                $product->stock = null;
-            }
-            
-            
-            return null;
-        })->filter(); 
-    
-        return view('home', compact('products'));
-    
-    }
+                return false;
+            })->take(4);
+        
+            return view('home', compact('products'));
+        }
 
     
     public function index()

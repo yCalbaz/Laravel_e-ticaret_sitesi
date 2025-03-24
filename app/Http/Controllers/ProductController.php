@@ -5,12 +5,27 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 
 class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::all();
+        $products = Product::all()->filter(function($product) {
+            try {
+                $response = Http::timeout(4)->get("http://host.docker.internal:3000/stock/{$product->product_sku}");
+    
+                if ($response->successful()) {
+                    $stockData = $response->json();
+                    $stock = $stockData['stores'][0]['stock'] ?? 0;
+                    return $stock > 0;
+                }
+            } catch (\Exception $e) {
+                
+            }
+            return false;
+        });
+    
         return view('product', ['urunler' => $products]);
     }
     
@@ -100,6 +115,14 @@ class ProductController extends Controller
 
     return view('partials.product_list', ['urunler' => $urunler]);
 }
-    
 
+    
+public function brand($brand_slug)
+{
+    $category = Category::where('category_slug', $brand_slug)->firstOrFail();
+
+    $products = Product::where('product_name', 'LIKE', '%' . $category->category_name . '%')->get();
+
+    return view('products.brand', compact('products', 'category'));
+}
 }

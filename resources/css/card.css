@@ -1,0 +1,33 @@
+.custom-card-2 {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 15px;
+}
+
+.custom-img-2 {
+    max-height: 150px;
+    object-fit: contain;
+}
+
+.cart-summary {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; 
+}
+
+.cart-summary .total-price {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.cart-summary .btn-confirm {
+    background-color: #ff671d;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    align-self: flex-start; 
+    width: 100%; 
+    text-align: center;
+}

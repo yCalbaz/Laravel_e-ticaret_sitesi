@@ -74,3 +74,6 @@ Route::get('/search', [App\Http\Controllers\ProductController::class, 'search'])
 
 Route::get('/kategori/{category_slug}', [ProductController::class, 'productCategory'])->name('category.product');
 Route::get('/get-products-by-category', [ProductController::class, 'getProductsByCategory'])->name('get.products.by.category');
+
+
+Route::get('/products/brand/{brand}', [ProductController::class, 'brand'])->name('products.brand');

@@ -37,8 +37,13 @@ class BasketController extends Controller
     
         $cartItems = BasketItem::where('order_id', $basket->id)->get();
         $sepetSayisi = BasketItem::where('order_id', $basket->id)->sum('product_piece');
+
+        $totalPrice = 0;
+        foreach ($cartItems as $item) {
+            $totalPrice += ($item->product_price * $item->product_piece);
+        }
     
-        return view('cart', compact('cartItems', 'sepetSayisi'));
+        return view('cart', compact('cartItems', 'sepetSayisi','totalPrice'));
     }
     
 

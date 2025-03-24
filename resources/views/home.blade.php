@@ -84,6 +84,27 @@
     <div class="mt-4">
         <a href=""><img src="{{ asset('storage/images/banner.png') }}" class="img-fluid" alt="Banner"></a>
     </div>
+    <div class="mt-5">
+        <h2>Markalar</h2>
+        <div class="row">
+            <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-4">
+                <a href="{{ route('products.brand', ['brand' => 'nike']) }}">
+                    <img src="{{ asset('storage/images/nike.png') }}" class="img-fluid" alt="nike">
+                </a>
+            </div>
+            <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-4">
+                <a href="{{ route('products.brand', ['brand' => 'adidas']) }}">
+                    <img src="{{ asset('storage/images/adidas.png') }}" class="img-fluid" alt="adidas">
+                </a>
+            </div>
+            <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-4">
+                <a href="{{ route('products.brand', ['brand' => 'lumberjack']) }}">
+                    <img src="{{ asset('storage/images/lumberjack.png') }}" class="img-fluid" alt="lumberjack">
+                </a>
+            </div>
+            
+           
+   
 <br>
 </div>
 

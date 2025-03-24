@@ -1,59 +1,25 @@
-.custom-footer {
-    background-color: #ff671d;
+
+.cart-add-btn{
+    width: auto;
+    max-width: 100px;
     color: white;
-    padding: 15px 0;
-    text-align: center;
-}
-
-.custom-card {
-    width: 100%;
-    max-width: 250px;
-    margin: 0 auto;
+    background-color: #ff671d;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
     height: auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    line-height: normal;
     text-align: center;
-}
+    font-size: 14px;
+    white-space: nowrap;
+    position: absolute;
+    bottom: 10px;
+    left: 30%;
 
-.custom-img {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
 }
-
-.custom-card-2 {
-    max-width: 50%;
-}
-
-.custom-img-2 {
-    height: 120px;
-    object-fit: cover;
-}
-
-.card-body {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 1.5rem;
-}
-
-.card-title {
-    font-size: 1.2rem;
-    font-weight: bold;
-    margin: 10px 0;
-}
-
-.card-text {
-    font-size: 1rem;
-    margin-bottom: 10px;
-}
-
-.btn-sm {
-    width: 100%;
-    max-width: 150px;
+.cart-add-btn:hover{
+    background-color: #bd3f00;
 }
 
 body {
@@ -92,10 +58,8 @@ body {
     background-color: darkred;
 }
 
-.container {
-    flex: 1;
-}
 
+/*panel css*/
 .panel-box {
     text-decoration: none;
 }
@@ -114,8 +78,9 @@ body {
     box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3);
 }
 
+/*header cssleri*/
 .custom-header {
-    background-color: #fff; /* Beyaz arka plan */
+    background-color: #fff;
 }
 
 .custom-header .container {
@@ -128,12 +93,16 @@ body {
 }
 
 .custom-header .navbar-brand img {
-    height: 50px; /* Logo yüksekliği */
+    height: 40px;
+}
+
+.icon-weight {
+    height: 10;
 }
 
 .custom-header .navbar-nav .nav-link {
-    padding: 0.5rem 1rem; /* Nav link boşlukları */
-}
+    padding: 0.5rem 1rem;
+} 
 
 .search-form {
     width: 300px;
@@ -146,7 +115,7 @@ body {
     height: 100%;
     padding: 10px;
     border-radius: 20px;
-    border: 1px solid #ced4da; /* Kenarlık */
+    border: 1px solid #ced4da;
     font-size: 16px;
     color: #333;
 }
@@ -157,19 +126,19 @@ body {
 
 .search-input:focus {
     outline: none;
-    border-color: #80bdff; /* Odaklandığında kenarlık rengi */
-    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25); /* Odaklandığında gölge */
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
 }
 
 .category-menu {
-    background-color: #f8f9fa; /* Açık gri arka plan */
+    background-color: #f8f9fa;
     padding: 10px 0;
-    border-bottom: 1px solid #eee; /* Alt çizgi eklendi */
+    border-bottom: 1px solid #eee;
 }
 
 .category-menu .container {
     display: flex;
-    justify-content: center; /* Kategorileri ortala */
+    justify-content: center;
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 20px;
@@ -183,8 +152,9 @@ body {
 }
 
 .category-menu a:hover {
-    text-decoration: underline; /* Üzerine gelindiğinde alt çizgi */
+    text-decoration: underline;
 }
+
 .menu {
     display: flex;
     align-items: center;
@@ -195,13 +165,13 @@ body {
     color: #333;
     margin: 0 15px;
     font-weight: 500;
-    padding: 5px 10px; /* Opsiyonel: Bağlantılara dolgu ekleyebilirsiniz */
+    padding: 5px 10px;
 }
 
 .menu a:hover {
-    text-decoration: underline; /* Opsiyonel: Üzerine gelindiğinde alt çizgi */
+    text-decoration: underline;
 }
-
+/**/
 .filter-section {
     padding: 20px;
     border-right: 1px solid #ddd;
@@ -210,16 +180,17 @@ body {
 .product-list {
     padding: 20px;
 }
-
+/*sepet,kategori,anasayfa (burası ürünlerin görünüşünü tanımladığım yer) css*/
 .custom-card {
     width: 100%;
     max-width: 250px;
     margin: 0 auto;
-    height: auto;
+    height: 450px;
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
+    position: relative;
 }
 
 .custom-img {
@@ -249,15 +220,12 @@ body {
     margin-bottom: 10px;
 }
 
-.btn-sm {
-    width: 100%;
-    max-width: 150px;
-}
+/*kategori düzen*/
 .category-list-scrollable {
-    max-height: 400px; 
-    overflow-y: auto; 
+    max-height: 400px;
+    overflow-y: auto;
 }
 
 .category-list-scrollable .list-group-item {
-    white-space: nowrap; 
+    white-space: nowrap;
 }
