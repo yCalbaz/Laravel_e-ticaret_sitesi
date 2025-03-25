@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 
+
 class OrderDetailController extends Controller
 {
     public function index()
@@ -27,11 +28,12 @@ class OrderDetailController extends Controller
 
         return view('order_details', compact('orders'));
     }
+    
 
     public function showDetails($orderId)
     {
         
-        $order = OrderBatch::with('orderLines')->where('order_id', $orderId)->first();
+        $order = OrderBatch::with(['orderLines.product'])->where('order_id', $orderId)->first();
 
         if (!$order) {
             return back()->with('error', 'Sipariş bulunamadı.');
@@ -47,14 +49,16 @@ class OrderDetailController extends Controller
 
     public function processReturn(Request $request)
     {
+        //dd("fonksiyona girdi");
         $request->validate([
+            dd($request),
             'order_id' => 'required',
             'product_sku' => 'required',
             'details' => 'required|string',
         ]);
 
         $order = OrderBatch::where('id', $request->order_id)->first();
-        if (!$order) {
+        if (!$order) { 
             return back()->with('error', 'Sipariş bulunamadı.');
         }
 
@@ -62,7 +66,10 @@ class OrderDetailController extends Controller
             'order_id' => $request->order_id,
             'product_sku' => $request->product_sku,
             'details' => $request->details,
+            'store_id'=>$request->store_id,
             'product_price' => $order->orderLines->where('product_sku', $request->product_sku)->first()->product_price ?? 0,
+            'product_image'=>$order->orderLines->where('product_image',$request->product_sku)->first()->product_image ?? 0,
+
             'customer_id' => Auth::user()->customer_id,
         ]);
 

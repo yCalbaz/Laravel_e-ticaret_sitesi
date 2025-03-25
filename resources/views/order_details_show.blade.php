@@ -14,26 +14,50 @@
 
 
 <div class="container mt-5">
-    <h1> {{ $order->id }} ID'li Sipariş Detayları: </h1>
+    <h1>Sipariş Detayları:</h1>
     <table class="table">
         <thead>
             <tr>
+                <th>Ürün Resmi</th>
                 <th>Ürün Adı</th>
+                <th>Depo</th>
                 <th>Fiyat</th>
                 <th>İade Et</th>
             </tr>
         </thead>
         <tbody>
-            @foreach ($order->orderLines as $line )
-                <tr>
-                    <td>{{ $line->product_name }}</td>
-                    <td> TL</td>
-                    <td>
-                    <a href="{{ route('order.returnForm', ['orderId' => $order->id, 'product_sku' => $line->product_sku]) }}" class="btn btn-danger btn-sm">
-                            İade Et
-                        </a>
-                    </td>
-                </tr>
+            @php
+                $groupedOrderLines = $order->orderLines->groupBy('store_id');
+            @endphp
+
+            @foreach ($groupedOrderLines as $storeId => $lines)
+                @foreach ($lines as $line)
+                    <tr>
+                        <td>
+                            @if($line->product)
+                                <img src="{{ asset($line->product->product_image) }}" class="order_image">
+                            @else
+                                Ürün Bulunamadı.
+                            @endif
+                        </td>
+                        <td>{{ $line->product_name }}</td>
+                        <td>{{ $line->store_id }}</td>
+                        <td>
+                            @if($line->product)
+                                {{ $line->product->product_price }}TL
+                            @else
+                                Ürün Bulunamadı.
+                            @endif
+                        </td>
+                        @if ($loop->first)
+                            <td rowspan="{{ $lines->count() }}">
+                                <a href="{{ route('order.returnForm', ['orderId' => $order->id, 'store_id' => $storeId]) }}" class="btn btn-danger btn-sm">
+                                    Siparişi iptal et
+                                </a>
+                            </td>
+                        @endif
+                    </tr>
+                @endforeach
             @endforeach
         </tbody>
     </table>

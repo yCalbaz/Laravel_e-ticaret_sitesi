@@ -7,9 +7,10 @@
     @vite(['resources/css/style.css'])
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="icon" href="{{ asset('storage/images/flo-logo-Photoroom.png') }}" type="image/png">
+
 </head>
+
 <body class="bg-light">
-    
     <div class="container d-flex justify-content-center align-items-center" style="height: 100vh;">
         <div class="card p-4" style="width: 350px;">
             @if(session('error'))
@@ -36,5 +37,6 @@
             </form>
         </div>
     </div>
+    @include('layouts.footer')
 </body>
 </html>

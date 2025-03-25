@@ -3,7 +3,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Stock;
-
+use App\Models\Store;
 
 class StockController extends Controller
 {
@@ -18,6 +18,11 @@ public function store(Request $request)
         'store_id'=> 'required|numeric|min:0',
         'product_piece'=> 'required|numeric'
     ]);
+    $storeExists = Store::where('id', $request->store_id)->exists();
+
+        if (!$storeExists) {
+            return redirect()->back()->withErrors(['store_id' => 'Geçerli depo girin.']);
+        }
 
 
     Stock::create([

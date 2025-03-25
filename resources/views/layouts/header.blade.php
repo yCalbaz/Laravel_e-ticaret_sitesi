@@ -20,11 +20,7 @@
             <img src="{{ asset('storage/images/flo-logo-Photoroom.png') }}" alt="" height="50">
         </a>
     
-        <div class="menu">
-            <a href="{{ route('category.product', ['category_slug' => 'kadın']) }}">Kadın</a>
-            <a href="{{ route('category.product', ['category_slug' => 'erkek']) }}">Erkek</a>
-            <a href="{{ route('category.product', ['category_slug' => 'çocuk']) }}">Çocuk</a>
-        </div>
+        
         <form class="search-form" id="searchForm" action="{{ route('search') }}" method="GET">
             <input class="search-input" type="search" name="query" placeholder="Ara" aria-label="Ara">
         </form>
@@ -48,10 +44,55 @@
 
 <nav class="category-menu">
     <div class="container">
-        <a href="{{ route('category.product', ['category_slug' => 'ayakkabi']) }}">Ayakkabı</a>
-        <a href="{{ route('category.product', ['category_slug' => 'giyim']) }}">Giyim</a>
-        <a href="{{ route('category.product', ['category_slug' => 'canta']) }}">Çanta, Aksesuar</a>
-        <a href="{{ route('urun') }}">Tüm Ürünler</a>
+    <div class="filter-container">
+    <div class="filter-dropdown">
+        <button class="filter-button">Kadın <span class="arrow">▼</span></button>
+        <div class="filter-options category">
+            <li><a class="category" href="{{ route('category.product', ['category_slug' => 'kadın-çanta']) }}">Kadın Çanta</a></li>
+            <li><a class="category" href="{{ route('category.product', ['category_slug' => 'kadın-ayakkabı']) }}">Kadın Ayakkkabı</a></li>
+            <li><a class="category" href="{{ route('category.product', ['category_slug' => 'kadın-giyim']) }}">Kadın Giyim</a></li>
+            <li><a class="category" href="{{ route('category.product', ['category_slug' => 'günlük-ayakkabı']) }}">Günlük Ayakkabı</a></li>
+            <li><a class="category" href="{{ route('category.product', ['category_slug' => 'ayakkabı']) }}">Spor Ayakkabı</a></li>
+            <li><a class="category" href="{{ route('category.product', ['category_slug' => 'canta']) }}">Bot</a></li>
+            <li><a class="category" href="{{ route('category.product', ['category_slug' => 'giyim']) }}">Tişört</a></li>
+            <li><a class="category" href="{{ route('category.product', ['category_slug' => 'ayakkabı']) }}">Eşofman</a></li>
+         </div>
+    </div>
+    <div class="filter-dropdown">
+        <button class="filter-button">Erkek <span class="arrow">▼</span></button>
+        <div class="filter-options">
+        <li><a class="category" href="{{ route('category.product', ['category_slug' => 'erkek-ayakkabı']) }}">Erkek Ayakkkabı</a></li>
+        <li> <a class="category" href="{{ route('category.product', ['category_slug' => 'erkek-giyim']) }}">Erkek Giyim</a></li>
+        <li> <a class="category" href="{{ route('category.product', ['category_slug' => 'günlük-ayakkabı']) }}">Günlük Ayakkabı</a></li>
+        <li> <a class="category" href="{{ route('category.product', ['category_slug' => 'ayakkabı']) }}">Spor Ayakkabı</a></li>
+        <li> <a class="category" href="{{ route('category.product', ['category_slug' => 'canta']) }}">Bot</a></li>
+        <li> <a class="category" href="{{ route('category.product', ['category_slug' => 'giyim']) }}">Tişört</a></li>
+        <li> <a class="category" href="{{ route('category.product', ['category_slug' => 'ayakkabı']) }}">Eşofman</a></li>
+        </div>
+    </div>
+    <div class="filter-dropdown">
+        <button class="filter-button">Çocuk <span class="arrow">▼</span></button>
+        <div class="filter-options ">
+        <li> <a class="category" href="{{ route('category.product', ['category_slug' => 'çocuk-ayakkabi']) }}">Çocuk Ayakkkabı</a></li>
+        <li> <a class="category" href="{{ route('category.product', ['category_slug' => 'çocuk-giyim']) }}">Çocuk Giyim</a></li>
+        <li><a class="category" href="{{ route('category.product', ['category_slug' => 'günlük-ayakkabı']) }}">Günlük Ayakkabı</a></li>
+        <li> <a class="category" href="{{ route('category.product', ['category_slug' => 'ayakkabı']) }}">Spor Ayakkabı</a></li>
+        <li> <a class="category" href="{{ route('category.product', ['category_slug' => 'canta']) }}">Bot</a></li>
+        <li> <a class="category" href="{{ route('category.product', ['category_slug' => 'giyim']) }}">Tişört</a></li>
+        <li> <a class="category" href="{{ route('category.product', ['category_slug' => 'ayakkabı']) }}">Eşofman</a></li>
+         </div>
+    </div>
+    <div class="filter-dropdown">
+        <button class="filter-button">Marka <span class="arrow">▼</span></button>
+        <div class="filter-options">
+        <li> <a class="category" href="{{ route('category.product', ['category_slug' => 'nike']) }}">Nike</a></li>
+        <li> <a class="category" href="{{ route('category.product', ['category_slug' => 'adidas']) }}">Adidas</a></li>
+        <li> <a class="category" href="{{ route('category.product', ['category_slug' => 'lumberjack']) }}">Lumberjack</a></li>
+            
+        </div>
+    </div>
+    
+    
     </div>
 </nav>
 

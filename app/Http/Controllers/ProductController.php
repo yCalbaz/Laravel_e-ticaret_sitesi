@@ -29,6 +29,7 @@ class ProductController extends Controller
         return view('product', ['urunler' => $products]);
     }
     
+    
 
     public function showDetails($sku)
     {
@@ -100,7 +101,7 @@ class ProductController extends Controller
     $genders = $request->input('genders', []);
 
     $urunler = Product::query();
-
+ 
     if (!empty($categories)) {
         $urunler->whereHas('categories', function ($query) use ($categories) {
             $query->whereIn('categories.id', $categories);

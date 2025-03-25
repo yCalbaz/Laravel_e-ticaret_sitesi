@@ -14,6 +14,7 @@
             @csrf
             <input type="hidden" name="order_id" value="{{ request('order_id') }}">
             <input type="hidden" name="product_sku" value="{{ request('product_sku') }}">
+            <input type="hidden" name="product_sku" value="{{ request('product_price') }}">
             
             <div class="mb-3">
                 <label for="details" class="form-label">İade Nedeni:</label>

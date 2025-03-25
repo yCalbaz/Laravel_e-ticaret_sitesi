@@ -26,4 +26,8 @@ class OrderLine extends Model
     {
         return $this->belongsTo(OrderBatch::class, 'order_batch_id', 'id'); 
     }
+    public function product()
+    {
+        return $this->belongsTo(Product::class, 'product_sku', 'product_sku');
+    }
 }

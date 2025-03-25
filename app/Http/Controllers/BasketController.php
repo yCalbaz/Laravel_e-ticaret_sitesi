@@ -49,6 +49,14 @@ class BasketController extends Controller
 
     public function add(Request $request, $product_sku)
 {
+    $request->validate([
+        'quantity' => 'required|integer|min:1'
+    ], [
+        'quantity.required' => 'Ürün adedi belirtilmelidir.',
+        'quantity.integer' => 'Ürün adedi sayı olmalıdır.',
+        'quantity.min' => 'Ürün adedi en az 1 olmalıdır.'
+    ]);
+    //tokenin validasyonunu da ekle!!
     $product = Product::where('product_sku', $product_sku)->first();
 
     if (!$product) {
@@ -162,6 +170,9 @@ class BasketController extends Controller
             $storeId = [];
     
             foreach ($cartItems as $item) {
+                if ($item->product_piece < 1) {
+                    return redirect()->back()->with('error', 'Sepette geçersiz ürün adedi var!');
+                }
                 $response = Http::get("http://host.docker.internal:3000/stock/{$item->product_sku}");
     
                 if ($response->failed()) {
@@ -199,7 +210,6 @@ class BasketController extends Controller
                         $totalStock += $availableStock;
                         $requestedQuantity -= $availableStock;
     
-                        // Eğer istenen miktar sağlandıysa, bu depoyu kullan
                         if ($requestedQuantity <= 0) {
                             break;
                         }

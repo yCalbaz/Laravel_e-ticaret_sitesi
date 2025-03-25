@@ -21,29 +21,30 @@
             <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
             <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
         </div>
-        <div class="carousel-inner">
+        <div class="carousel-inner slay">
             <div class="carousel-item active">
-                <a href=""><img src="{{ asset('storage/images/slaydir.png') }}" class="d-block w-100" alt="Slider 1"></a>
+                <a href="{{ route('urun')}}"><img src="{{ asset('storage/images/slaydir3.png') }}" class="d-block w-100" alt="Slider 1"></a>
+            </div>
+            <div class="carousel-item ">
+                <a href="{{ route('urun')}}"><img src="{{ asset('storage/images/slaydir2.png') }}" class="d-block w-100" alt="Slider 2"></a>
             </div>
             <div class="carousel-item">
-                <a href=""><img src="{{ asset('storage/images/slaydir2.png') }}" class="d-block w-100" alt="Slider 2"></a>
-            </div>
-            <div class="carousel-item">
-                <a href=""><img src="{{ asset('storage/images/slaydir3.png') }}" class="d-block w-100" alt="Slider 3"></a>
+                <a href="{{ route('urun')}}"><img src="{{ asset('storage/images/slaydır0.png') }}" class="d-block w-100" alt="Slider 3"></a>
             </div>
         </div>
         <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Previous</span>
+            <span class="visually-hidden">Geri</span>
         </button>
         <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
             <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Next</span>
+            <span class="visually-hidden">ileri</span>
         </button>
     </div>
     </div>
     <div class="container mt-5">
-@if(session('error'))
+
+    @if(session('error'))
     <div class="alert alert-danger">
         {{ session('error') }}
     </div>
@@ -82,38 +83,38 @@
         @endforeach
     </div> 
     <div class="mt-4">
+        <a href="{{ route('products.brand', ['brand' => 'adidas']) }}"><img src="{{ asset('storage/images/banner2.png') }}" class="img-fluid" alt="Banner"></a>
+    </div>
+    
+    <div class="mt-5 brand-container">
+    <div class="row brand-row">
+        <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-4">
+            <a href="{{ route('products.brand', ['brand' => 'nike']) }}">
+                <img src="{{ asset('storage/images/nike.png') }}" class="img-fluid" alt="nike">
+            </a>
+        </div>
+        <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-4">
+            <a href="{{ route('products.brand', ['brand' => 'adidas']) }}">
+                <img src="{{ asset('storage/images/adidas.png') }}" class="img-fluid" alt="adidas">
+            </a>
+        </div>
+        <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-4">
+            <a href="{{ route('products.brand', ['brand' => 'lumberjack']) }}">
+                <img src="{{ asset('storage/images/lumberjack.png') }}" class="img-fluid" alt="lumberjack">
+            </a>
+        </div>
+        </div>
+        <div class="mt-4">
         <a href=""><img src="{{ asset('storage/images/banner.png') }}" class="img-fluid" alt="Banner"></a>
     </div>
-    <div class="mt-5">
-        <h2>Markalar</h2>
-        <div class="row">
-            <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-4">
-                <a href="{{ route('products.brand', ['brand' => 'nike']) }}">
-                    <img src="{{ asset('storage/images/nike.png') }}" class="img-fluid" alt="nike">
-                </a>
-            </div>
-            <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-4">
-                <a href="{{ route('products.brand', ['brand' => 'adidas']) }}">
-                    <img src="{{ asset('storage/images/adidas.png') }}" class="img-fluid" alt="adidas">
-                </a>
-            </div>
-            <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-4">
-                <a href="{{ route('products.brand', ['brand' => 'lumberjack']) }}">
-                    <img src="{{ asset('storage/images/lumberjack.png') }}" class="img-fluid" alt="lumberjack">
-                </a>
-            </div>
-            
-           
+    </div> 
    
 <br>
 </div>
 
-<footer class="custom-footer">
-   
-</footer>
+@include('layouts.footer')
 
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
 </body>
 </html>

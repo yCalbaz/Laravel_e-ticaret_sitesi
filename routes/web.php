@@ -76,4 +76,4 @@ Route::get('/kategori/{category_slug}', [ProductController::class, 'productCateg
 Route::get('/get-products-by-category', [ProductController::class, 'getProductsByCategory'])->name('get.products.by.category');
 
 
-Route::get('/products/brand/{brand}', [ProductController::class, 'brand'])->name('products.brand');
+Route::get('/products/brand/{brand}', [ProductController::class, 'brand'])->name('products.brand'); 
