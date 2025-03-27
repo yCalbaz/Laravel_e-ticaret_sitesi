@@ -15,8 +15,13 @@ class Store extends Model
     protected $fillable = [
         'store_name',
         'store_max',
-        'store_priority'
+        'store_priority',
+        'is_active'
     ];
 
     public $timestamps = false;
+    public function orderLines()
+    {
+        return $this->belongsTo(OrderLine::class, 'store_id');
+    }
 }

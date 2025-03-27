@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Siparişler</title>
     @vite(['resources/js/app.js', 'resources/css/style.css'])
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="icon" href="{{ asset('storage/images/flo-logo-Photoroom.png') }}" type="image/png">
 </head>
 <body>
@@ -26,6 +26,7 @@
             <tr>
                 <th>Sipariş ID</th>
                 <th>Adres</th>
+                <th>Tarih</th>
             </tr>
         </thead>
         <tbody>
@@ -33,6 +34,7 @@
                 <tr>
                     <td>{{ $order->id }}</td>
                     <td>{{ $order->customer_address }}</td>
+                    <td>{{ $order->created_at }}</td>
                     <td>
                         <a href="{{ route('order.showDetails', $order->id) }}" class="btn btn-info btn-sm">
                             Ayrıntılar
@@ -41,7 +43,7 @@
                 </tr>
             @endforeach
         </tbody>
-    </table>
+    </table> 
 </div>
 
 </body>

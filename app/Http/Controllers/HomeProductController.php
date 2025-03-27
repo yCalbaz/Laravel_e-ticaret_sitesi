@@ -32,6 +32,7 @@ class HomeProductController extends Controller
         }
 
     
+    
     public function index()
     {
         $categories = Category::all();

@@ -9,13 +9,13 @@
 <body>
     <div class="container mt-5">
         <h2>Ürün İade Formu</h2>
-        
+
         <form action="{{ route('order.processReturn') }}" method="POST">
             @csrf
-            <input type="hidden" name="order_id" value="{{ request('order_id') }}">
-            <input type="hidden" name="product_sku" value="{{ request('product_sku') }}">
-            <input type="hidden" name="product_sku" value="{{ request('product_price') }}">
-            
+            <input type="hidden" name="order_id" value="{{ $orderId }}">
+            <input type="hidden" name="product_sku" value="{{ $productSku }}">
+            <input type="hidden" name="product_price" value="{{ $productPrice }}">
+
             <div class="mb-3">
                 <label for="details" class="form-label">İade Nedeni:</label>
                 <textarea name="details" id="details" class="form-control" required></textarea>

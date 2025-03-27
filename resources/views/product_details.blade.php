@@ -51,6 +51,7 @@
             success: function (response) {
                 console.log("Başarıyla eklendi:", response);
                 alert("Ürün sepete eklendi!");
+                updateCartCount(response.cartCount);
             },
             error: function (xhr) {
                 console.log("Hata oluştu! Durum kodu:", xhr.status);

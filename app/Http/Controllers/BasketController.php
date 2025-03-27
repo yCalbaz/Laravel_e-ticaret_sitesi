@@ -9,6 +9,7 @@ use App\Models\Member;
 use App\Models\Product;
 use App\Models\OrderBatch;
 use App\Models\OrderLine;
+use Illuminate\Session\TokenMismatchException;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -42,81 +43,89 @@ class BasketController extends Controller
         foreach ($cartItems as $item) {
             $totalPrice += ($item->product_price * $item->product_piece);
         }
+        $cargoTotalPrice= $totalPrice + 45;
     
-        return view('cart', compact('cartItems', 'sepetSayisi','totalPrice'));
+        return view('cart', compact('cartItems', 'sepetSayisi','totalPrice','cargoTotalPrice'));
     }
     
 
     public function add(Request $request, $product_sku)
-{
-    $request->validate([
-        'quantity' => 'required|integer|min:1'
-    ], [
-        'quantity.required' => 'Ürün adedi belirtilmelidir.',
-        'quantity.integer' => 'Ürün adedi sayı olmalıdır.',
-        'quantity.min' => 'Ürün adedi en az 1 olmalıdır.'
-    ]);
-    //tokenin validasyonunu da ekle!!
-    $product = Product::where('product_sku', $product_sku)->first();
-
-    if (!$product) {
-        return response()->json(['error' => 'Ürün bulunamadı'], 404);
-    }
-
-    $response = Http::get("http://host.docker.internal:3000/stock/{$product->product_sku}");
-
-    if ($response->failed()) {
-        return response()->json(['error' => 'Servise ulaşılamadı'], 500);
-    }
-
-    $stockData = $response->json();
-    if (!isset($stockData['stores'])) {
-        return response()->json(['error' => 'Servis yanıtı geçersiz'], 500);
-    }
-
-    $totalStock = collect($stockData['stores'])->sum('stock');
-    if ($totalStock < $request->quantity) {
-        return response()->json(['error' => 'Yeterli stok bulunmamaktadır.'], 400);
-    }
-
-    $customerId = Session::get('customer_id');
-    if (!$customerId) {
-        if (Auth::check()) {
-            $customerId = Auth::id();
-        } else {
-            $customerId = mt_rand(10000000, 99999999);
-        }
-        Session::put('customer_id', $customerId);
-    }
-
-    $basket = Basket::firstOrCreate([
-        'customer_id' => $customerId,
-        'is_active' => 1
-    ]);
-
-    $basketItem = BasketItem::where('order_id', $basket->id)
-        ->where('product_sku', $product->product_sku)
-        ->first();
-
-    if ($basketItem) {
-        if ($basketItem->product_piece + $request->quantity > $totalStock) {
-            return response()->json(['error' => 'Yeterli stok yok.'], 400);
-        }
-        $basketItem->increment('product_piece', $request->quantity);
-    } else {
-        BasketItem::create([
-            'product_name' => $product->product_name,
-            'product_sku' => $product->product_sku,
-            'product_piece' => $request->quantity,
-            'product_price' => $product->product_price,
-            'product_image' => $product->product_image,
-            'order_id' => $basket->id,
+    {
+        try {
+        $request->validate([
+            'quantity' => 'required|integer|min:1'
+        ], [
+            'quantity.required' => 'Ürün adedi belirtilmelidir.',
+            'quantity.integer' => 'Ürün adedi sayı olmalıdır.',
+            'quantity.min' => 'Ürün adedi en az 1 olmalıdır.'
         ]);
+        //tokenin validasyonunu da ekle!!
+
+        
+        $product = Product::where('product_sku', $product_sku)->first();
+
+        if (!$product) {
+            return response()->json(['error' => 'Ürün bulunamadı'], 404);
+        }
+
+        $response = Http::get("http://host.docker.internal:3000/stock/{$product->product_sku}");
+
+        if ($response->failed()) {
+            return response()->json(['error' => 'Servise ulaşılamadı'], 500);
+        }
+
+        $stockData = $response->json();
+        if (!isset($stockData['stores'])) {
+            return response()->json(['error' => 'Servis yanıtı geçersiz'], 500);
+        }
+
+        $totalStock = collect($stockData['stores'])->sum('stock');
+        if ($totalStock < $request->quantity) {
+            return response()->json(['error' => 'Yeterli stok bulunmamaktadır.'], 400);
+        }
+
+        $customerId = Session::get('customer_id');
+        if (!$customerId) {
+            if (Auth::check()) {
+                $customerId = Auth::id();
+            } else {
+                $customerId = mt_rand(10000000, 99999999);
+            }
+            Session::put('customer_id', $customerId);
+        }
+
+        $basket = Basket::firstOrCreate([
+            'customer_id' => $customerId,
+            'is_active' => 1
+        ]);
+
+        $basketItem = BasketItem::where('order_id', $basket->id)
+            ->where('product_sku', $product->product_sku)
+            ->first();
+
+        if ($basketItem) {
+            if ($basketItem->product_piece + $request->quantity > $totalStock) {
+                return response()->json(['error' => 'Yeterli stok yok.'], 400);
+            }
+            $basketItem->increment('product_piece', $request->quantity);
+        } else {
+            BasketItem::create([
+                'product_name' => $product->product_name,
+                'product_sku' => $product->product_sku,
+                'product_piece' => $request->quantity,
+                'product_price' => $product->product_price,
+                'product_image' => $product->product_image,
+                'order_id' => $basket->id,
+            ]);
+        }
+
+        $cartCount = BasketItem::where('order_id', $basket->id)->sum('product_piece');
+            
+        return response()->json(['success' => 'Ürün sepete eklendi!', 'cartCount' => $cartCount]);
+        } catch (TokenMismatchException $exception) {
+            return response()->json(['error' => 'CSRF token uyuşmazlığı. Lütfen sayfayı yenileyin ve tekrar deneyin.'], 419);
+        }
     }
-
-    return response()->json(['success' => 'Ürün sepete eklendi!']);
-}
-
 
     public function delete($id)
     {
@@ -188,10 +197,15 @@ class BasketController extends Controller
                 usort($stockData['stores'], function($a, $b) {
                     return $a['store_priority'] - $b['store_priority'];
                 });
+                
     
                 $totalStock = 0;
                 $requestedQuantity = $item->product_piece;
                 foreach ($stockData['stores'] as $store) {
+                    $isActiveStore = DB::table('stores')->where('id', $store['store_id'])->where('is_active',1)->exists();
+                if (!$isActiveStore) {
+                    continue; 
+                }
                     
                     $dailyTotal = DB::table('order_lines')
                     ->where('store_id', $store['store_id']) 
@@ -259,6 +273,7 @@ class BasketController extends Controller
             foreach ($groupedItems as $store => $items) {
                 $orderLinesData = [];
                 foreach ($items as $item) {
+                    
                     for ($i = 0; $i < $item->product_piece; $i++) {
                         $orderLinesData[] = [
                             'product_sku' => $item->product_sku,
@@ -327,6 +342,7 @@ class BasketController extends Controller
         foreach ($cartItems as $item) {
             $totalPrice += ($item->product_price * $item->product_piece);
         }
+        
         $data = compact('cartItems', 'totalPrice');
         return view('cart_approve', $data);
     }
@@ -334,26 +350,27 @@ class BasketController extends Controller
     
 
     public function update(Request $request, $id)
-{
-    $basketItem = BasketItem::find($id);
+    {
+        $basketItem = BasketItem::find($id);
 
-    if ($basketItem) {
-        $basketItem->product_piece = $request->adet;
-        $basketItem->save();
+        if ($basketItem) {
+            $basketItem->product_piece = $request->adet;
+            $basketItem->save();
 
-        $basket = Basket::find($basketItem->order_id);
-        $cartItems = BasketItem::where('order_id', $basket->id)->get();
+            $basket = Basket::find($basketItem->order_id);
+            $cartItems = BasketItem::where('order_id', $basket->id)->get();
 
-        $totalPrice = 0;
-        foreach ($cartItems as $item) {
-            $totalPrice += ($item->product_price * $item->product_piece);
+            $totalPrice = 0;
+            foreach ($cartItems as $item) {
+                $totalPrice += ($item->product_price * $item->product_piece);
+            }
+
+            return response()->json(['success' => 'Sepet güncellendi.', 'totalPrice' => $totalPrice]);
         }
 
-        return response()->json(['success' => 'Sepet güncellendi.', 'totalPrice' => $totalPrice]);
+        return response()->json(['error' => 'Ürün bulunamadı.'], 404);
     }
 
-    return response()->json(['error' => 'Ürün bulunamadı.'], 404);
-}
 
 
 }

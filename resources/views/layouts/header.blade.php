@@ -25,18 +25,24 @@
             <input class="search-input" type="search" name="query" placeholder="Ara" aria-label="Ara">
         </form>
         <ul class="navbar-nav ms-auto">
-            <li class="nav-item"><a class="nav-link" href="{{route('login')}}"><i class="fas fa-user"></i> Giriş Yap</a></li>
+        @auth
+        <li class="nav-item"><a class="nav-link" href="{{route('admin.logout')}}"> Çıkış Yap</a></li>
+   
+    @endauth   
+    @guest
+    <li class="nav-item"><a class="nav-link" href="{{route('login')}}"> Giriş Yap</a></li>
+    @endguest
             <li class="nav-item"><a class="nav-link" href="{{route('sepet.index')}}">
-                    <i class="fas fa-shopping-cart"></i> Sepetim
-                    <span id="sepet-sayisi" class="badge bg-danger">{{ $sepetSayisi ?? 0 }}</span>
-                </a></li>
-            <li class="nav-item"><a class="nav-link" href="{{route('orders.index')}}"><i class="fas fa-shopping-cart"></i>Siparişlerim</a></li>
-            @auth
-    <form action="{{ route('admin.logout') }}" method="POST" class="logout-form">
-        @csrf
-        <button type="submit" class="logout-btn">Çıkış</button>
-    </form>
-    @endauth
+                 Sepetim
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-light text-dark">
+                {{ $sepetSayisi ?? 0 }}
+    
+  </span>
+                
+            </a></li>
+                
+            <li class="nav-item"><a class="nav-link" href="{{route('orders.index')}}">Siparişlerim</a></li>
+           
         </ul>
     </div>
     
@@ -47,13 +53,13 @@
     <div class="filter-container">
     <div class="filter-dropdown">
         <button class="filter-button">Kadın <span class="arrow">▼</span></button>
-        <div class="filter-options category">
+        <div class="filter-options ">
             <li><a class="category" href="{{ route('category.product', ['category_slug' => 'kadın-çanta']) }}">Kadın Çanta</a></li>
             <li><a class="category" href="{{ route('category.product', ['category_slug' => 'kadın-ayakkabı']) }}">Kadın Ayakkkabı</a></li>
             <li><a class="category" href="{{ route('category.product', ['category_slug' => 'kadın-giyim']) }}">Kadın Giyim</a></li>
             <li><a class="category" href="{{ route('category.product', ['category_slug' => 'günlük-ayakkabı']) }}">Günlük Ayakkabı</a></li>
             <li><a class="category" href="{{ route('category.product', ['category_slug' => 'ayakkabı']) }}">Spor Ayakkabı</a></li>
-            <li><a class="category" href="{{ route('category.product', ['category_slug' => 'canta']) }}">Bot</a></li>
+            <li><a class="category" href="{{ route('category.product', ['category_slug' => 'bot']) }}">Bot</a></li>
             <li><a class="category" href="{{ route('category.product', ['category_slug' => 'giyim']) }}">Tişört</a></li>
             <li><a class="category" href="{{ route('category.product', ['category_slug' => 'ayakkabı']) }}">Eşofman</a></li>
          </div>
@@ -102,6 +108,12 @@
             event.preventDefault();
         }
     });
+
+    function updateCartCount(count) {
+        document.getElementById('sepet-sayisi').textContent = count;
+    }
+    
+
 </script>
 
 </body>

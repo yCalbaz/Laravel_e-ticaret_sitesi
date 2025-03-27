@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\OrderBatch;
 use App\Models\OrderCanceled;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
@@ -24,7 +25,7 @@ class OrderDetailController extends Controller
         }
 
        
-        $orders = OrderBatch::with('orderLines')->where('customer_id', $customer)->get();
+        $orders = OrderBatch::with('orderLines')->where('customer_id', $customer)->orderBy('created_at', 'desc')->get();
 
         return view('order_details', compact('orders'));
     }
@@ -44,35 +45,51 @@ class OrderDetailController extends Controller
 
     public function showReturnForm(Request $request)
     {
-        return view('order_canceled_form');
+        $orderId = $request->id;
+        dd($orderId);
+        $productSku = $request->product_sku; 
+        $productPrice = $request->product_price;
+    
+        $order = OrderBatch::find($orderId);
+        if (!$order) {
+            return back()->with('error', 'Sipariş bulunamadı.');
+        }
+    
+        $fifteenDaysAgo = Carbon::now()->subDays(15);
+        if ($order->created_at < $fifteenDaysAgo) {
+            return back()->with('error', 'Bu sipariş için iade süresi dolmuştur.');
+        }
+    
+        return view('order_canceled_form', compact('orderId', 'productSku', 'productPrice')); 
     }
 
     public function processReturn(Request $request)
     {
-        //dd("fonksiyona girdi");
         $request->validate([
-            dd($request),
             'order_id' => 'required',
             'product_sku' => 'required',
             'details' => 'required|string',
         ]);
-
+    
         $order = OrderBatch::where('id', $request->order_id)->first();
-        if (!$order) { 
+        if (!$order) {
             return back()->with('error', 'Sipariş bulunamadı.');
         }
-
+    
+        $orderLine = $order->orderLines()->where('product_sku', $request->product_sku)->first();
+        $productImage = $orderLine ? $orderLine->product_image : null;
+        $productPrice = $orderLine ? $orderLine->product_price : 0;
+    
         OrderCanceled::create([
             'order_id' => $request->order_id,
             'product_sku' => $request->product_sku,
             'details' => $request->details,
-            'store_id'=>$request->store_id,
-            'product_price' => $order->orderLines->where('product_sku', $request->product_sku)->first()->product_price ?? 0,
-            'product_image'=>$order->orderLines->where('product_image',$request->product_sku)->first()->product_image ?? 0,
-
+            'store_id' => $request->store_id,
+            'product_price' => $productPrice,
+            'product_image' => $productImage,
             'customer_id' => Auth::user()->customer_id,
         ]);
-
+    
         return redirect()->route('orders.index')->with('success', 'İade talebiniz alındı.');
     }
 }

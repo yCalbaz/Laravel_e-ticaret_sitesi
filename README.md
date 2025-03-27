@@ -5,9 +5,11 @@ Bu proje, Laravel, Go ve Docker kullanılarak geliştirilmiştir. Kullanıcılar
 - Ürün ekleme, düzenleme ve silme
 - Depo yönetimi ve stok takibi
 - Sepet ve ödeme işlemleri
+- Sipariş detaylarını görme ve iade etme seçeneği
 - Admin paneli üzerinden yönetim
 - Satıcı paneli üzerinden ürün yönetimi
 - Depoya sipariş atama ve stoktan düşme
+
 
 # Kurulum
 ## Gereksinimler
@@ -32,3 +34,4 @@ Bu proje, Laravel, Go ve Docker kullanılarak geliştirilmiştir. Kullanıcılar
 - MySQL: Veritabanı yönetimi
 - Docker: Proje konteynerlemesi ve yönetimi
 - Vite: JavaScript derleyicisi
+- Html / Css

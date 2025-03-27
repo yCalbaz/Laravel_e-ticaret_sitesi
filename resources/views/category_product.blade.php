@@ -32,26 +32,57 @@
 @include('layouts.footer')
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    function addCart(productSku) {
-        $.ajax({
-            url: "{{ route('cart.add', ':sku') }}".replace(':sku', productSku), 
-            type: "POST",
-            data: {
-                _token: "{{ csrf_token() }}",
-                quantity: 1
-            },
-            success: function (response) {
-                console.log("Başarıyla eklendi:", response);
-                alert("Ürün sepete eklendi!");
-            },
-            error: function (xhr) {
-                console.log("Hata oluştu! Durum kodu:", xhr.status);
-                console.log("Hata mesajı:", xhr.responseText);
-                alert("Hata oluştu! " + xhr.responseText);
-            }
-        });
-    }
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        function addCart(productSku) {
+            
+            $.ajax({
+                url: "{{ route('cart.add', ':sku') }}".replace(':sku', productSku),
+                type: "POST",
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    quantity: 1
+                },
+                success: function (response) {
+                    console.log("Başarıyla eklendi:", response);
+                    const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: "btn btn-success",
+                    cancelButton: "btn btn-danger"
+                },
+                buttonsStyling: false
+                });
+                swalWithBootstrapButtons.fire({
+                title: "Ürün Sepete Eklendi",
+                text: "Alışverişe Devammı Etmek İstersin Sepete Gitmek Mi",
+                icon: "success",
+                showCancelButton: true,
+                confirmButtonText: "Devam et",
+                cancelButtonText: "Sepete Git",
+                reverseButtons: true
+                }).then((result) => {
+                    if (result.dismiss === Swal.DismissReason.cancel) {
+                        
+                        window.location.href = "/cart"; 
+                    }
+                });
+                    updateCartCount(response.cartCount);
+                },
+                error: function (xhr) {
+                    console.log("Hata oluştu! Durum kodu:", xhr.status);
+                    console.log("Hata mesajı:", xhr.responseText);
+                    Swal.fire({
+                    title: "Hata oluştu! Daha Sonra Tekrar Deneyiniz ",
+                    icon: "warning"
+                    });
+                    alert("Hata oluştu! " + xhr.responseText);
+                }
+            });
+           
+
+        
+        }
 
     $(document).ready(function() {
     $('.category-filter').change(function() {
