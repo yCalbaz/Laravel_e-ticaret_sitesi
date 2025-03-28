@@ -33,7 +33,6 @@
             <tr>
                 <th>Sipariş ID</th>
                 <th>Adres</th>
-                <th>Sipariş Durumu</th>
                 
             </tr>
         </thead>
@@ -42,7 +41,6 @@
                 <tr>
                     <td>{{ $order->id }}</td>
                     <td>{{ $order->customer_address }}</td>
-                    <td>{{ $order->order_status }}</td>
                     <td>
                         <a href="{{ route('order.showDetails', $order->id) }}" class="btn btn-info btn-sm">
                             Detaylar

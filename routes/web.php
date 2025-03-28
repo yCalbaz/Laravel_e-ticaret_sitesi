@@ -32,6 +32,9 @@ Route::get('/logout', [AuthController::class, 'logout'])->name('admin.logout');
 Route::middleware(['auth'])->group(function () {
     Route::get('/adminPanel', [ManagerController::class, 'showAdminPanel'])->name('adminPanel'); 
     Route::get('/saticiPanel', [ManagerController::class, 'showSaticiPanel'])->name('saticiPanel');
+    Route::get('/saticiPanel', [ManagerController::class, 'showSellerStores'])->name('saticiPanel'); 
+    Route::get('/seller/orders/{storeId}', [ManagerController::class, 'showSellerOrders'])->name('seller.orders');
+    Route::post('/seller/orders/{lineId}/status', [ManagerController::class, 'updateLineStatus'])->name('seller.updateLineStatus');
     Route::get('/musteriPanel', [ManagerController::class, 'showMusteriPanel'])->name('musteriPanel'); 
  
     Route::get('/urunPanel', [HomeProductController::class, 'index'])->name('product.index.form');
@@ -41,7 +44,6 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/uyeler/{id}', [MemberController::class, 'delete'])->name('members.delete');
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
 });
-
 
 Route::post('/products', [HomeProductController::class, 'store'])->name('products.store'); 
 Route::post('/store', [StoreController::class, 'store'])->name('store.store');
@@ -53,6 +55,7 @@ Route::get('/cart', [BasketController::class, 'index'])->name('cart.index');
 Route::delete('/cart/{id}', [BasketController::class, 'delete'])->name('cart.delete');
 Route::post('/sepet/onay', [BasketController::class, 'approvl'])->name('sepet.approvl');
 Route::get('/sepet/onay', [BasketController::class, 'approvl'])->name('sepet.approvl');
+
 
 
 Route::get('/musteri/uye-ol', [AuthController::class, 'showRegisterForm'])->name('musteri.uye_ol');
@@ -67,8 +70,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/siparisler', [OrderDetailController::class, 'index'])->name('orders.index');
     Route::get('/siparis/{orderId}/detaylar', [OrderDetailController::class, 'showDetails'])->name('order.showDetails');
     Route::get('/siparis/{orderId}/iade', [OrderDetailController::class, 'showReturnForm'])->name('order.returnForm');
-    Route::post('/siparis/iade', [OrderDetailController::class, 'processReturn'])->name('order.processReturn');
-    Route::get('/satici-panel', [OrderDetailController::class, 'inComingOrders'])->name('satici.siparisler');});
+    Route::post('/siparis/iade', [OrderDetailController::class, 'processReturn'])->name('order.processReturn');});
 
 Route::put('/sepet/guncelle/{id}', [BasketController::class, 'update'])->name('cart.update');
 Route::get('/search', [App\Http\Controllers\ProductController::class, 'search'])->name('search');

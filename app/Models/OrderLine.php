@@ -20,6 +20,7 @@ class OrderLine extends Model
         'order_id',
         'order_batch_id',
         'quantity',
+        'order_status'
     ];
     
     public function orderBatch()
@@ -34,4 +35,5 @@ class OrderLine extends Model
     {
         return $this->belongsTo(Store::class, 'store_id');
     }
+    
 }

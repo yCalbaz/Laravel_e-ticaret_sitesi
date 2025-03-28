@@ -19,33 +19,32 @@
         <a class="navbar-brand" href="/">
             <img src="{{ asset('storage/images/flo-logo-Photoroom.png') }}" alt="" height="50">
         </a>
-    
-        
-        <form class="search-form" id="searchForm" action="{{ route('search') }}" method="GET">
-            <input class="search-input" type="search" name="query" placeholder="Ara" aria-label="Ara">
-        </form>
-        <ul class="navbar-nav ms-auto">
-        @auth
-        <li class="nav-item"><a class="nav-link" href="{{route('admin.logout')}}"> Çıkış Yap</a></li> 
-   
-    @endauth   
-    @guest
-    <li class="nav-item"><a class="nav-link" href="{{route('login')}}"> Giriş Yap</a></li>
-    @endguest
-            <li class="nav-item"><a class="nav-link" href="{{route('sepet.index')}}">
-                 Sepetim
-                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-light text-dark">
-                {{ $sepetSayisi ?? 0 }}
-    
-  </span>
-                
-            </a></li>
-                
-            <li class="nav-item"><a class="nav-link" href="{{route('orders.index')}}">Siparişlerim</a></li>
-           
-        </ul>
+
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <form class="search-form" id="searchForm" action="{{ route('search') }}" method="GET">
+                <input class="search-input" type="search" name="query" placeholder="Ara" aria-label="Ara">
+            </form>
+            <ul class="navbar-nav ms-auto">
+                @auth
+                    <li class="nav-item"><a class="nav-link" href="{{ route('admin.logout') }}"> Çıkış Yap</a></li>
+                @endauth
+                @guest
+                    <li class="nav-item"><a class="nav-link" href="{{ route('login') }}"> Giriş Yap</a></li>
+                @endguest
+                <li class="nav-item"><a class="nav-link" href="{{ route('sepet.index') }}">
+                        Sepetim
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-light text-dark">
+                            {{ $sepetSayisi ?? 0 }}
+                        </span>
+                    </a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ route('orders.index') }}">Siparişlerim</a></li>
+            </ul>
+        </div>
     </div>
-    
 </nav>
 
 <nav class="category-menu">
@@ -101,8 +100,9 @@
     
     </div>
 </nav>
-
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script>
+  
     document.getElementById('searchForm').addEventListener('submit', function(event) {
         if (!this.querySelector('input[name="query"]').value) {
             event.preventDefault();

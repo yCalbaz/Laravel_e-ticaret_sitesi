@@ -4,53 +4,68 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ürün</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="icon" href="{{ asset('storage/images/flo-logo-Photoroom.png') }}" type="image/png">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 </head>
-<body> 
+<body>
 
 @include('layouts.panel_header')
+
 <div class="container mt-5">
-    <div class="card shadow-sm">
-        <div class="card-body"> 
-            <h2 classs="text-center mb-4">ÜRÜN EKLE </h2>
-            @include('components.alert')  
+    <div class="card shadow-lg">
+        <div class="card-body p-5">
+            <h2 class="text-center mb-4">ÜRÜN EKLE</h2>
+            @include('components.alert')
+
             <form action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="mb-3">
-                    <label class="form-label">Ürün adı </label>
-                    <input type="text" name="product_name" class="form-control" required>
+                    <label for="product_name" class="form-label">Ürün Adı</label>
+                    <input type="text" name="product_name" id="product_name" class="form-control form-control-lg" required>
+                    @error('product_name')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label"> Ürün kodu </label>
-                    <input type="text" name="product_sku" class="form-control" required >
+                    <label for="product_sku" class="form-label">Ürün Kodu</label>
+                    <input type="text" name="product_sku" id="product_sku" class="form-control form-control-lg" required>
+                    @error('product_sku')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label"> Ürün fiyatı </label>
-                    <input type="number" name="product_price" class="form-control" step="0.01" required >
+                    <label for="product_price" class="form-label">Ürün Fiyatı</label>
+                    <input type="number" name="product_price" id="product_price" class="form-control form-control-lg" step="0.01" required>
+                    @error('product_price')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label"> Ürün resmi </label>
-                    <input type="file" name="product_image" class="form-control" accept="image/*" required>
+                    <label for="product_image" class="form-label">Ürün Resmi</label>
+                    <input type="file" name="product_image" id="product_image" class="form-control form-control-lg" accept="image/*" required>
+                    @error('product_image')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
                 </div>
-                <div class="mb-3">
-                    <label class="form-label">Kategori</label>
-                    
 
-                    <select name="category_ids[]" id="categorySelect" class="form-control select2-multiple" multiple required>
-                        
+                <div class="mb-3">
+                    <label for="categorySelect" class="form-label">Kategori</label>
+                    <select name="category_ids[]" id="categorySelect" class="form-control select2-multiple form-control-lg" multiple required>
                         @foreach($categories as $category)
                             <option value="{{ $category->id }}">{{ $category->category_name }}</option>
                         @endforeach
                     </select>
-                    <div id="selectedCategories" class="mt-2"></div> 
+                    <div id="selectedCategories" class="mt-2"></div>
+                    @error('category_ids')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
                 </div>
 
-                <button type="submit" class="btn btn-primary w-100"> ÜRÜNÜ EKLE </button>
+                <button type="submit" class="btn btn-primary btn-lg w-100">ÜRÜNÜ EKLE</button>
             </form>
         </div>
     </div>
@@ -74,6 +89,12 @@
         cursor: pointer;
         transition: background-color 0.3s ease;
     }
+
+    .form-control-lg {
+        padding: 0.75rem 1rem;
+        font-size: 1.1rem;
+        border-radius: 0.3rem;
+    }
 </style>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -85,7 +106,7 @@
         $('#categorySelect').on('change', function() {
             var selectedOptions = $(this).select2('data');
             var selectedCategoriesDiv = $('#selectedCategories');
-            selectedCategoriesDiv.empty(); // Önceki seçimleri temizle
+            selectedCategoriesDiv.empty();
 
             selectedOptions.forEach(function(option) {
                 var categoryName = option.text;

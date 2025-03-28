@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sayfa Başlığı</title>
+    @vite(['resources/js/app.js', 'resources/css/style.css'])
     <link rel="icon" href="{{ asset('storage/images/flo-logo-Photoroom.png') }}" type="image/png">
 </head>
 <body>
@@ -15,7 +16,7 @@
 
 <nav class="navbar navbar-expand-lg navbar-light custom-header">
     <div class="container d-flex align-items-center">
-        <a class="navbar-brand" href="/">
+        <a class="navbar-brand" href="/saticiPanel">
             <img src="{{ asset('storage/images/flo-logo-Photoroom.png') }}" alt="" height="50">
         </a>
     

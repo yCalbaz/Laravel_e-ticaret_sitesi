@@ -77,6 +77,7 @@ body {
 }
 
 /*header cssleri*/
+
 .custom-header {
     background-color: #fff;
 }
@@ -103,9 +104,11 @@ body {
 } 
 
 .search-form {
-    width: 300px;
+    width: 100%; /* Değiştirildi */
+    max-width: 600px; /* Değiştirildi */
+    margin: 10px auto; /* Değiştirildi */
     height: 40px;
-    margin-left: 20px;
+    /* margin-left: 20px; */ /* Kaldırıldı */
 }
 
 .search-input {
@@ -156,6 +159,35 @@ body {
 .menu {
     display: flex;
     align-items: center;
+}
+
+.navbar-nav { 
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.navbar-nav .nav-item { 
+    margin-left: 10px;
+}
+
+@media (max-width: 768px) {
+    .navbar-collapse {
+        display: none;
+    }
+
+    .navbar-collapse.show {
+        display: block; 
+    }
+
+    .navbar-nav {
+        flex-direction: column; 
+        align-items: flex-start; 
+    }
+
+    .navbar-nav .nav-item {
+        margin: 5px 0;
+    }
 }
 /**/
 .filter-section {
@@ -303,4 +335,25 @@ body {
 .social-login-btn img {
     margin-right: 8px;
     height: 20px;
+}
+
+/*satıcı panel css*/
+.order_image {
+    max-width: 100px;
+    max-height: 100px;
+    object-fit: contain;
+}
+.order-card {
+    display: flex;
+    margin-bottom: 20px;
+}
+.order-card h4 {
+    width: 20%;
+    padding-right: 20px;
+}
+.order-card table {
+    width: 80%;
+}
+.card-body > .card {
+    width: 100%; 
 }

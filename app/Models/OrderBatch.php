@@ -20,7 +20,6 @@ class OrderBatch extends Model
         'updated_at',
         'created_at',
         'order_id',
-        'order_status'
     ];
     public function orderLines()
     {

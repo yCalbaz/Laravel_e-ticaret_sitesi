@@ -43,12 +43,12 @@ class OrderDetailController extends Controller
     public function showDetails($orderId)
     {
         
-        $order = OrderBatch::with(['orderLines.product'])->where('order_id', $orderId)->first();
+        $order = OrderBatch::with(['orderLines.product', 'orderLines.store'])->where('order_id', $orderId)->first();
 
         if (!$order) {
             return back()->with('error', 'Sipariş bulunamadı.');
         }
-
+    
         return view('order_details_show', compact('order'));
     }
 
@@ -101,27 +101,6 @@ class OrderDetailController extends Controller
     
         return redirect()->route('orders.index')->with('success', 'İade talebiniz alındı.');
     }
-    public function inComingOrders() {
-        if (session('user_authority') !== self::SELLER_ROLE_ID) {
-            return redirect()->route('login');
-        }
     
-        // Oturum açmış kullanıcının ID'sini al
-        $memberId = Auth::id();
-    
-        // Kullanıcının yetkili olduğu depoları sorgula
-        $yetkiliDepolar = DB::table('member_store')
-            ->where('member_id', $memberId)
-            ->pluck('store_id')
-            ->toArray();
-    
-        // Bu depolara ait siparişleri sorgula
-        $siparisler = DB::table('order_lines')
-        ->whereIn('store_id', $yetkiliDepolar)
-        ->get();
-        // Depoları ve siparişleri görünüme gönder
-        return view('seller_panel', ['siparisler' => $siparisler]);
-}
-        
     
 }

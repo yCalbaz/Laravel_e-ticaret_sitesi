@@ -31,7 +31,7 @@
     @foreach ($groupedOrderLines as $storeId => $lines)
         <div class="card mb-3">
             <div class="card-header">
-            Satıcı: {{ $lines->first()->store->depo_name ?? 'Satıcı Bilgisi Bulunamadı' }}  <span style="margin: 0 20px">
+            Satıcı: {{ $lines->first()->store->store_name ?? 'Satıcı Bilgisi Bulunamadı' }}  <span style="margin: 0 20px">
             <a href="{{ route('order.returnForm', ['orderId' => $order->id, 'store_id' => $storeId]) }}" class="btn btn-danger btn-sm">
                     Siparişi İptal Et
                 </a>
@@ -43,6 +43,8 @@
                             <th>Ürün Resmi</th>
                             <th>Ürün Adı</th>
                             <th>Fiyat</th>
+                            <th>Sipariş Durumu</th>
+                            
                         </tr>
                     </thead>
                     <tbody>
@@ -63,6 +65,7 @@
                                         Ürün Bulunamadı.
                                     @endif
                                 </td>
+                                <td>{{ $line->order_status }}</td>
                             </tr>
                         @endforeach
                     </tbody>
