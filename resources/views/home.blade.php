@@ -61,7 +61,7 @@
                             <input type="hidden" name="product_price" value="{{ $product->product_price }}">
                             <input type="hidden" name="product_image" value="{{ $product->image }}">
                             <input type="hidden" name="product_piece" value="1">
-                            <button type="button" class="btn btn-primary btn-sm" onclick="addCart('{{ $product->product_sku }}')">Sepete Ekle</button>
+                            <button type="button" class="cart-add-btn " onclick="addCart('{{ $product->product_sku }}')">Sepete Ekle</button>
                         </div>
                     </div>
                 </div>
@@ -136,8 +136,9 @@
                 reverseButtons: true
                 }).then((result) => {
                     if (result.dismiss === Swal.DismissReason.cancel) {
-                        
+                    
                         window.location.href = "/cart"; 
+                        
                     }
                 });
                     updateCartCount(response.cartCount);

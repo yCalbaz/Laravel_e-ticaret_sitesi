@@ -14,10 +14,6 @@
 <div class="container mt-5">
     <div class="card shadow-sm">
         <div class="card-body"> 
-            <form action="{{ route('admin.logout') }}" method="POST" class="logout-form">
-                @csrf
-                <button type="submit" class="logout-btn" >Çıkış</button>
-            </form>
             <h2 classs="text-center mb-4">ÜRÜN EKLE </h2>
             @include('components.alert')  
             <form action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data">

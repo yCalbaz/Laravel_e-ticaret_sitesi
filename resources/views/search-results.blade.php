@@ -24,7 +24,7 @@
                             <div class="card-body">
                                 <h5 class="card-title">{{ $product->product_name }}</h5>
                                 <p class="card-text font-weight-bold">{{ $product->product_price }} TL</p>
-                                <button type="submit" class="btn btn-primary btn-sm" onclick="addCart( '{{$product->product_sku }}')">Sepete Ekle</button>
+                                <button type="submit" class="cart-add-btn" onclick="addCart( '{{$product->product_sku }}')">Sepete Ekle</button>
                             </div>
                         </div>
                     </div>

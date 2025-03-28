@@ -3,6 +3,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 
 class ManagerController extends Controller
@@ -24,7 +26,15 @@ class ManagerController extends Controller
         if(session('user_authority') !== self::SELLER_ROLE_ID){
             return redirect()->route('login');
         }
-        return view('seller_panel');
+        $memberId = Auth::id();
+        $stores = DB::table('stores')
+        ->join('member_store', 'stores.id', '=', 'member_store.store_id')
+        ->where('member_store.member_id', $memberId)
+        ->select('stores.*')
+        ->get();
+
+        
+        return view('seller_panel', ['stores' => $stores]);
     }
 
     public function showMusteriPanel()

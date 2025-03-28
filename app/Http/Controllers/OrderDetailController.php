@@ -7,11 +7,13 @@ use App\Models\OrderCanceled;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 
 
 class OrderDetailController extends Controller
 {
+    const SELLER_ROLE_ID = 2;
     public function index()
     {
         if (Auth::check()) {
@@ -24,11 +26,18 @@ class OrderDetailController extends Controller
             return view('order_details', ['orders' => []]);
         }
 
-       
-        $orders = OrderBatch::with('orderLines')->where('customer_id', $customer)->orderBy('created_at', 'desc')->get();
+        $orders = OrderBatch::with('orderLines.product')->where('customer_id', $customer)->orderBy('created_at', 'desc')->get();
+
+        
+        foreach ($orders as $order) {
+            $order->totalPrice = $order->orderLines->sum(function ($line) {
+                return $line->product_price * $line->product_piece;
+            });
+        }
 
         return view('order_details', compact('orders'));
-    }
+    
+}
     
 
     public function showDetails($orderId)
@@ -92,4 +101,27 @@ class OrderDetailController extends Controller
     
         return redirect()->route('orders.index')->with('success', 'İade talebiniz alındı.');
     }
+    public function inComingOrders() {
+        if (session('user_authority') !== self::SELLER_ROLE_ID) {
+            return redirect()->route('login');
+        }
+    
+        // Oturum açmış kullanıcının ID'sini al
+        $memberId = Auth::id();
+    
+        // Kullanıcının yetkili olduğu depoları sorgula
+        $yetkiliDepolar = DB::table('member_store')
+            ->where('member_id', $memberId)
+            ->pluck('store_id')
+            ->toArray();
+    
+        // Bu depolara ait siparişleri sorgula
+        $siparisler = DB::table('order_lines')
+        ->whereIn('store_id', $yetkiliDepolar)
+        ->get();
+        // Depoları ve siparişleri görünüme gönder
+        return view('seller_panel', ['siparisler' => $siparisler]);
+}
+        
+    
 }

@@ -18,15 +18,23 @@
         {{ session('success') }}
     </div>
 @endif
-
 <div class="container mt-5">
-    <h1>Siparişlerim</h1>
+    <h2>Tüm Siparişlerim:</h2>
+    
+
+<div class="card mb-3">
+            <div class="card-header">
+            Tarih: <br>
+            Toplam:
+            </div>
+            <div class="card-body">
     <table class="table">
         <thead>
             <tr>
                 <th>Sipariş ID</th>
                 <th>Adres</th>
-                <th>Tarih</th>
+                <th>Sipariş Durumu</th>
+                
             </tr>
         </thead>
         <tbody>
@@ -34,10 +42,10 @@
                 <tr>
                     <td>{{ $order->id }}</td>
                     <td>{{ $order->customer_address }}</td>
-                    <td>{{ $order->created_at }}</td>
+                    <td>{{ $order->order_status }}</td>
                     <td>
                         <a href="{{ route('order.showDetails', $order->id) }}" class="btn btn-info btn-sm">
-                            Ayrıntılar
+                            Detaylar
                         </a>
                     </td>
                 </tr>
@@ -45,6 +53,6 @@
         </tbody>
     </table> 
 </div>
-
+</div>
 </body>
 </html>

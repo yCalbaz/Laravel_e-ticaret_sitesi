@@ -8,33 +8,40 @@
 </head>
 <body>
 
-<style>
-    .custom-navbar {
-        background-color: white !important; 
-    }
-    .navbar-brand {
-        color: #ff671d !important; 
-        font-weight: 1000;
-        font-size: 55px;
-    }
-    .navbar-nav .nav-link {
-        color: black !important; 
-        font-weight: bold;
-        font-size: 25px;
-    }
-</style>
+<nav class="category-menu">
+<div class="container">
+</div>
+</nav>
 
-<nav class="navbar navbar-expand-lg navbar-light custom-navbar">
-    <div class="container">
-    <a class="navbar-brand" >
+<nav class="navbar navbar-expand-lg navbar-light custom-header">
+    <div class="container d-flex align-items-center">
+        <a class="navbar-brand" href="/">
             <img src="{{ asset('storage/images/flo-logo-Photoroom.png') }}" alt="" height="50">
         </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+    
         
+        
+        <ul class="navbar-nav ms-auto">
+        @auth
+        <li class="nav-item"><a class="nav-link" href="{{route('admin.logout')}}"> Çıkış Yap</a></li> 
+   
+    @endauth   
+    @guest
+    <li class="nav-item"><a class="nav-link" href="{{route('login')}}"> Giriş Yap</a></li>
+    @endguest
+            <li class="nav-item"><a class="nav-link" href="{{route('stock.index.form')}}">Stok Ekle</a></li>
+                
+            <li class="nav-item"><a class="nav-link" href="{{route('product.index.form')}}">Ürün Ekle</a></li>
+           
+        </ul>
     </div>
+    
 </nav>
+
+<nav class="category-menu">
+    <div class="container">
+</nav>
+
 
 </body>
 </html>

@@ -68,7 +68,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/siparis/{orderId}/detaylar', [OrderDetailController::class, 'showDetails'])->name('order.showDetails');
     Route::get('/siparis/{orderId}/iade', [OrderDetailController::class, 'showReturnForm'])->name('order.returnForm');
     Route::post('/siparis/iade', [OrderDetailController::class, 'processReturn'])->name('order.processReturn');
-});
+    Route::get('/satici-panel', [OrderDetailController::class, 'inComingOrders'])->name('satici.siparisler');});
 
 Route::put('/sepet/guncelle/{id}', [BasketController::class, 'update'])->name('cart.update');
 Route::get('/search', [App\Http\Controllers\ProductController::class, 'search'])->name('search');
@@ -78,3 +78,4 @@ Route::get('/get-products-by-category', [ProductController::class, 'getProductsB
 
 
 Route::get('/products/brand/{brand}', [ProductController::class, 'brand'])->name('products.brand'); 
+

@@ -286,3 +286,21 @@ body {
     height: 80px;
     width: 80px;
 }
+/*login */
+.social-login-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 8px 16px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 8px;
+    width: 100%;
+    text-decoration: none;
+    color: #333;
+}
+
+.social-login-btn img {
+    margin-right: 8px;
+    height: 20px;
+}

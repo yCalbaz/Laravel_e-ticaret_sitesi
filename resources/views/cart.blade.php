@@ -8,6 +8,9 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="icon" href="{{ asset('storage/images/flo-logo-Photoroom.png') }}" type="image/png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        
+    </style>
 </head>
 <body>
 
@@ -18,11 +21,11 @@
             {{ session('success') }}
         </div>
     @endif
-<div class="w3-grid">
-    <div class="row">
-        @if(isset($cartItems) && (is_array($cartItems) ? count($cartItems) > 0 : $cartItems->count() > 0))
-            <div class="col-md-9">
-                <h2>Sepetim ({{ count($cartItems) }} Ürün)</h2>
+    <h2>Sepetim ({{ count($cartItems) }} Ürün)</h2>
+    <div class="cart-container">
+        <div class="cart-items">
+            @if(isset($cartItems) && (is_array($cartItems) ? count($cartItems) > 0 : $cartItems->count() > 0))
+                
                 <div class="mb-4">
                     <div class="card custom-card-2" >
                         <div class="row g-0">
@@ -31,7 +34,7 @@
                                     <thead>
                                         <tr>
                                             <th></th>
-                                            <th>Ürün İsmi</th>
+                                            <th>Ürün İsmi</th> 
                                             <th>Fiyat</th>
                                             <th>Adet</th>
                                             <th></th>
@@ -65,15 +68,18 @@
                                     </tbody>
                                 </table>
                             </div>
-                            
-                        </div></div>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-9">
+            @else
+                <p class="text-center text-muted">Sepette ürün yok</p>
+            @endif
+        </div>
+        <div class="cart-summary-container">
+            @if(isset($cartItems) && (is_array($cartItems) ? count($cartItems) > 0 : $cartItems->count() > 0))
                 <div class="card custom-card-2">
                     <div class="row g-0">
-                        <h5>Sipariş Detay</h5>
+                        <h5>Sipariş Detayları:</h5>
                         <div class="col-md-12 cart-summary">
                             <p class=> Ürünler: <span id="total-price">{{ $totalPrice }}</span> TL</p>
                             <p class="cargo" > Kargo: <span id="total-price">45TL</span></p>
@@ -82,16 +88,13 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-12 text-center mt-3">
-                <a href="/" class="btn btn-secondary " style="background-color:rgba(255, 104, 29, 0.47); color: white; border: none;">Alışverişe Geri Dön</a>
-            </div>
-        @else
-            <p class="text-center text-muted">Sepette ürün yok</p>
-        @endif
+            @endif
+        </div>
+    </div>
+    <div class="col-12 text-center mt-3">
+        <a href="/" class="btn btn-secondary " style="background-color:rgba(255, 104, 29, 0.47); color: white; border: none;">Alışverişe Geri Dön</a>
     </div>
     <br>
-</div>
 </div>
 @include('layouts.footer')
 

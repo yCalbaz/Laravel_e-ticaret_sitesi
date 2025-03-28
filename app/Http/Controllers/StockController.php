@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Stock;
 use App\Models\Store;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class StockController extends Controller
 {
@@ -22,6 +24,17 @@ public function store(Request $request)
 
         if (!$storeExists) {
             return redirect()->back()->withErrors(['store_id' => 'Geçerli depo girin.']);
+        }
+
+     $memberId = Auth::id();
+
+    $authorityStores = DB::table('member_store')
+        ->where('member_id', $memberId)
+        ->pluck('store_id')
+        ->toArray();
+    
+        if (!in_array($request->store_id, $authorityStores)) {
+            return redirect()->back()->withErrors(['store_id' => 'Bu depoya stok ekleme yetkiniz yok.']);
         }
 
 

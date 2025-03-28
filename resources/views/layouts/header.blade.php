@@ -26,7 +26,7 @@
         </form>
         <ul class="navbar-nav ms-auto">
         @auth
-        <li class="nav-item"><a class="nav-link" href="{{route('admin.logout')}}"> Çıkış Yap</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{route('admin.logout')}}"> Çıkış Yap</a></li> 
    
     @endauth   
     @guest

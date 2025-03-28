@@ -23,7 +23,7 @@
             </div>
         @endif
 <div class="container mt-5">
-    <h1>Sipariş Detayları:</h1>
+    <h2>Sipariş Detayları:</h2>
     @php
         $groupedOrderLines = $order->orderLines->groupBy('store_id');
     @endphp
@@ -31,7 +31,10 @@
     @foreach ($groupedOrderLines as $storeId => $lines)
         <div class="card mb-3">
             <div class="card-header">
-            Satıcı: {{ $lines->first()->store->depo_name ?? 'Satıcı Bilgisi Bulunamadı' }}
+            Satıcı: {{ $lines->first()->store->depo_name ?? 'Satıcı Bilgisi Bulunamadı' }}  <span style="margin: 0 20px">
+            <a href="{{ route('order.returnForm', ['orderId' => $order->id, 'store_id' => $storeId]) }}" class="btn btn-danger btn-sm">
+                    Siparişi İptal Et
+                </a>
             </div>
             <div class="card-body">
                 <table class="table">
@@ -64,9 +67,7 @@
                         @endforeach
                     </tbody>
                 </table>
-                <a href="{{ route('order.returnForm', ['orderId' => $order->id, 'store_id' => $storeId]) }}" class="btn btn-danger btn-sm">
-                    Siparişi İptal Et
-                </a>
+                
             </div>
         </div>
     @endforeach

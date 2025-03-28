@@ -31,3 +31,14 @@
     width: 100%; 
     text-align: center;
 }
+.cart-container {
+    display: flex;
+}
+.cart-items {
+    flex: 2; 
+    margin-right: 20px; 
+}
+.cart-summary-container {
+    flex: 1;
+    width: 300px; 
+}

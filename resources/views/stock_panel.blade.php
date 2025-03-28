@@ -14,10 +14,7 @@
 <div class="container mt-5">
     <div class="card shadow-sm">
         <div class="card-body">
-            <form action="{{ route('admin.logout') }}" method="POST" class="logout-form">
-                @csrf
-                <button type="submit" class="logout-btn" >Çıkış</button>
-            </form>
+            
             <h2 class="text-center mb-4">Stok Ekle</h2>
 
             @include('components.alert')
