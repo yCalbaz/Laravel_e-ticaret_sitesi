@@ -15,8 +15,19 @@ class Stock extends Model
     protected $fillable = [
         'product_sku',
         'store_id',
-        'product_piece'
+        'product_piece',
+        'size_id'
     ];
 
     public $timestamps = false;
+
+    public function size()
+    {
+        return $this->belongsTo(Size::class, 'size_id');
+    }
+
+    public function product()
+    {
+        return $this->belongsTo(Product::class, 'product_sku', 'product_sku');
+    }
 }

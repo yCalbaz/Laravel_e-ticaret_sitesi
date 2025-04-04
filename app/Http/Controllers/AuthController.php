@@ -18,6 +18,9 @@ class AuthController extends Controller
         if(Auth::check()) {
             $user = Auth::user();
             Session::put('user_authority', $user->authority_id);
+            if ($user->authority_id== self::MUSTERI_ROLE_ID){
+                Session::put('customer_id', $user->customer_id);
+            }
             return $this->redirectUser($user);
         }
         return view('admin_panel_login'); 
@@ -33,6 +36,9 @@ class AuthController extends Controller
         if (Auth::guard('web')->attempt($credentials)) {
             $user = Auth::user();
             Session::put('user_authority', $user->authority_id);
+            if ($user->authority_id== self::MUSTERI_ROLE_ID){
+                Session::put('customer_id', $user->customer_id);
+            }
             return $this->redirectUser($user);
         }
 

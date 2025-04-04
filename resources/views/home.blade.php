@@ -11,7 +11,7 @@
 <body>
     @include('layouts.header')
 
-    <div class="container-fluid mt-5">
+    <div class="container-fluid mt-5 ">
         <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
             <ol class="carousel-indicators">
                 <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
@@ -20,13 +20,13 @@
             </ol>
             <div class="carousel-inner slay">
                 <div class="carousel-item active">
-                    <a href="{{ route('urun')}}"><img src="{{ asset('storage/images/slaydir3.png') }}" class="d-block w-100" alt="Slider 1"></a>
+                    <a href="{{ route('urun')}}"><img src="{{ asset('storage/images/slaydir1.png') }}" class="d-block w-100" alt="Slider 1"></a>
                 </div>
                 <div class="carousel-item">
-                    <a href="{{ route('urun')}}"><img src="{{ asset('storage/images/slaydir2.png') }}" class="d-block w-100" alt="Slider 2"></a>
+                    <a href="{{ route('urun')}}"><img src="{{ asset('storage/images/slaydir12.png') }}" class="d-block w-100" alt="Slider 2"></a>
                 </div>
                 <div class="carousel-item">
-                    <a href="{{ route('urun')}}"><img src="{{ asset('storage/images/slaydır0.png') }}" class="d-block w-100" alt="Slider 3"></a>
+                    <a href="{{ route('urun')}}"><img src="{{ asset('storage/images/slaydir13.png') }}" class="d-block w-100" alt="Slider 3"></a>
                 </div>
             </div>
             <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
@@ -40,12 +40,38 @@
         </div>
     </div>
 
-    <div class="container mt-5">
-        
+    <div class="container mt-5 ">
+    
+
+        <div class="container mt-5">
+            <a href="{{ route('products.brand', ['brand' => 'adidas']) }}">
+                <img src="{{ asset('storage/images/banner31.png') }}" class="img-fluid" alt="Banner">
+            </a>
+        </div>
+        <div class="mt-5 brand-container">
+            <div class="row brand-row">
+                <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-4">
+                    <a href="{{ route('products.brand', ['brand' => 'nike']) }}">
+                        <img src="{{ asset('storage/images/nike.png') }}" class="img-fluid" alt="nike">
+                    </a>
+                </div>
+                <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-4">
+                    <a href="{{ route('products.brand', ['brand' => 'adidas']) }}">
+                        <img src="{{ asset('storage/images/adidas.png') }}" class="img-fluid" alt="adidas">
+                    </a>
+                </div>
+                <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-4">
+                    <a href="{{ route('products.brand', ['brand' => 'lumberjack']) }}">
+                        <img src="{{ asset('storage/images/lumberjack.png') }}" class="img-fluid" alt="lumberjack">
+                    </a>
+                </div>
+            </div>
+            
+        </div>
 
         <h2>Popüler Ürünler</h2>
-<div class="container mt-5"> 
-            <div class="row" id="product-list">
+<div class="row justify-content-center" id="product-list"> 
+            
     
             @foreach($products as $product)
                 <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-4 d-flex justify-content-center">
@@ -67,96 +93,31 @@
                 </div>
             @endforeach
         </div>
-
-        <div class="mt-4">
+        <div class="container mt-5">
+    <div class="row">
+        <div class="col-md-6">
+            <img src="{{ asset('storage/images/afis11.png') }}" alt="Afiş 1" class="img-fluid"> 
+        </div>
+        <div class="col-md-6">
+            <img src="{{ asset('storage/images/afis4.png') }}" alt="Afiş 2" class="img-fluid">
+        </div>
+       
+        
+    </div>
+</div>
+<div class="container mt-5">
             <a href="{{ route('products.brand', ['brand' => 'adidas']) }}">
-                <img src="{{ asset('storage/images/banner2.png') }}" class="img-fluid" alt="Banner">
+                <img src="{{ asset('storage/images/banner12.png') }}" class="img-fluid" alt="Banner">
             </a>
         </div>
 
-        <div class="mt-5 brand-container">
-            <div class="row brand-row">
-                <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-4">
-                    <a href="{{ route('products.brand', ['brand' => 'nike']) }}">
-                        <img src="{{ asset('storage/images/nike.png') }}" class="img-fluid" alt="nike">
-                    </a>
-                </div>
-                <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-4">
-                    <a href="{{ route('products.brand', ['brand' => 'adidas']) }}">
-                        <img src="{{ asset('storage/images/adidas.png') }}" class="img-fluid" alt="adidas">
-                    </a>
-                </div>
-                <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-4">
-                    <a href="{{ route('products.brand', ['brand' => 'lumberjack']) }}">
-                        <img src="{{ asset('storage/images/lumberjack.png') }}" class="img-fluid" alt="lumberjack">
-                    </a>
-                </div>
-            </div>
-            <div class="mt-4">
-                <a href="#">
-                    <img src="{{ asset('storage/images/banner.png') }}" class="img-fluid" alt="Banner">
-                </a>
-            </div>
-        </div>
+
+        
         <br>
     </div> </div>
 
     @include('layouts.footer')
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-    <script>
-        function addCart(productSku) {
-            
-            $.ajax({
-                url: "{{ route('cart.add', ':sku') }}".replace(':sku', productSku),
-                type: "POST",
-                data: {
-                    _token: "{{ csrf_token() }}",
-                    quantity: 1
-                },
-                success: function (response) {
-                    console.log("Başarıyla eklendi:", response);
-                    const swalWithBootstrapButtons = Swal.mixin({
-                customClass: {
-                    confirmButton: "btn btn-success",
-                    cancelButton: "btn btn-danger"
-                },
-                buttonsStyling: false
-                });
-                swalWithBootstrapButtons.fire({
-                title: "Ürün Sepete Eklendi",
-                text: "Alışverişe Devammı Etmek İstersin Sepete Gitmek Mi",
-                icon: "success",
-                showCancelButton: true,
-                confirmButtonText: "Devam et",
-                cancelButtonText: "Sepete Git",
-                reverseButtons: true
-                }).then((result) => {
-                    if (result.dismiss === Swal.DismissReason.cancel) {
-                    
-                        window.location.href = "/cart"; 
-                        
-                    }
-                });
-                    updateCartCount(response.cartCount);
-                },
-                error: function (xhr) {
-                    console.log("Hata oluştu! Durum kodu:", xhr.status);
-                    console.log("Hata mesajı:", xhr.responseText);
-                    Swal.fire({
-                    title: "Hata oluştu! Daha Sonra Tekrar Deneyiniz ",
-                    icon: "warning"
-                    });
-                    alert("Hata oluştu! " + xhr.responseText);
-                }
-            });
-           
-
-        
-        }
-    </script>
+    
 </body>
 </html>

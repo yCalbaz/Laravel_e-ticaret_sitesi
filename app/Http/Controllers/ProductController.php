@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\Stock;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
@@ -34,16 +35,20 @@ class ProductController extends Controller
     public function showDetails($sku)
     {
         
-        $product = Product::where('product_sku', $sku)->first();
+        $product = Product::where('product_sku', $sku)->firstOrFail();
+        $product->load('stocks.size');
+        $groupedStocks = $product->stocks->groupBy('size.id')->map(function ($items) {
+            return [
+                'size' => $items->first()->size,
+                'total_piece' => $items->sum('product_piece'),
+            ];
+        })->values();
+    
 
         
-        if (!$product) {
-            abort(404, 'Ürün bulunamadı.');
-        }
-
-        
-        return view('product_details', compact('product'));
+        return view('product_details', compact('product', 'groupedStocks'));
     }
+        
 
     public function search(Request $request)
     {
@@ -126,4 +131,19 @@ public function brand($brand_slug)
 
     return view('products.brand', compact('products', 'category'));
 }
+
+public function getSizes($sku)
+{
+    $product = Product::where('product_sku', $sku)->firstOrFail();
+    $stocks = Stock::where('product_sku', $sku) 
+        ->where('product_piece', '>', 0)
+        ->whereNotNull('size_id')
+        ->with('size')
+        ->get();
+
+    $sizes = $stocks->pluck('size');
+
+    return response()->json($sizes);
+}
+
 }

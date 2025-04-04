@@ -18,6 +18,7 @@ class BasketItem extends Model
         'product_piece',
         'product_image',
         'order_id',
+        'size_id'
     ];
 
     public $timestamps = false;
@@ -25,6 +26,10 @@ class BasketItem extends Model
     public function baskets()
     {
         return $this->belongsTo(Basket::class, 'order_id'); 
+    }
+    public function size()
+    {
+        return $this->belongsTo(Size::class, 'size_id'); 
     }
 }
 

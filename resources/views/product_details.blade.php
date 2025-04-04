@@ -6,7 +6,6 @@
     <title>{{ $product->product_name }} - Ürün Detayı</title>
 
     @vite(['resources/js/app.js', 'resources/css/style.css', 'resources/css/product_details.css'])
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="icon" href="{{ asset('storage/images/flo-logo-Photoroom.png') }}" type="image/png">
 
     <style>
@@ -25,42 +24,26 @@
         <div class="col-md-6 product-info">
             <h2>{{ $product->product_name }}</h2>
             <p class="product-price">{{ $product->product_price }} TL</p>
-            <p class="product-description"><strong>Açıklama:</strong> {{ $product->details }}</p>
+            <p class="product-description">{{ $product->details }}</p>
+            <h5>Beden Seçimi:</h5>
+            <div class="size">
+                @foreach ($groupedStocks as $stock)
+                    @if ($stock['total_piece'] > 0 && $stock['size'])
+                        <button data-size-id="{{ $stock['size']->id }}" class="size-button">{{ $stock['size']->size_name }}</button>
+                    @elseif ($stock['size'])
+                        <button class="size-button" style="text-decoration: line-through; opacity: 0.5; cursor: not-allowed;" disabled>{{ $stock['size']->size_name }}</button>
+                    @endif
+                @endforeach
+            </div>
+            <br>
 
             <button type="button" class="add-to-cart-button" onclick="addCart('{{ $product->product_sku }}')">Sepete Ekle</button>
         </div>
     </div>
 </div>
 
-<footer class="custom-footer">
-    
-</footer>
+@include('layouts.footer')
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    function addCart(productSku) {
-        $.ajax({
-            url: "{{ route('cart.add', ':sku') }}".replace(':sku', productSku),
-            type: "POST",
-            data: {
-                _token: "{{ csrf_token() }}",
-                quantity: 1
-            },
-            success: function (response) {
-                console.log("Başarıyla eklendi:", response);
-                alert("Ürün sepete eklendi!");
-                updateCartCount(response.cartCount);
-            },
-            error: function (xhr) {
-                console.log("Hata oluştu! Durum kodu:", xhr.status);
-                console.log("Hata mesajı:", xhr.responseText);
-                alert("Hata oluştu! " + xhr.responseText);
-            }
-        });
-    }
-</script>
 
 </body>
 </html>

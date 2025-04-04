@@ -53,11 +53,15 @@ class BasketController extends Controller
     {
         try {
         $request->validate([
-            'quantity' => 'required|integer|min:1'
+            'quantity' => 'required|integer|min:1',
+            'size_id' => 'nullable|integer|exists:sizes,id',
         ], [
             'quantity.required' => 'Ürün adedi belirtilmelidir.',
             'quantity.integer' => 'Ürün adedi sayı olmalıdır.',
-            'quantity.min' => 'Ürün adedi en az 1 olmalıdır.'
+            'quantity.min' => 'Ürün adedi en az 1 olmalıdır.',
+            'size_id.required' => 'Beden seçimi zorunludur.',
+                'size_id.integer' => 'Beden ID\'si sayı olmalıdır.',
+                'size_id.exists' => 'Seçilen beden geçersizdir.',
         ]);
         //tokenin validasyonunu da ekle!!
 
@@ -116,6 +120,7 @@ class BasketController extends Controller
                 'product_price' => $product->product_price,
                 'product_image' => $product->product_image,
                 'order_id' => $basket->id,
+                'size_id' => $request->size_id,
             ]);
         }
 

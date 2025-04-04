@@ -49,7 +49,7 @@
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <h5 class=""> {{ $item->product_name }}</h5>
+                                                    <h5 class="" > {{ $item->product_name }}</h5>
                                                 </td>
                                                 <td>
                                                     <p class="">  {{ $item->product_price }} TL</p>
@@ -57,7 +57,7 @@
                                                 <td>
                                                     <div class="d-flex align-items-center">
                                                         <label for="adet-{{ $item['id'] }}" class="me-2"></label>
-                                                        <input type="number" name="adet" id="adet-{{ $item['id'] }}" value="{{ $item['product_piece'] }}" min="1" class="form-control form-control-sm" style="width: 70px;" onchange="updateCart(`{{ $item['id']}}`,this.value)">
+                                                        <input type="number" name="adet" id="adet-{{ $item['id'] }}" value="{{ $item['product_piece'] }}" min="1" class="form-control form-control-sm" style="width: 50px;"  onchange="updateCart(`{{ $item['id']}}`,this.value)">
                                                     </div>
                                                 </td>
                                                 <td>

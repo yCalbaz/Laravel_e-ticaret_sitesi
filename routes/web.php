@@ -11,10 +11,6 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\StockController;
 use App\Http\Controllers\OrderDetailController;
 use App\Http\Controllers\ProductController;
-use App\Http\Controllers\TestController;
-use App\Jobs\CheckBasketStockJob;
-use App\Models\Product; 
-
 
 
 Route::get('/', [HomeProductController::class, 'productHome']);
@@ -69,8 +65,9 @@ Route::get('/product/{sku}', [ProductController::class, 'showDetails'])->name('p
 Route::middleware(['auth'])->group(function () {
     Route::get('/siparisler', [OrderDetailController::class, 'index'])->name('orders.index');
     Route::get('/siparis/{orderId}/detaylar', [OrderDetailController::class, 'showDetails'])->name('order.showDetails');
-    Route::get('/siparis/{orderId}/iade', [OrderDetailController::class, 'showReturnForm'])->name('order.returnForm');
+    Route::get('/orders/{orderId}/return/{store_id}', [OrderDetailController::class, 'showReturnForm'])->name('order.returnForm');
     Route::post('/siparis/iade', [OrderDetailController::class, 'processReturn'])->name('order.processReturn');});
+    Route::get('/order-canseled-form', [OrderDetailController::class, 'showCanceledForm'])->name('order.canceledForm');
 
 Route::put('/sepet/guncelle/{id}', [BasketController::class, 'update'])->name('cart.update');
 Route::get('/search', [App\Http\Controllers\ProductController::class, 'search'])->name('search');
@@ -80,4 +77,5 @@ Route::get('/get-products-by-category', [ProductController::class, 'getProductsB
 
 
 Route::get('/products/brand/{brand}', [ProductController::class, 'brand'])->name('products.brand'); 
+Route::get('/product/{sku}/sizes', [ProductController::class, 'getSizes'])->name('product.sizes');
 

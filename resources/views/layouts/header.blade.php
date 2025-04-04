@@ -5,16 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sayfa Başlığı</title>
     <link rel="icon" href="{{ asset('storage/images/flo-logo-Photoroom.png') }}" type="image/png" >
-  
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .fix{
+            position: fixed;
+            top: 0;
+            z-index: 100;
+            left: 0;
+            width: 100%;
+        }
+    </style>
 </head>
 <body>
 
-<nav class="category-menu">
-<div class="container">
-</div>
+<nav class="category-menu" style="margin-top: 55px;">
 </nav>
-
-<nav class="navbar navbar-expand-lg navbar-light custom-header">
+<nav class="navbar navbar-expand-lg navbar-light custom-header fix ">
     <div class="container d-flex align-items-center">
         <a class="navbar-brand" href="/">
             <img src="{{ asset('storage/images/flo-logo-Photoroom.png') }}" alt="" height="50">
@@ -47,7 +55,7 @@
     </div>
 </nav>
 
-<nav class="category-menu">
+<nav class="category-menu ">
     <div class="container">
     <div class="filter-container">
     <div class="filter-dropdown">
@@ -59,8 +67,8 @@
             <li><a class="category" href="{{ route('category.product', ['category_slug' => 'günlük-ayakkabı']) }}">Günlük Ayakkabı</a></li>
             <li><a class="category" href="{{ route('category.product', ['category_slug' => 'ayakkabı']) }}">Spor Ayakkabı</a></li>
             <li><a class="category" href="{{ route('category.product', ['category_slug' => 'bot']) }}">Bot</a></li>
-            <li><a class="category" href="{{ route('category.product', ['category_slug' => 'giyim']) }}">Tişört</a></li>
-            <li><a class="category" href="{{ route('category.product', ['category_slug' => 'ayakkabı']) }}">Eşofman</a></li>
+            <li><a class="category" href="{{ route('category.product', ['category_slug' => 'tisort']) }}">Tişört</a></li>
+            <li><a class="category" href="{{ route('category.product', ['category_slug' => 'esofman']) }}">Eşofman</a></li>
          </div>
     </div>
     <div class="filter-dropdown">
@@ -70,9 +78,9 @@
         <li> <a class="category" href="{{ route('category.product', ['category_slug' => 'erkek-giyim']) }}">Erkek Giyim</a></li>
         <li> <a class="category" href="{{ route('category.product', ['category_slug' => 'günlük-ayakkabı']) }}">Günlük Ayakkabı</a></li>
         <li> <a class="category" href="{{ route('category.product', ['category_slug' => 'ayakkabı']) }}">Spor Ayakkabı</a></li>
-        <li> <a class="category" href="{{ route('category.product', ['category_slug' => 'canta']) }}">Bot</a></li>
-        <li> <a class="category" href="{{ route('category.product', ['category_slug' => 'giyim']) }}">Tişört</a></li>
-        <li> <a class="category" href="{{ route('category.product', ['category_slug' => 'ayakkabı']) }}">Eşofman</a></li>
+        <li> <a class="category" href="{{ route('category.product', ['category_slug' => 'bot']) }}">Bot</a></li>
+        <li> <a class="category" href="{{ route('category.product', ['category_slug' => 'tisort']) }}">Tişört</a></li>
+        <li> <a class="category" href="{{ route('category.product', ['category_slug' => 'esofman']) }}">Eşofman</a></li>
         </div>
     </div>
     <div class="filter-dropdown">
@@ -82,9 +90,9 @@
         <li> <a class="category" href="{{ route('category.product', ['category_slug' => 'çocuk-giyim']) }}">Çocuk Giyim</a></li>
         <li><a class="category" href="{{ route('category.product', ['category_slug' => 'günlük-ayakkabı']) }}">Günlük Ayakkabı</a></li>
         <li> <a class="category" href="{{ route('category.product', ['category_slug' => 'ayakkabı']) }}">Spor Ayakkabı</a></li>
-        <li> <a class="category" href="{{ route('category.product', ['category_slug' => 'canta']) }}">Bot</a></li>
-        <li> <a class="category" href="{{ route('category.product', ['category_slug' => 'giyim']) }}">Tişört</a></li>
-        <li> <a class="category" href="{{ route('category.product', ['category_slug' => 'ayakkabı']) }}">Eşofman</a></li>
+        <li> <a class="category" href="{{ route('category.product', ['category_slug' => 'bot']) }}">Bot</a></li>
+        <li> <a class="category" href="{{ route('category.product', ['category_slug' => 'tisort']) }}">Tişört</a></li>
+        <li> <a class="category" href="{{ route('category.product', ['category_slug' => 'esofman']) }}">Eşofman</a></li>
          </div>
     </div>
     <div class="filter-dropdown">
@@ -99,7 +107,7 @@
     
     
     </div>
-</nav>
+</nav></nav> <br>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script>
   
@@ -110,9 +118,13 @@
     });
 
     function updateCartCount(count) {
-        document.getElementById('sepet-sayisi').textContent = count;
+        let cartCountElement = $('#cart-count');
+    if (cartCountElement.length) {
+        cartCountElement.text(count);
+    } else {
+        console.error("Sepet sayacı elementi bulunamadı!");
     }
-    
+}
 
 </script>
 

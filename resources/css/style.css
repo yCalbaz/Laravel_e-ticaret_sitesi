@@ -89,7 +89,8 @@ body {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 20px;
-}
+    
+}a
 
 .custom-header .navbar-brand img {
     height: 40px;
@@ -101,14 +102,14 @@ body {
 
 .custom-header .navbar-nav .nav-link {
     padding: 0.5rem 1rem;
+    
 } 
 
 .search-form {
-    width: 100%; /* Değiştirildi */
-    max-width: 600px; /* Değiştirildi */
-    margin: 10px auto; /* Değiştirildi */
+    width: 500px; 
+    max-width: 600px; 
+    margin: 10px auto;
     height: 40px;
-    /* margin-left: 20px; */ /* Kaldırıldı */
 }
 
 .search-input {
@@ -116,25 +117,27 @@ body {
     height: 100%;
     padding: 10px;
     border-radius: 20px;
-    border: 1px solid #ced4da;
+    border: 1px solid #ff671d;
     font-size: 16px;
     color: #333;
 }
 
 .search-input::placeholder {
-    color: #999;
+    color: #999999a1;
 }
 
 .search-input:focus {
     outline: none;
     border-color: #80bdff;
     box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    
 }
 
 .category-menu {
     background-color: #f8f9fa;
     padding: 10px 0;
     border-bottom: 1px solid #eee;
+    
 }
 
 .category-menu .container {
@@ -199,6 +202,17 @@ body {
     padding: 20px;
 }
 /*sepet,kategori,anasayfa (burası ürünlerin görünüşünü tanımladığım yer) css*/
+td{
+    padding: 20px;
+}
+th{
+    padding: 20px;
+}
+.img-fluid {
+    width: 100%;
+    height: auto;
+}
+
 .custom-card {
     width: 250px;
     margin: 0 auto;
@@ -313,11 +327,30 @@ body {
     text-decoration: underline;
 }
 
-/*sipatiş detay resimleri*/
+/*ürün detay sayfası*/
 .order_image{
     height: 80px;
     width: 80px;
 }
+.size {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.size button {
+    margin: 5px;
+    padding: 8px 15px;
+    border: 1px solid #ddd;
+    background-color: #f9f9f9;
+    cursor: pointer;
+}
+
+.size button.stocks-none {
+    background-color: #eee;
+    color: #999;
+    cursor: not-allowed;
+}
+
 /*login */
 .social-login-btn {
     display: flex;
@@ -356,4 +389,77 @@ body {
 }
 .card-body > .card {
     width: 100%; 
+}
+/*uyarı için css*/
+.swal2-actions button{
+    margin-left: 10px;
+}
+.swal2-actions button:first{
+    margin-left: 0;
+}
+/*sipariş detayı sayfası butonları*/
+.custom-details-button {
+    background-color: #ff671d; 
+    color: white; 
+    padding: 5px 20px; 
+    border-radius: 5px; 
+    text-decoration: none; 
+    font-size: 16px; 
+    border: none; 
+    cursor: pointer; 
+    transition: background-color 0.3s ease; 
+}
+
+.custom-details-button:hover {
+    background-color: #c04000; 
+    color: #ccc;
+    border: none; 
+    cursor: pointer;
+    text-decoration: none; 
+}
+.timeline {
+    position: relative;
+    padding-left: 2rem;
+    margin-left: 1rem;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    top: 1.2rem;
+    bottom: 1.2rem;
+    left: 1.2rem;
+    width: 2px;
+    background-color: #ddd;
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+}
+
+.timeline-item::before {
+    content: '';
+    width: 1rem;
+    height: 1rem;
+    border-radius: 50%;
+    background-color: #fff;
+    border: 2px solid #ddd;
+}
+
+.timeline-item.active::before {
+    background-color: #4CAF50;
+    border-color: #4CAF50;
+}
+
+.timeline-item.active .timeline-text {
+    color: #4CAF50;
+}
+
+.timeline-text {
+    display:block;
+    padding-left: 1rem;
+    text-align: left;
 }

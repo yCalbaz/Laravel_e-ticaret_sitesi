@@ -6,8 +6,6 @@
     <title>Siparişler</title>
     @vite(['resources/js/app.js', 'resources/css/style.css'])
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="icon" href="{{ asset('storage/images/flo-logo-Photoroom.png') }}" type="image/png">
-</head>
 <body>
 
 @include('layouts.header') 
@@ -19,13 +17,12 @@
     </div>
 @endif
 <div class="container mt-5">
-    <h2>Tüm Siparişlerim:</h2>
+    
     
 
 <div class="card mb-3">
             <div class="card-header">
-            Tarih: <br>
-            Toplam:
+            <h5>Tüm Siparişlerim:</h5>
             </div>
             <div class="card-body">
     <table class="table">
@@ -42,9 +39,10 @@
                     <td>{{ $order->id }}</td>
                     <td>{{ $order->customer_address }}</td>
                     <td>
-                        <a href="{{ route('order.showDetails', $order->id) }}" class="btn btn-info btn-sm">
-                            Detaylar
-                        </a>
+                    <a href="{{ route('order.showDetails', $order->id) }}" class="custom-details-button">
+                        Detaylar
+                    </a>
+                        
                     </td>
                 </tr>
             @endforeach
