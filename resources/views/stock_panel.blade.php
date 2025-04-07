@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stok Ekle</title>
-    @vite(['resources/js/app.js', 'resources/css/style.css'])
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="icon" href="{{ asset('storage/images/flo-logo-Photoroom.png') }}" type="image/png">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
@@ -12,10 +11,10 @@
 <body>
 
 @include('layouts.panel_header')
-
+<br>
 <div class="container mt-5">
     <div class="card shadow-lg">
-        <div class="card-body p-5">
+        <div class="card-body p-4">
             <h2 class="text-center mb-4">Stok Ekle</h2>
             @include('components.alert')
 
@@ -55,28 +54,12 @@
 </div>
 
 <style>
-    .logout-form {
-        position: absolute;
-        top: 20px;
-        right: 20px;
-    }
-
-    .logout-btn {
-        background-color: red;
-        color: white;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 5px;
-        text-decoration: none;
-        font-weight: bold;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-    }
+   
 
     .form-control-lg {
-        padding: 0.75rem 1rem;
-        font-size: 1.1rem;
-        border-radius: 0.3rem;
+        padding: 0.5rem 1rem;
+        font-size: 1rem;
+        border-radius: 0.25rem;
     }
 </style>
 

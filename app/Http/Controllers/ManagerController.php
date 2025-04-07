@@ -78,7 +78,7 @@ public function updateLineStatus(Request $request,$lineId)
     return redirect()->back()->with('success', 'Sipariş durumu güncellendi.');
 }
 
-    protected function getProduct()
+protected function getProduct()
     {
         return Product::orderBy('id', 'desc')->take(10)->get();
     }

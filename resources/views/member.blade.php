@@ -12,46 +12,43 @@
 <div class="container mt-5">
     <div class="card shadow-sm">
         <div class="card-body">
-            <form action="{{ route('admin.logout') }}" method="POST" class="logout-form">
-                @csrf
-                <button type="submit" class="logout-btn" >Çıkış</button>
-            </form>
-            <h2 classs="text-center mb-4"> KULLANICILAR </h2>
+            
+            <h2 class="text-center mb-4">KULLANICILAR</h2>
             @include('components.alert')  
-            <table class="table">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Ad</th>
-                    <th>E-posta</th>
-                    <th>Oluşturulma Tarihi</th>
-                    <th>Güncelleme Tarihi</th>
-                    <th>Müşteri ID</th>
-                    <th>Yetki ID</th>
-                    
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($members as $member)
-                    <tr>
-                        <td>{{ $member->id }}</td>
-                        <td>{{ $member->name }}</td>
-                        <td>{{ $member->email }}</td>
-                        <td>{{ $member->created_at }}</td>
-                        <td>{{ $member->updated_at }}</td>
-                        <td>{{ $member->customer_id }}</td>
-                        <td>{{ $member->authority_id }}</td>
-                        <td>
-                        <form action="{{ route('members.delete', $member->id) }}" method="POST">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger btn-sm">Sil</button>
-                        </form>
-                    </td>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Ad</th>
+                            <th>E-posta</th>
+                            <th class="d-none d-md-table-cell">Oluşturulma Tarihi</th>
+                            <th class="d-none d-md-table-cell">Güncelleme Tarihi</th>
+                            <th class="d-none d-lg-table-cell">Müşteri ID</th>
+                            <th >Yetki ID</th>
+                            <th>İşlemler</th>
                         </tr>
-                @endforeach
-            </tbody>
-        </table>
+                    </thead>
+                    <tbody>
+                        @foreach ($members as $member)
+                            <tr>
+                                <td>{{ $member->name }}</td>
+                                <td>{{ $member->email }}</td>
+                                <td class="d-none d-md-table-cell">{{ $member->created_at }}</td>
+                                <td class="d-none d-md-table-cell">{{ $member->updated_at }}</td>
+                                <td class="d-none d-lg-table-cell">{{ $member->customer_id }}</td>
+                                <td >{{ $member->authority_id }}</td>
+                                <td>
+                                    <form action="{{ route('members.delete', $member->id) }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger btn-sm">Sil</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>

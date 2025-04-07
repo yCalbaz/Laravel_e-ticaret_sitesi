@@ -43,27 +43,15 @@ class OrderDetailController extends Controller
 public function showDetails($orderId)
 
 {
+    $order = OrderBatch::with(['orderLines.product', 'orderLines.store'])->where('order_id', $orderId)->first();
+    if (!$order) {
+        return back()->with('error', 'Sipariş bulunamadı.');
+    }
 
-$order = OrderBatch::with(['orderLines.product', 'orderLines.store'])->where('order_id', $orderId)->first();
+    $allOrderStatuses = ['sipariş alındı', 'hazırlanıyor', 'kargoya verildi',];
+    $orderStatusHistory = $order->orderLines->pluck('order_status')->toArray();
 
-
-
-if (!$order) {
-
-return back()->with('error', 'Sipariş bulunamadı.');
-
-}
-
-
-
-$allOrderStatuses = ['sipariş alındı', 'hazırlanıyor', 'kargoya verildi', 'iptal edildi'];
-
-
-
-$orderStatusHistory = $order->orderLines->pluck('order_status')->toArray();
-
-return view('order_details_show', compact('order', 'allOrderStatuses', 'orderStatusHistory'));
-
+    return view('order_details_show', compact('order', 'allOrderStatuses', 'orderStatusHistory'));
 }
 
 

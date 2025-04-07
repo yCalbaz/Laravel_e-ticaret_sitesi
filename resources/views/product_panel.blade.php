@@ -11,51 +11,48 @@
 <body>
 
 @include('layouts.panel_header')
-
-<div class="container mt-5">
+<br>
+<div class="container mt-3">
     <div class="card shadow-lg">
-        <div class="card-body p-5">
-            <h2 class="text-center mb-4">ÜRÜN EKLE</h2>
+        <div class="card-body p-4"> <h2 class="text-center mb-4">ÜRÜN EKLE</h2>
             @include('components.alert')
 
             <form action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
-                <div class="mb-3">
+                <div class="row">
+                <div class="col-md-6 mb-3">
                     <label for="product_name" class="form-label">Ürün Adı</label>
-                    <input type="text" name="product_name" id="product_name" class="form-control form-control-lg" required>
-                    @error('product_name')
+                    <input type="text" name="product_name" id="product_name" class="form-control" required> @error('product_name')
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
                 </div>
 
-                <div class="mb-3">
+                <div class="col-md-6 mb-3">
                     <label for="product_sku" class="form-label">Ürün Kodu</label>
-                    <input type="text" name="product_sku" id="product_sku" class="form-control form-control-lg" required>
-                    @error('product_sku')
+                    <input type="text" name="product_sku" id="product_sku" class="form-control" required> @error('product_sku')
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
                 </div>
-
-                <div class="mb-3">
+                </div>
+                <div class="row">
+                <div class="col-md-6 mb-3">
                     <label for="product_price" class="form-label">Ürün Fiyatı</label>
-                    <input type="number" name="product_price" id="product_price" class="form-control form-control-lg" step="0.01" required>
-                    @error('product_price')
+                    <input type="number" name="product_price" id="product_price" class="form-control" step="0.01" required> @error('product_price')
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
                 </div>
 
-                <div class="mb-3">
+                <div class="col-md-6 mb-3">
                     <label for="product_image" class="form-label">Ürün Resmi</label>
-                    <input type="file" name="product_image" id="product_image" class="form-control form-control-lg" accept="image/*" required>
-                    @error('product_image')
+                    <input type="file" name="product_image" id="product_image" class="form-control" accept="image/*" required> @error('product_image')
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
                 </div>
-
-                <div class="mb-3">
+                </div>
+                <div class="row">
+                <div class="col-md-12 mb-3">
                     <label for="categorySelect" class="form-label">Kategori</label>
-                    <select name="category_ids[]" id="categorySelect" class="form-control select2-multiple form-control-lg" multiple required>
-                        @foreach($categories as $category)
+                    <select name="category_ids[]" id="categorySelect" class="form-control select2-multiple" multiple required> @foreach($categories as $category)
                             <option value="{{ $category->id }}">{{ $category->category_name }}</option>
                         @endforeach
                     </select>
@@ -63,38 +60,28 @@
                     @error('category_ids')
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
-                </div>
+                </div> </div>
 
-                <button type="submit" class="btn btn-primary btn-lg w-100">ÜRÜNÜ EKLE</button>
-            </form>
+                <button type="submit" class="btn btn-primary w-100">ÜRÜNÜ EKLE</button> </form>
         </div>
     </div>
 </div>
 
 <style>
-    .logout-form {
-        position: absolute;
-        top: 20px;
-        right: 20px;
+    .form-control {
+        padding: 0.5rem 1rem;
+        font-size: 1rem;
+        border-radius: 0.25rem;
+    }
+    @media (max-width: 768px) {
+    .select2-container {
+        width: 100% !important; /* Küçük ekranlarda tam genişlik */
     }
 
-    .logout-btn {
-        background-color: red;
-        color: white;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 5px;
-        text-decoration: none;
-        font-weight: bold;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
+    .select2-selection--multiple {
+        min-height: 38px; /* Minimum yükseklik, içeriğin sığmasını sağlar */
     }
-
-    .form-control-lg {
-        padding: 0.75rem 1rem;
-        font-size: 1.1rem;
-        border-radius: 0.3rem;
-    }
+}
 </style>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

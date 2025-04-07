@@ -56,6 +56,16 @@ body {
     background-color: darkred;
 }
 
+@media (min-width: 768px) {
+   
+    .card-body {
+        padding: 2rem;
+    }
+
+    .btn {
+        padding: 0.75rem 1.5rem;
+    }
+}
 
 /*panel css*/
 .panel-box {
@@ -372,31 +382,66 @@ th{
 
 /*satıcı panel css*/
 .order_image {
-    max-width: 100px;
-    max-height: 100px;
+    max-width: 80px;
+    max-height: 80px;
     object-fit: contain;
 }
-.order-card {
+
+.card-header {
     display: flex;
-    margin-bottom: 20px;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap; /* Yeni eklenen özellik */
 }
-.order-card h4 {
-    width: 20%;
-    padding-right: 20px;
+
+.table-responsive {
+    overflow-x: auto;
 }
-.order-card table {
-    width: 80%;
+@media (max-width: 768px) {
+    td, th {
+        padding: 8px; /* Daha küçük padding */
+        font-size: 0.9rem; /* Daha küçük font boyutu */
+    }
+
+    .btn-sm {
+        padding: 4px 8px; /* Daha küçük buton padding'i */
+        font-size: 0.8rem; /* Daha küçük buton font boyutu */
+    }
 }
-.card-body > .card {
-    width: 100%; 
+
+.form-inline {
+    display: flex;
+    flex-wrap: wrap; /* Yeni eklenen özellik */
+    align-items: center;
 }
-/*uyarı için css*/
-.swal2-actions button{
-    margin-left: 10px;
+
+.form-inline select, .form-inline button {
+    margin-bottom: 5px;
 }
-.swal2-actions button:first{
-    margin-left: 0;
+
+@media (max-width: 768px) {
+    .order-card h4 {
+        width: 100%;
+        padding-right: 0;
+        margin-bottom: 10px;
+    }
+
+    .order-card table {
+        width: 100%;
+    }
+
+    .form-inline select, .form-inline button {
+        width: 100%;
+        margin-right: 0;
+    }
+
+    .card-header {
+        flex-direction: column; /* Küçük ekranlarda dikey sıralama */
+        align-items: flex-start;
+    }
+
 }
+
 /*sipariş detayı sayfası butonları*/
 .custom-details-button {
     background-color: #ff671d; 
@@ -463,3 +508,4 @@ th{
     padding-left: 1rem;
     text-align: left;
 }
+

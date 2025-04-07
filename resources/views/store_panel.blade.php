@@ -6,32 +6,32 @@
     <title>Depo</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="icon" href="{{ asset('storage/images/flo-logo-Photoroom.png') }}" type="image/png">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 </head>
 <body> 
 
 @include('layouts.panel_header')
-
+<br>
 <div class="container mt-5">
-    <div class="card shadow-sm">
-        <div class="card-body">
-        <form action="{{ route('admin.logout') }}" method="POST" class="logout-form">
-        @csrf
-        <button type="submit" class="logout-btn" >Çıkış</button>
-    </form>
+    <div class="card shadow-lg">
+        <div class="card-body p-5">
+        
             <h2 class="text-center mb-4">Depo Ekle</h2>
 
             @include('components.alert')
 
             <form action="{{ route('store.store') }}" method="POST">
                 @csrf 
-                <div class="mb-3">
+                <div class="row">
+                <div class="col-md-6 mb-3">
                     <label class="form-label">Depo Adı</label>
                     <input type="text" name="store_name" class="form-control" required>
                 </div>
 
-                <div class="mb-3">
+                <div class="col-md-6 mb-3">
                     <label class="form-label">Maksimum Kapasite</label>
                     <input type="number" name="store_max" class="form-control" min="1" required>
+                </div>
                 </div>
 
                 <div class="mb-3">
@@ -45,24 +45,5 @@
     </div>
 </div>
 
-<style>
-    .logout-form {
-        position: absolute;
-        top: 20px;
-        right: 20px;
-    }
-
-    .logout-btn {
-        background-color: red;
-        color: white;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 5px;
-        text-decoration: none;
-        font-weight: bold;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-    }
-</style>
 </body>
 </html>
