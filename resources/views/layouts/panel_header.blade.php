@@ -24,7 +24,7 @@
 </nav>
 <nav class="navbar navbar-expand-lg navbar-light custom-header fix ">
     <div class="container d-flex align-items-center">
-        <a class="navbar-brand" href="/">
+        <a class="navbar-brand" href="/adminPanel">
             <img src="{{ asset('storage/images/flo-logo-Photoroom.png') }}" alt="" height="50">
         </a>
 

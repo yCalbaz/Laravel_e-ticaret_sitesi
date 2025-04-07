@@ -55,6 +55,7 @@ public function showDetails($orderId)
 }
 
 
+
     public function showReturnForm(Request $request)
     {
         $orderId = $request->orderId;
@@ -71,6 +72,7 @@ public function showDetails($orderId)
     
         return response()->json(['success' => 'İptal formu başarıyla alındı.']);
     }
+    
 
     public function processReturn(Request $request)
     {
@@ -125,6 +127,40 @@ public function showDetails($orderId)
 
     return view('order_canceled_form', compact('order', 'orderId', 'storeId'));
 }
+
+public function adminOrders()
+    {
+        $orders = OrderBatch::with('orderLines.product')->orderBy('created_at', 'desc')->get();
+
+        
+        foreach ($orders as $order) {
+            $order->totalPrice = $order->orderLines->sum(function ($line) {
+                return $line->product_price * $line->product_piece;
+            });
+        }
+
+        return view('admin_order_detail', compact('orders'));
+    }
+
+    public function showAdminDetails($orderId)
+    {
+        $order = OrderBatch::with(['orderLines.product', 'orderLines.store'])->where('id', $orderId)->first();
+        if (!$order) {
+            return back()->with('error', 'Sipariş bulunamadı.');
+        }
     
+        $groupedOrderLines = $order->orderLines->groupBy(function ($line) {
+            return $line->product_sku . '-' . $line->product_size;
+        })->map(function ($lines) {
+            $firstLine = $lines->first();
+            $firstLine->product_piece = $lines->sum('quantity');
+            return $firstLine;
+        })->values(); // Gruplandırılmış koleksiyonu yeniden indeksle
+    
+        $allOrderStatuses = ['sipariş alındı', 'hazırlanıyor', 'kargoya verildi'];
+        $orderStatusHistory = $order->orderLines->pluck('order_status')->toArray();
+    
+        return view('admin_order_details_show', compact('order', 'groupedOrderLines', 'allOrderStatuses', 'orderStatusHistory'));
+    }
     
 }

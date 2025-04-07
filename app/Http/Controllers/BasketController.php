@@ -286,7 +286,7 @@ class BasketController extends Controller
                             'store_id' => $store,
                             'order_id' => (count($groupedItems) > 1) ? $orderId . '-' . $subOrderId : $orderId,
                             'order_batch_id' => $orderId,
-                            'quantity' => $item->product_piece,
+                            'quantity' => 1,
                             
                         ];
                         //dd($orderLinesData);

@@ -68,6 +68,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/orders/{orderId}/return/{store_id}', [OrderDetailController::class, 'showReturnForm'])->name('order.returnForm');
     Route::post('/siparis/iade', [OrderDetailController::class, 'processReturn'])->name('order.processReturn');});
     Route::get('/order-canseled-form', [OrderDetailController::class, 'showCanceledForm'])->name('order.canceledForm');
+    Route::get('/admin/siparisler', [OrderDetailController::class, 'adminOrders'])->name('orders.indexAdmin');
+    Route::get('/admin/siparis/{orderId}/detaylar', [OrderDetailController::class, 'showAdminDetails'])->name('order.showAdminDetails');
 
 Route::put('/sepet/guncelle/{id}', [BasketController::class, 'update'])->name('cart.update');
 Route::get('/search', [App\Http\Controllers\ProductController::class, 'search'])->name('search');

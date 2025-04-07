@@ -45,7 +45,7 @@
             </a>
         </div>
         <div class="col-md-4 mx-2 mb-4">
-            <a href="{{ route('orders.index' )}}" class="panel-box">
+            <a href="{{ route('orders.indexAdmin' )}}" class="panel-box">
                 <div class="box">
                     <h2>Sipariş bilgileri</h2>
                 </div>
