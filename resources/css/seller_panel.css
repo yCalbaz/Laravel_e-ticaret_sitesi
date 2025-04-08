@@ -1,0 +1,32 @@
+body {
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+.header {
+    background-color: white;
+    padding: 20px;
+    text-align: center;
+    position: relative;
+}
+.form-control-lg {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    border-radius: 0.25rem;
+}
+
+.form-control {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    border-radius: 0.25rem;
+}
+@media (max-width: 768px) {
+.select2-container {
+    width: 100% !important; 
+}
+
+.select2-selection--multiple {
+    min-height: 38px; 
+}
+}

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ürün</title>
+    @vite(['resources/css/seller_panel.css'])
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="icon" href="{{ asset('storage/images/flo-logo-Photoroom.png') }}" type="image/png">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
@@ -67,22 +68,6 @@
     </div>
 </div>
 
-<style>
-    .form-control {
-        padding: 0.5rem 1rem;
-        font-size: 1rem;
-        border-radius: 0.25rem;
-    }
-    @media (max-width: 768px) {
-    .select2-container {
-        width: 100% !important; /* Küçük ekranlarda tam genişlik */
-    }
-
-    .select2-selection--multiple {
-        min-height: 38px; /* Minimum yükseklik, içeriğin sığmasını sağlar */
-    }
-}
-</style>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stok Ekle</title>
+    @vite(['resources/css/seller_panel.css'])
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="icon" href="{{ asset('storage/images/flo-logo-Photoroom.png') }}" type="image/png">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
@@ -38,47 +39,56 @@
                         @enderror
                     </div>
                 </div>
-
-                <div class="mb-3">
-                    <label for="product_piece" class="form-label">Ürün Adedi</label>
-                    <input type="number" name="product_piece" id="product_piece" class="form-control form-control-lg" min="1" required>
-                    @error('product_piece')
-                        <div class="text-danger">{{ $message }}</div>
-                    @enderror
+                <div class="row">
+                <div class="col-md-12 mb-3">
+                        <label for="sizeSelect" class="form-label">Ürün Bedeni</label>
+                        <select name="size_ids[]" id="sizeSelect" class="form-control form-control-lg select2-multiple" multiple>
+                            @foreach($sizes as $size)
+                                <option value="{{ $size->id }}">{{ $size->size_name }}</option>
+                            @endforeach
+                        </select>
+                        @error('size_ids')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
                 </div>
 
-                <button type="submit" class="btn btn-primary btn-lg w-100">Stok Ekle</button>
+                <div id="sizeInputsContainer">
+                    </div>
+
+                <div class="mt-3">
+                    <button type="submit" class="btn btn-primary btn-lg w-100">Stok Ekle</button>
+                </div>
             </form>
         </div>
     </div>
 </div>
-
-<style>
-   
-
-    .form-control-lg {
-        padding: 0.5rem 1rem;
-        font-size: 1rem;
-        border-radius: 0.25rem;
-    }
-</style>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
     $(document).ready(function() {
         $('.select2-multiple').select2();
+        var sizeInputsContainer = $('#sizeInputsContainer');
 
-        $('#categorySelect').on('change', function() {
-            var selectedOptions = $(this).select2('data');
-            var selectedCategoriesDiv = $('#selectedCategories');
-            selectedCategoriesDiv.empty();
+        $('#sizeSelect').on('change', function() {
+            var selectedSizes = $(this).select2('data');
+            sizeInputsContainer.empty(); 
 
-            selectedOptions.forEach(function(option) {
-                var categoryName = option.text;
-                var categoryBadge = $('<span class="badge bg-primary me-1"></span>').text(categoryName);
-                selectedCategoriesDiv.append(categoryBadge);
-            });
+            if (selectedSizes.length > 0) {
+                selectedSizes.forEach(function(size) {
+                    var sizeId = size.id;
+                    var sizeName = size.text;
+
+                    var inputGroup = $('<div class="row size-input-group mb-3"></div>');
+                    var labelCol = $('<div class="col-md-6"><label class="form-label">' + sizeName + ' Adet</label></div>');
+                    var inputCol = $('<div class="col-md-6"><input type="number" name="sizes[' + sizeId + ']" class="form-control form-control-lg" min="1" required></div>');
+
+                    inputGroup.append(labelCol).append(inputCol);
+                    sizeInputsContainer.append(inputGroup);
+                });
+            } else {
+            }
         });
     });
 </script>

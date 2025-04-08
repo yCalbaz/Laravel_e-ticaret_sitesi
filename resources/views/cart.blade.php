@@ -47,7 +47,7 @@
                                                 <td>
                                                     <div class="col-md-6">
                                                         <img src="{{ $item->product_image }}"  class="order_image" alt="{{ $item->product_name }}">
-                                                    </div>
+                                                    </div> 
                                                 </td>
                                                 <td>
                                                     <h5 class="" > {{ $item->product_name }}</h5>

@@ -47,7 +47,14 @@
         <div class="col-md-4 mx-2 mb-4">
             <a href="{{ route('orders.indexAdmin' )}}" class="panel-box">
                 <div class="box">
-                    <h2>Sipariş bilgileri</h2>
+                    <h2>Sipariş Bilgileri</h2>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4 mx-2 mb-4">
+            <a href="" class="panel-box">
+                <div class="box">
+                    <h2>Depo Ataması</h2>
                 </div>
             </a>
         </div>

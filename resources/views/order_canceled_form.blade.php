@@ -1,16 +1,17 @@
 <!DOCTYPE html>
 <html lang="tr">
-<head>
+<head> 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ürün İade Formu</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="icon" href="{{ asset('storage/images/flo-logo-Photoroom.png') }}" type="image/png">
     
     @vite(['resources/js/app.js' ,'resources/css/style.css'])
 </head>
 <body>
     @include('layouts.header')
-    <div class="container mt-5">
+    <div class="container mt-4">
         <h2>Ürün İade Formu</h2>
 
         <div class="mb-4">
@@ -18,7 +19,6 @@
             <p>Sipariş Numarası: {{ $order->id }}</p>
             <p>Sipariş Tarihi: {{ $order->created_at }}</p>
 
-            <h5>Ürünler:</h5>
             <table class="table">
                 <thead>
                     <tr>
@@ -43,7 +43,7 @@
                     @endif
                 </tbody>
             </table>
-            <p>Toplam Sipariş Tutarı: {{ $order->totalPrice }} TL</p>
+            <p>Toplam Tutar: {{ $order->totalPrice }} TL</p>
         </div>
 
         <form action="{{ route('order.processReturn') }}" method="POST">
@@ -62,13 +62,12 @@
                 <textarea name="return_address" id="return_address" class="form-control" rows="3" placeholder="İade adresinizi giriniz."></textarea>
             </div>
 
-            <div class="form-group">
-                <label for="return_contact">İletişim Bilgileri:</label>
-                <input type="text" name="return_contact" id="return_contact" class="form-control" placeholder="Telefon numarası veya e-posta adresiniz.">
-            </div>
+           
 
-            <button type="submit" class="btn btn-danger">İade Talebi Gönder</button>
+            <button type="submit" class="btn" style="background-color: #ff671d; border: #ff671d; color:white;">Siparişi İptal Et</button>
+            
         </form>
-    </div>
+    </div><br>
+    @include('layouts.footer')
 </body>
 </html>

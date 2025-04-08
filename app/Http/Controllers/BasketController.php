@@ -295,7 +295,7 @@ class BasketController extends Controller
                 'order_id' => (count($groupedItems) > 1) ? $orderId . '-' . $subOrderId : $orderId,
                 'order_batch_id' => $orderId,
                 'quantity' => 1,
-                'product_size_id' => $size ? $size->id : null, // Varsayılan değeri kaydedin
+                'product_size_id' => $size ? $size->id : null, 
                             ];
                             //dd($sizeName);
                         }

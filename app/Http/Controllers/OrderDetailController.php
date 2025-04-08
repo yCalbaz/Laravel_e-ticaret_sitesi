@@ -40,7 +40,7 @@ class OrderDetailController extends Controller
 }
     
 
-public function showDetails($orderId)
+public function showDetails($orderId) 
 
 {
     $order = OrderBatch::with(['orderLines.product', 'orderLines.store', 'orderLines.size'])->where('order_id', $orderId)->first();
@@ -80,6 +80,7 @@ public function showDetails($orderId)
             'order_id' => 'required',
             'product_sku' => 'required',
             'details' => 'required|string',
+            'return_address' => 'nullable|string',
         ]);
     
         $order = OrderBatch::where('id', $request->order_id)->first();
@@ -120,13 +121,18 @@ public function showDetails($orderId)
     if (!$order) {
         return back()->with('error', 'Sipariş bulunamadı.');
     }
+    
 
-    $order->totalPrice = $order->orderLines->sum(function ($line) {
-        return $line->product_price * $line->product_piece;
-    });
+    $totalPrice = 0;
+    foreach ($order->orderLines as $line) {
+        //dd($line->product->product_price, $line->quantity);
+        $totalPrice += $line->product->product_price * $line->quantity;
+    }
+
+    $order->totalPrice = $totalPrice;
 
     return view('order_canceled_form', compact('order', 'orderId', 'storeId'));
-}
+} 
 
 public function adminOrders()
     {
@@ -155,7 +161,7 @@ public function adminOrders()
             $firstLine = $lines->first();
             $firstLine->product_piece = $lines->sum('quantity');
             return $firstLine;
-        })->values(); // Gruplandırılmış koleksiyonu yeniden indeksle
+        })->values(); 
     
         $allOrderStatuses = ['sipariş alındı', 'hazırlanıyor', 'kargoya verildi'];
         $orderStatusHistory = $order->orderLines->pluck('order_status')->toArray();
