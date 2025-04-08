@@ -56,15 +56,13 @@ Route::get('/sepet/onay', [BasketController::class, 'approvl'])->name('sepet.app
 
 Route::get('/musteri/uye-ol', [AuthController::class, 'showRegisterForm'])->name('musteri.uye_ol');
 Route::post('/musteri/uye-ol', [AuthController::class, 'customerRegister'])->name('musteri.uye_ol.kayit');
-Route::get('/order/return', [OrderDetailController::class, 'showReturnForm'])->name('order.returnForm');
-Route::post('/order/return', [OrderDetailController::class, 'processReturn'])->name('order.processReturn');
 
 Route::get('/product/{sku}', [ProductController::class, 'showDetails'])->name('product.details');
 
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/siparisler', [OrderDetailController::class, 'index'])->name('orders.index');
-    Route::get('/siparis/{orderId}/detaylar', [OrderDetailController::class, 'showDetails'])->name('order.showDetails');
+    Route::get('/order/{orderId}/detaylar', [OrderDetailController::class, 'showDetails'])->name('order.showDetails');
     Route::get('/orders/{orderId}/return/{store_id}', [OrderDetailController::class, 'showReturnForm'])->name('order.returnForm');
     Route::post('/siparis/iade', [OrderDetailController::class, 'processReturn'])->name('order.processReturn');});
     Route::get('/order-canseled-form', [OrderDetailController::class, 'showCanceledForm'])->name('order.canceledForm');

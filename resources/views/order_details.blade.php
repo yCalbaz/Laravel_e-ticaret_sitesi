@@ -13,7 +13,7 @@
         overflow-wrap: break-word;
         vertical-align: top;
         padding: 5px;
-        font-size: 18px; /* Varsayılan yazı boyutu */
+        font-size: 18px; 
     }
 
     .table td:nth-child(2) {
@@ -26,12 +26,12 @@
     }
         @media (max-width: 768px) {
         .table td, .custom-details-button {
-            font-size: 12px; /* Küçük ekranlarda yazı boyutunu azalt */
-            padding: 3px; /* Küçük ekranlarda hücre dolgusunu azalt */
+            font-size: 12px; 
+            padding: 3px; 
         }
 
         .table td:nth-child(2) {
-            max-width: 80px; /* Küçük ekranlarda adres sütununu daha da daralt */
+            max-width: 80px; 
         }
     }
     </style>

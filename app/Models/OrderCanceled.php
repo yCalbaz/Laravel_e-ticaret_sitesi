@@ -17,6 +17,7 @@ class OrderCanceled extends Model
         'product_price',
         'product_sku',
         'details',
+        'return_address',
     ];
     
     

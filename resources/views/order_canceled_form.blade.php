@@ -49,25 +49,25 @@
         <form action="{{ route('order.processReturn') }}" method="POST">
             @csrf
             <input type="hidden" name="order_id" value="{{ $orderId }}">
-            <input type="hidden" name="store_id" value="{{ $storeId }}">
-            <div class="form-group">
-                <label for="details">İade Nedeni:</label>
-                <textarea name="details" id="details" class="form-control" rows="4" required></textarea>
-            </div>
-
-            
-
-            <div class="form-group">
-                <label for="return_address">İade Adresi:</label>
-                <textarea name="return_address" id="return_address" class="form-control" rows="3" placeholder="İade adresinizi giriniz."></textarea>
-            </div>
-
-           
-
-            <button type="submit" class="btn" style="background-color: #ff671d; border: #ff671d; color:white;">Siparişi İptal Et</button>
+    <input type="hidden" name="store_id" value="{{ $storeId }}">
+    @if($order->orderLines)
+        @foreach($order->orderLines as $item)
+            <input type="hidden" name="product_sku" value="{{ $item->product_sku }}">
+            @endforeach
+    @endif
+    <div class="form-group">
+        <label for="details">İade Nedeni:</label>
+        <textarea name="details" id="details" class="form-control" rows="4" required></textarea>
+    </div>
+    <div class="form-group">
+        <label for="return_address">İade Adresi:</label>
+        <textarea name="return_address" id="return_address" class="form-control" rows="3" placeholder="İade adresinizi giriniz."></textarea>
+    </div>
+            <button type="submit" class="" style="background-color: #ff671d; border: #ff671d; color:white;">Siparişi İptal Et</button>
             
         </form>
     </div><br>
     @include('layouts.footer')
+    
 </body>
 </html>

@@ -4,10 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\OrderBatch;
 use App\Models\OrderCanceled;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 
 
@@ -58,8 +56,8 @@ public function showDetails($orderId)
 
     public function showReturnForm(Request $request)
     {
+        //ajax uyarısı için 
         $orderId = $request->orderId;
-        $storeId = $request->store_id;
     
         $order = OrderBatch::find($orderId);
         if (!$order) {
@@ -77,8 +75,6 @@ public function showDetails($orderId)
     public function processReturn(Request $request)
     {
         $request->validate([
-            'order_id' => 'required',
-            'product_sku' => 'required',
             'details' => 'required|string',
             'return_address' => 'nullable|string',
         ]);
@@ -94,7 +90,7 @@ public function showDetails($orderId)
         $storeId = $request->store_id;
         $orderLine = $order->orderLines()->where('product_sku', $request->product_sku)->where('store_id', $storeId)->first();
         $productImage = $orderLine ? $orderLine->product_image : null;
-        $productPrice = $orderLine ? $orderLine->product_price : 0;
+        $productPrice = $orderLine ? $orderLine->product->product_price : 0;
         
         
     
@@ -106,6 +102,7 @@ public function showDetails($orderId)
             'product_price' => $productPrice,
             'product_image' => $productImage,
             'customer_id' => Auth::user()->customer_id,
+            'return_address' => $request->return_address
         ]);
     
         return redirect()->route('orders.index')->with('success', 'İade talebiniz alındı.');
