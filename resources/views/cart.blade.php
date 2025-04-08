@@ -36,6 +36,7 @@
                                             <th></th>
                                             <th>Ürün İsmi</th> 
                                             <th>Fiyat</th>
+                                            <th>Beden</th>
                                             <th>Adet</th>
                                             <th></th>
                                         </tr>
@@ -53,6 +54,9 @@
                                                 </td>
                                                 <td>
                                                     <p class="">  {{ $item->product_price }} TL</p>
+                                                </td>
+                                                <td>
+                                                    <p class=""> {{ $item->size_name }}</p>
                                                 </td>
                                                 <td>
                                                     <div class="d-flex align-items-center">

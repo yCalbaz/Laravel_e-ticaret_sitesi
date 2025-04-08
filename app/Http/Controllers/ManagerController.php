@@ -60,10 +60,12 @@ public function showSellerOrders($storeId)
     if (session('user_authority') !== self::SELLER_ROLE_ID) {
         return redirect()->route('login');
     }
-
+    
     $siparisler = OrderLine::where('store_id', $storeId)->get();
+    
     return view('seller_orders', ['siparisler' => $siparisler]);
 }
+
 public function updateLineStatus(Request $request,$lineId)
 {
     

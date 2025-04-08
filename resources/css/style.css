@@ -208,8 +208,22 @@ body {
     border-right: 1px solid #ddd;
 }
 
-.product-list {
+#product-list {
     padding: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center; 
+}
+#product-list .col-lg-3 {
+    flex: 0 0 25%; 
+    max-width: 25%;
+}
+
+@media (max-width: 768px) {
+    #product-list .col-lg-3 {
+        flex: 0 0 50%; 
+        max-width: 50%;
+    }
 }
 /*sepet,kategori,anasayfa (burası ürünlerin görünüşünü tanımladığım yer) css*/
 td{
@@ -255,18 +269,25 @@ th{
     margin: 10px 0;
 }
 
-.card-text {
-    font-size: 1rem;
-    font-weight: bold;
-    margin-bottom: 10px;
-}
 
 
 .brand-container {
     display: flex;
-    flex-direction: column; 
-    align-items: center; 
+    justify-content: center; /* Markaları yatayda ortalar */
+    flex-wrap: wrap; /* Gerekirse markaları alt satıra geçirir */
 }
+
+.brand-container .img-fluid {
+    max-width: 150px; /* Marka resimlerinin maksimum genişliği */
+    height: auto;
+}
+
+@media (max-width: 768px) {
+    .brand-container .img-fluid {
+        max-width: 100px; /* Küçük ekranlarda marka resimlerinin maksimum genişliği */
+    }
+}
+
 
 .brand-row {
     display: flex;

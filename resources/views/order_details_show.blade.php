@@ -7,7 +7,27 @@
     @vite(['resources/js/app.js', 'resources/css/style.css'])
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    
+    <style>
+        .table td {
+            font-size: 14px;
+        }
+
+        .order_image {
+            max-width: 100px;
+            height: auto;
+        }
+
+        @media (max-width: 768px) {
+            .table td {
+                font-size: 12px;
+                padding: 3px;
+            }
+
+            .order_image {
+                max-width: 80px;
+            }
+        }
+    </style>
 </head>
 <body>
 
@@ -31,6 +51,7 @@
                         </span>
                     </div>
                     <div class="card-body">
+                    <div class="table-responsive">
                         <table class="table">
                             <thead>
                                 <tr>
@@ -64,7 +85,7 @@
                                             @endif
                                         </td>
                                         <td>{{ $firstLine->product_name }}</td>
-                                        <td>{{ $firstLine->product_size }}</td>
+                                        <td>{{ $firstLine->size->size_name }}</td>
                                         <td>{{ $quantity }}</td>
                                         <td>
                                             @if($firstLine->product)
@@ -78,6 +99,7 @@
                                 @endforeach
                             </tbody>
                         </table>
+                    </div>
                     </div>
                 </div>
             @endforeach

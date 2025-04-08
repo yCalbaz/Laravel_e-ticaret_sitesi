@@ -13,7 +13,7 @@
     </style>
 </head>
 <body>
-
+ 
 @include('layouts.header')
 
 <div class="container product-detail-container">

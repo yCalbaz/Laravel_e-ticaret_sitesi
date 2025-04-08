@@ -70,9 +70,7 @@
         </div>
 
         <h2>Popüler Ürünler</h2>
-<div class="row justify-content-center" id="product-list"> 
-            
-    
+        <div class="row" id="product-list"> 
             @foreach($products as $product)
                 <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-4 d-flex justify-content-center">
                     <div class="card shadow-sm custom-card">
@@ -120,4 +118,5 @@
 
     
 </body>
+
 </html>

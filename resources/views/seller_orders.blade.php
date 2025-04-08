@@ -41,7 +41,6 @@
                             <tr>
                                 <th>Ürün Resmi</th>
                                 <th>Ürün Adı</th>
-                                
                                 <th>Adres</th>
                                 <th>Sipariş Durumu</th>
                             </tr>

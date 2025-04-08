@@ -6,6 +6,35 @@
     <title>Siparişler</title>
     @vite(['resources/js/app.js', 'resources/css/style.css'])
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .table td {
+        word-break: break-word;
+        overflow-wrap: break-word;
+        vertical-align: top;
+        padding: 5px;
+        font-size: 18px; /* Varsayılan yazı boyutu */
+    }
+
+    .table td:nth-child(2) {
+        max-width: 120px;
+        word-break: break-all;
+    }
+
+    .table td:nth-child(4) {
+        white-space: nowrap;
+    }
+        @media (max-width: 768px) {
+        .table td, .custom-details-button {
+            font-size: 12px; /* Küçük ekranlarda yazı boyutunu azalt */
+            padding: 3px; /* Küçük ekranlarda hücre dolgusunu azalt */
+        }
+
+        .table td:nth-child(2) {
+            max-width: 80px; /* Küçük ekranlarda adres sütununu daha da daralt */
+        }
+    }
+    </style>
+</head>
 <body>
 
 @include('layouts.header') 
@@ -17,9 +46,6 @@
     </div>
 @endif
 <div class="container mt-5">
-    
-    
-
 <div class="card mb-3">
             <div class="card-header">
             <h5>Tüm Siparişlerim:</h5>

@@ -16,7 +16,7 @@
         <h2>Arama Sonuçları: "{{ $query }}"</h2>
 
         @if($products->count() > 0)
-            <div class="row">
+        <div class="row" id="product-list">
                 @foreach($products as $product)
                     <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-4 d-flex justify-content-center">
                         <div class="card shadow-sm custom-card">
@@ -30,7 +30,7 @@
                     </div>
                 @endforeach
             </div>
-        @else
+        @else 
             <p>Aradığınız kriterlere eşleşen ürün yok.</p>
         @endif
     </div>

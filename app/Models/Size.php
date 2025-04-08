@@ -15,6 +15,10 @@ class Size extends Model
     protected $fillable = [
         'size_name'
     ];
+    public function orderLines()
+        {
+            return $this->hasMany(OrderLine::class, 'product_size_id');
+        }
 
     public $timestamps = false;
 }
