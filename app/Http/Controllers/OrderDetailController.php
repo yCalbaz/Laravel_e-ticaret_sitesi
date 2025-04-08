@@ -90,7 +90,7 @@ public function showDetails($orderId)
         $storeId = $request->store_id;
         $orderLine = $order->orderLines()->where('product_sku', $request->product_sku)->where('store_id', $storeId)->first();
         $productImage = $orderLine ? $orderLine->product_image : null;
-        $productPrice = $orderLine ? $orderLine->product->product_price : 0;
+        $productPrice = $orderLine ? $orderLine->product_price : 0;
         
         
     
