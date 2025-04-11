@@ -16,7 +16,7 @@
 
         <div class="mb-4">
             <h4>Sipariş Detayları</h4>
-            <p>Sipariş Numarası: {{ $order->id }}</p>
+            <p>Sipariş Numarası: {{ $order->orderLines->first()->order_id }}</p>
             <p>Sipariş Tarihi: {{ $order->created_at }}</p>
 
             <table class="table">
@@ -52,7 +52,7 @@
     <input type="hidden" name="store_id" value="{{ $storeId }}">
     @if($order->orderLines)
         @foreach($order->orderLines as $item)
-            <input type="hidden" name="product_sku" value="{{ $item->product_sku }}">
+            <input type="hidden" name="product_sku[]" value="{{ $item->product_sku }}">
             @endforeach
     @endif
     <div class="form-group">

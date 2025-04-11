@@ -44,11 +44,14 @@
             @foreach ($groupedOrderLines as $storeId => $lines)
                 <div class="card mb-3">
                     <div class="card-header">
-                        Satıcı: {{ $lines->first()->store->store_name ?? 'Satıcı Bilgisi Bulunamadı' }}
+                        Satıcı: {{ $lines->first()->store->store_name ?? 'Satıcı Bilgisi Bulunamadı' }} <br>
+                        Sipariş Numarası: {{ $order->orderLines->first()->order_id }}
                         <span style="margin: 0 20px">
+                        @if($isCancelable)
                             <button class="iptalEtBtnClass custom-details-button" data-id="{{ $order->order_id }}" data-store-id="{{ $storeId }}">
                                 İade Et
                             </button>
+                            @endif
                         </span>
                     </div>
                     <div class="card-body">
@@ -65,39 +68,40 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @php
-                                    $groupedProducts = $lines->groupBy(function ($item) {
-                                        return $item->product_id . '-' . $item->product_size;
-                                    });
-                                @endphp
-                                @foreach ($groupedProducts as $productKey => $productLines)
-                                    @php
-                                        $firstLine = $productLines->first();
-                                        $quantity = $productLines->count();
-                                    @endphp
-                                    <tr>
-                                        <td>
-                                            @if($firstLine->product)
-                                                <a href="{{ route('product.details', ['sku' => $firstLine->product->product_sku]) }}">
-                                                    <img src="{{ asset($firstLine->product->product_image) }}" class="order_image">
-                                                </a>
-                                            @else
-                                                Ürün Bulunamadı.
-                                            @endif
-                                        </td>
-                                        <td>{{ $firstLine->product_name }}</td>
-                                        <td>{{ $firstLine->size->size_name }}</td>
-                                        <td>{{ $quantity }}</td>
-                                        <td>
-                                            @if($firstLine->product)
-                                                {{ $firstLine->product->product_price }}TL
-                                            @else
-                                                Ürün Bulunamadı.
-                                            @endif
-                                        </td>
-                                        <td>{{ $firstLine->order_status }}</td>
-                                    </tr>
-                                @endforeach
+                            @php
+    $groupedProducts = $lines->groupBy(function ($item) {
+        return $item->product_sku . '-' . $item->product_size;
+    });
+@endphp
+
+@foreach ($groupedProducts as $groupKey => $productLines)
+    @php
+        $firstLine = $productLines->first();
+        $quantity = $productLines->count();
+    @endphp
+    <tr>
+        <td>
+            @if($firstLine->product)
+                <a href="{{ route('product.details', ['sku' => $firstLine->product->product_sku]) }}">
+                    <img src="{{ asset($firstLine->product->product_image) }}" class="order_image">
+                </a>
+            @else
+                Ürün Bulunamadı.
+            @endif
+        </td>
+        <td>{{ $firstLine->product_name }}</td>
+        <td>{{ $firstLine->size->size_name }}</td>
+        <td>{{ $quantity }}</td>
+        <td>
+            @if($firstLine->product)
+                {{ $firstLine->product->product_price }}TL
+            @else
+                Ürün Bulunamadı.
+            @endif
+        </td>
+        <td>{{ $firstLine->order_status }}</td>
+    </tr>
+@endforeach
                             </tbody>
                         </table>
                     </div>

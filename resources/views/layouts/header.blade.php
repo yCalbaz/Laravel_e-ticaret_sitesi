@@ -58,7 +58,7 @@
 <nav class="category-menu ">
     <div class="container">
     <div class="filter-container">
-    <div class="filter-dropdown">
+    <div class="filter-dropdown"> 
         <button class="filter-button">Kadın <span class="arrow">▼</span></button>
         <div class="filter-options ">
             <li><a class="category" href="{{ route('category.product', ['category_slug' => 'kadın-çanta']) }}">Kadın Çanta</a></li>

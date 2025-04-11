@@ -60,7 +60,7 @@ Route::post('/musteri/uye-ol', [AuthController::class, 'customerRegister'])->nam
 Route::get('/product/{sku}', [ProductController::class, 'showDetails'])->name('product.details');
 
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth'])->group(function () {        
     Route::get('/siparisler', [OrderDetailController::class, 'index'])->name('orders.index');
     Route::get('/order/{orderId}/detaylar', [OrderDetailController::class, 'showDetails'])->name('order.showDetails');
     Route::get('/orders/{orderId}/return/{store_id}', [OrderDetailController::class, 'showReturnForm'])->name('order.returnForm');

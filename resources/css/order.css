@@ -1,0 +1,194 @@
+body {
+    font-family: sans-serif;
+    background-color: #f8f9fa;
+    padding-top: 20px;
+}
+
+.container {
+    max-width: 768px;
+    margin: 0 auto;
+}
+
+.card {
+    margin-bottom: 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.card-header {
+    background-color: #fff;
+    padding: 15px;
+    border-bottom: 1px solid #e0e0e0;
+    border-radius: 8px 8px 0 0;
+}
+
+.card-header h5 {
+    color: #333;
+    margin-bottom: 0;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.card-body {
+    padding: 15px;
+    background-color: #fff;
+    border-radius: 0 0 8px 8px;
+}
+
+.order-item {
+    margin-bottom: 20px;
+    border: 1px solid #f0f0f0;
+    padding: 15px;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    display: flex; /* Ana konteyneri flex yapıyoruz */
+    align-items: flex-start; /* Öğeleri yukarı hizalıyoruz */
+    justify-content: space-between; /* Resimler ve sağ tarafı ayırıyoruz */
+}
+
+.order-images-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-right: 20px; /* Resimler ile sağ taraf arasında boşluk */
+}
+
+
+
+.order-image-container img {
+    width: 80px;
+    height: 80px;
+    border-radius: 5px;
+    object-fit: cover;
+}
+
+.order-info-container {
+    display: flex; /* Sipariş no, durum ve butonu yan yana yapmak için */
+    flex-direction: column; /* Öğeleri dikey sıralıyoruz */
+    align-items: flex-end; /* Sağa hizalıyoruz */
+}
+
+.order-info-line {
+    display: flex; /* Sipariş no ve durumu yan yana */
+    gap: 10px;
+    margin-bottom: 5px;
+    align-items: center;
+}
+
+.order-id {
+    font-weight: bold;
+    margin-bottom: 0;
+}
+
+.order-status {
+    font-style: italic;
+    color: #555;
+    margin-bottom: 0;
+}
+
+.custom-details-button {
+    display: inline-block;
+    padding: 8px 15px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    background-color: #ff6f00;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.custom-details-button:hover {
+    background-color: #e65e00;
+}
+
+.alert {
+    margin-top: 20px;
+}
+
+@media (max-width: 768px) {
+    .order-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .order-images-container {
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+
+    .order-images-container img {
+        width: 60px;
+        height: 60px;
+    }
+
+    .order-info-container {
+        align-items: flex-start; /* Küçük ekranlarda sola hizala */
+    }
+
+    .order-info-line {
+        flex-direction: column; /* Küçük ekranlarda alt alta */
+        align-items: flex-start;
+        gap: 5px;
+        margin-bottom: 5px;
+    }
+
+    .custom-details-button {
+        font-size: 0.8rem;
+        padding: 5px 10px;
+        margin-top: 5px;
+    }
+}
+.pagination {
+display: flex;
+list-style: none;
+padding: 0;
+margin-top: 20px;
+justify-content: center;
+}
+
+.page-item {
+margin: 0 5px;
+}
+
+.page-link {
+position: relative;
+display: block;
+padding: 0.5rem 0.75rem;
+margin-left: -1px;
+line-height: 1.25;
+color: #ff671d;
+background-color: #ff671d;
+border: 1px solid #dee2e6;
+border-radius: 0.25rem;
+text-decoration: none;
+}
+
+.page-link:hover {
+color: #0056b3;
+background-color: #e9ecef;
+border-color: #dee2e6;
+}
+
+.page-item.active .page-link {
+z-index: 3;
+color: #fff;
+background-color: #ff671d;
+border-color: #ff671d;
+}
+
+.page-item.disabled .page-link {
+color: #6c757d;
+pointer-events: none;
+cursor: auto;
+background-color: #fff;
+border-color: #dee2e6;
+}
+.pagination .page-link {
+padding: 0.3rem 0.5rem; /* Daha küçük padding */
+font-size: 0.8rem; /* Daha küçük font boyutu */
+}

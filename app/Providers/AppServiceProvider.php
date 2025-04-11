@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\Basket;
 use App\Models\BasketItem;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -36,5 +37,7 @@ class AppServiceProvider extends ServiceProvider
     
             $view->with('sepetSayisi', $sepetSayisi);
         });
+        Paginator::useBootstrapFour();
     }
+    
 }

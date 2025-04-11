@@ -91,6 +91,7 @@
                             <a href="{{ route('sepet.approvl') }}" class="btn btn-confirm">SEPETİ ONAYLA</a>
                         </div>
                     </div>
+                    
                 </div>
             @endif
         </div>
