@@ -89,50 +89,51 @@ class ManagerController extends Controller
     }
 
     public function approveCancellation(Request $request) //iade onaylamınca ilgili depoya stok gönder
-    {
-        $orderId = $request->input('order_id');
-        $storeId = $request->input('store_id');
-    
-        $orderLinesToCancel = OrderLine::where('order_id', $orderId)
-            ->where('store_id', $storeId)
-            ->where('order_status', 'iptal talebi alındı')
-            ->get(); 
-            //dd($orderLinesToCancel);
-        DB::beginTransaction();
-        try {
-            foreach ($orderLinesToCancel as $orderLine) {
-                //dd('İşlenen OrderLine:', $orderLine->id);
-                $orderLine->update(['order_status' => 'iptal talebi onaylandı']);
-    
-                $product = Product::where('product_sku', $orderLine->product_sku)->first();
-                //dd('Bulunan Ürün:', $product);
-                if ($product) {
-                    $stock = \App\Models\Stock::where('product_sku', $orderLine->product_sku)
-                        ->where('store_id', $orderLine->store_id)
-                        ->where('size_id', $orderLine->product_size_id) // Beden bilgisini ekleyin
-                        ->first();
-                    //dd('Bulunan Stok:', $stock);
-                    if ($stock) {
-                        $stock->increment('product_piece', $orderLine->quantity);
-                    } else {
-                        \App\Models\Stock::create([
-                            'product_id' => $product->product_id,
-                            'store_id' => $orderLine->store_id,
-                            'product_piece' => $orderLine->quantity,
-                            'size_id' => $orderLine->product_size_id,
-                        ]);
-                    }
+{
+    $orderId = $request->input('order_id');
+    $storeId = $request->input('store_id');
+
+    $orderLinesToCancel = OrderLine::where('order_id', $orderId)
+        ->where('store_id', $storeId)
+        ->where('order_status', 'iptal talebi alındı')
+        ->get();
+    //dd($orderLinesToCancel);
+    DB::beginTransaction();
+    try {
+        foreach ($orderLinesToCancel as $orderLine) {
+            //dd('İşlenen OrderLine:', $orderLine->id);
+            $orderLine->update(['order_status' => 'iptal talebi onaylandı']);
+
+            $product = Product::where('product_sku', $orderLine->product_sku)->first();
+            //dd('Bulunan Ürün:', $product);
+            if ($product) {
+                //dd('Bulunan Ürün SKU:', $product->product_sku);
+                $stock = \App\Models\Stock::where('product_sku', $orderLine->product_sku)
+                    ->where('store_id', $orderLine->store_id)
+                    ->where('size_id', $orderLine->product_size_id)
+                    ->first();
+                //dd('Bulunan Stok:', $stock);
+                if ($stock) {
+                    $stock->increment('product_piece', $orderLine->quantity);
+                } else {
+                    \App\Models\Stock::create([
+                        'product_sku' => $orderLine->product_sku, 
+                        'store_id' => $orderLine->store_id,
+                        'product_piece' => $orderLine->quantity,
+                        'size_id' => $orderLine->product_size_id,
+                    ]);
                 }
             }
-            //dd($product);
-            DB::commit();
-            return back()->with('success', $orderId . ' ID\'li siparişin ' . $storeId . ' deposundan çıkan ürünlerinin iptal talebi onaylandı ve stoklar güncellendi.');
-    
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return back()->with('error', 'İptal talebi onaylanırken bir hata oluştu: ' . $e->getMessage());
         }
+        //dd($product);
+        DB::commit();
+        return back()->with('success', $orderId . ' ID\'li siparişin ' . $storeId . ' deposundan çıkan ürünlerinin iptal talebi onaylandı ve stoklar güncellendi.');
+
+    } catch (\Exception $e) {
+        DB::rollBack();
+        return back()->with('error', 'İptal talebi onaylanırken bir hata oluştu: ' . $e->getMessage());
     }
+}
 
     public function updateLineStatusForStore(Request $request)
 {

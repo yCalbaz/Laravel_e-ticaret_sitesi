@@ -45,7 +45,7 @@
                 <div class="card mb-3">
                     <div class="card-header">
                         Satıcı: {{ $lines->first()->store->store_name ?? 'Satıcı Bilgisi Bulunamadı' }} <br>
-                        Sipariş Numarası: {{ $order->orderLines->first()->order_id }}
+                        Sipariş Numarası: {{ $lines->first()->order_id }}
                         <span style="margin: 0 20px">
                         @if($isCancelable)
                             <button class="iptalEtBtnClass custom-details-button" data-id="{{ $order->order_id }}" data-store-id="{{ $storeId }}">

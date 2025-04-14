@@ -196,4 +196,5 @@ class OrderDetailController extends Controller
         return view('admin_order_details_show', compact('order', 'groupedOrderLines', 'allOrderStatuses', 'orderStatusHistory'));
     }
 
+    
 }
