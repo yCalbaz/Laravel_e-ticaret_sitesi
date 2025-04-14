@@ -1,0 +1,17 @@
+.order_image {
+    width: 50px;
+    height: auto;
+}
+.warning-icon {
+    color: red;
+    margin-left: 5px;
+}
+.status-button {
+    margin-right: 10px;
+}
+.order-group {
+    display: none;
+}
+.order-group.active {
+    display: block;
+}

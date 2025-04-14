@@ -6,7 +6,18 @@
     <title>Sipariş Detayları</title>
     @vite(['resources/js/app.js', 'resources/css/style.css'])
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="icon" href="{{ asset('storage/images/flo-logo-Photoroom.png') }}" type="image/png">
+    <style>
+        .order_image {
+            width: 50px;
+            height: auto;
+        }
+        .warning-icon {
+            color: red;
+            margin-left: 5px;
+        }
+    </style>
 </head>
 <body>
 
@@ -30,7 +41,12 @@
             @endphp
 
             @foreach ($groupedByStore as $storeId => $storeOrderLines)
-                <h5>Depo: {{ App\Models\Store::find($storeId)->store_name ?? 'Bilinmeyen Depo' }}</h5>
+                <h5>
+                    Depo: {{ App\Models\Store::find($storeId)->store_name ?? 'Bilinmeyen Depo' }}
+                    @if ($storeOrderLines->contains(function ($line) { return $line->order_status == 'sipari alındı' || $line->order_status == 'iptal talebi alındı'; }))
+                        <i class="fas fa-exclamation-triangle warning-icon" title="Yeni sipariş veya iptal talebi var!"></i>
+                    @endif
+                </h5>
                 <div class="d-flex justify-content-end mb-2">
                     @if ($storeOrderLines->contains(function ($line) { return $line->order_status == 'iptal talebi alındı'; }))
                         <form method="POST" action="{{ route('seller.approveCancellation') }}" class="form-inline">
