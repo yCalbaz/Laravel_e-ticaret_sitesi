@@ -77,7 +77,7 @@ class BasketController extends Controller
             return response()->json(['error' => 'Ürün bulunamadı'], 404);
         }
 
-        $response = Http::get("http://host.docker.internal:3000/stock/{$product->product_sku}");
+        $response = Http::get("http://host.docker.internal:3000/stock/{$product->product_sku}/{$request->size_id}");
 
         if ($response->failed()) {
             return response()->json(['error' => 'Servise ulaşılamadı'], 500);
@@ -187,16 +187,17 @@ class BasketController extends Controller
                 $cartItems = BasketItem::where('order_id', $basket->id)->get();
                 $totalPrice = 0;
                 $stokError = false;
+                $outOfStockProducts = [];
                 $storeId = [];
         
                 foreach ($cartItems as $item) {
                     if ($item->product_piece < 1) {
                         return redirect()->back()->with('error', 'Sepette geçersiz ürün adedi var!');
                     }
-                    $response = Http::get("http://host.docker.internal:3000/stock/{$item->product_sku}");
+                    $response = Http::get("http://host.docker.internal:3000/stock/{$item->product_sku}/{$item->size_id}");
         
                     if ($response->failed()) {
-                        return redirect()->with('error', 'Stok servisine ulaşılmıyor');
+                        return redirect()->back()->with('error', 'Bir hata oluştu.');
                     }
         
                     $stockData = $response->json();
@@ -249,9 +250,13 @@ class BasketController extends Controller
                     $totalPrice += ($item->product_price * $item->product_piece);
                 }
         
-                if ($stokError) {
-                    return redirect()->back()->with('error', 'Yeterli stok yok');
+                if ($stokError && !empty($outOfStockProducts)) {
+                    return redirect()->back()->with('error', 'Aşağıdaki ürünlerin stoğu yetersiz: ' . implode(', ', $outOfStockProducts));
                 }
+                if ($stokError) {
+                    return redirect()->back()->with('error', 'Yeterli stok yok'); // Genel bir hata mesajı, yukarıdaki daha detaylı.
+                }
+        
         
                 $name = $request->input('name');
                 $address = $request->input('address');

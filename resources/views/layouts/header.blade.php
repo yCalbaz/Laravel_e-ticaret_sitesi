@@ -19,10 +19,10 @@
     </style>
 </head>
 <body>
-
-<nav class="category-menu" style="margin-top: 55px;">
+<nav class="category-menu" style="padding-top: 110px;">
 </nav>
 <nav class="navbar navbar-expand-lg navbar-light custom-header fix ">
+<div class="container mt-5 ">
     <div class="container d-flex align-items-center">
         <a class="navbar-brand" href="/">
             <img src="{{ asset('storage/images/flo-logo-Photoroom.png') }}" alt="" height="50">
@@ -52,10 +52,10 @@
                 <li class="nav-item"><a class="nav-link" href="{{ route('orders.index') }}">Siparişlerim</a></li>
             </ul>
         </div>
-    </div>
+    </div></div>
 </nav>
 
-<nav class="category-menu ">
+<nav class="category-menu  ">
     <div class="container">
     <div class="filter-container">
     <div class="filter-dropdown"> 
@@ -108,6 +108,7 @@
     
     </div>
 </nav></nav> <br>
+
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script>
   

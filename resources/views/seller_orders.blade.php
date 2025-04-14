@@ -20,33 +20,51 @@
     @endphp
 
     @foreach ($groupedByOrder as $orderId => $orderLines)
-        <div class="card mb-3">
-            <div class="card-header d-flex justify-content-between align-items-center flex-wrap">
-                <span>Sipariş İD: {{ $orderId }}</span>
-                <form method="POST" action="{{ route('seller.updateLineStatus', ['lineId' => $orderLines->first()->id]) }}" class="form-inline">
-                    @csrf
-                    <select name="order_status" class="form-control form-control-sm mr-2 mb-2">
-                        <option value="sipari alındı" {{ $orderLines->first()->order_status == 'sipari alındı' ? 'selected' : '' }}>Sipariş Alındı</option>
-                        <option value="hazırlanıyor" {{ $orderLines->first()->order_status == 'hazırlanıyor' ? 'selected' : '' }}>Hazırlanıyor</option>
-                        <option value="kargoya verildi" {{ $orderLines->first()->order_status == 'kargoya verildi' ? 'selected' : '' }}>Kargoya Verildi</option>
-                        <option value="iptal edildi" {{ $orderLines->first()->order_status == 'iptal edildi' ? 'selected' : '' }}>İptal Edildi</option>
-                    </select>
-                    <button type="submit" class="btn btn-primary btn-sm mb-2">Güncelle</button>
-                </form>
-            </div>
-            <div class="card-body">
+    <div class="card mb-3">
+        <div class="card-header">
+            <span>Sipariş İD: {{ $orderId }}</span>
+        </div>
+        <div class="card-body">
+            @php
+                $groupedByStore = $orderLines->groupBy('store_id');
+            @endphp
+
+            @foreach ($groupedByStore as $storeId => $storeOrderLines)
+                <h5>Depo: {{ App\Models\Store::find($storeId)->store_name ?? 'Bilinmeyen Depo' }}</h5>
+                <div class="d-flex justify-content-end mb-2">
+                    @if ($storeOrderLines->contains(function ($line) { return $line->order_status == 'iptal talebi alındı'; }))
+                        <form method="POST" action="{{ route('seller.approveCancellation') }}" class="form-inline">
+                            @csrf
+                            <input type="hidden" name="order_id" value="{{ $orderId }}">
+                            <input type="hidden" name="store_id" value="{{ $storeId }}">
+                            <button type="submit" class="btn btn-warning btn-sm">Bu Depodaki İptal Taleplerini Onayla</button>
+                        </form>
+                    @elseif (!$storeOrderLines->contains(function ($line) { return $line->order_status == 'iptal talebi onaylandı'; }))
+                        <form method="POST" action="{{ route('seller.updateLineStatusForStore') }}" class="form-inline">
+                            @csrf
+                            <input type="hidden" name="order_id" value="{{ $orderId }}">
+                            <input type="hidden" name="store_id" value="{{ $storeId }}">
+                            <select name="order_status" class="form-control form-control-sm mr-2">
+                                <option value="sipari alındı" {{ $storeOrderLines->every(function ($line) { return $line->order_status == 'sipari alındı'; }) ? 'selected' : '' }}>Sipariş Alındı</option>
+                                <option value="hazırlanıyor" {{ $storeOrderLines->every(function ($line) { return $line->order_status == 'hazırlanıyor'; }) ? 'selected' : '' }}>Hazırlanıyor</option>
+                                <option value="kargoya verildi" {{ $storeOrderLines->every(function ($line) { return $line->order_status == 'kargoya verildi'; }) ? 'selected' : '' }}>Kargoya Verildi</option>
+                            </select>
+                            <button type="submit" class="btn btn-primary btn-sm">Tümünü Güncelle</button>
+                        </form>
+                    @endif
+                </div>
                 <div class="table-responsive">
-                    <table class="table">
+                    <table class="table table-sm">
                         <thead>
                             <tr>
                                 <th>Ürün Resmi</th>
                                 <th>Ürün Adı</th>
-                                <th>Adres</th>
-                                <th>Sipariş Durumu</th>
+                                <th>Adet</th>
+                                <th>Durum</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($orderLines as $line)
+                            @foreach ($storeOrderLines as $line)
                                 <tr>
                                     <td>
                                         @if(App\Models\Product::where('product_sku', $line->product_sku)->first())
@@ -56,24 +74,18 @@
                                         @endif
                                     </td>
                                     <td>{{ $line->product_name }}</td>
-                                    <td>
-                                        @if(App\Models\OrderBatch::where('id', $line->order_id)->first())
-                                            {{ App\Models\OrderBatch::where('id', $line->order_id)->first()->customer_address }}
-                                        @else
-                                            Adres Bulunamadı
-                                        @endif
-                                    </td>
-                                    <td>
-                                        {{ $line->order_status }}
-                                    </td>
+                                    <td>{{ $line->quantity }}</td>
+                                    <td>{{ $line->order_status }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
                 </div>
-            </div>
+                <hr>
+            @endforeach
         </div>
-    @endforeach
+    </div>
+@endforeach
 </div>
 
 </body>

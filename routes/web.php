@@ -50,7 +50,7 @@ Route::post('/cart/add/{product_sku}', [BasketController::class, 'add'])->name('
 Route::get('/cart', [BasketController::class, 'index'])->name('cart.index');
 Route::delete('/cart/{id}', [BasketController::class, 'delete'])->name('cart.delete');
 Route::post('/sepet/onay', [BasketController::class, 'approvl'])->name('sepet.approvl');
-Route::get('/sepet/onay', [BasketController::class, 'approvl'])->name('sepet.approvl');
+Route::get('/sepet/onay', [BasketController::class, 'approvl'])->name('   ');
 
 
 
@@ -59,6 +59,8 @@ Route::post('/musteri/uye-ol', [AuthController::class, 'customerRegister'])->nam
 
 Route::get('/product/{sku}', [ProductController::class, 'showDetails'])->name('product.details');
 
+Route::post('/seller/orders/approve-cancellation', [ManagerController::class, 'approveCancellation'])->name('seller.approveCancellation');
+Route::post('/seller/orders/update-store-status', [ManagerController::class, 'updateLineStatusForStore'])->name('seller.updateLineStatusForStore');
 
 Route::middleware(['auth'])->group(function () {        
     Route::get('/siparisler', [OrderDetailController::class, 'index'])->name('orders.index');

@@ -23,6 +23,7 @@
 <nav class="category-menu" style="margin-top: 55px;">
 </nav>
 <nav class="navbar navbar-expand-lg navbar-light custom-header fix ">
+<div class="container mt-5 ">
     <div class="container d-flex align-items-center">
         <a class="navbar-brand" href="/adminPanel">
             <img src="{{ asset('storage/images/flo-logo-Photoroom.png') }}" alt="" height="50">
@@ -48,6 +49,7 @@
             </ul>
         </div>
     </div>
+</div>
 </nav>
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
