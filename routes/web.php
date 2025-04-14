@@ -32,7 +32,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/seller/orders/{storeId}', [ManagerController::class, 'showSellerOrders'])->name('seller.orders');
     Route::post('/seller/orders/{lineId}/status', [ManagerController::class, 'updateLineStatus'])->name('seller.updateLineStatus');
     Route::get('/musteriPanel', [ManagerController::class, 'showMusteriPanel'])->name('musteriPanel'); 
- 
+    Route::post('/seller/orders/store/update-status', [ManagerController::class, 'updateLineStatusForStore'])->name('seller.updateLineStatusForStore');
     Route::get('/urunPanel', [HomeProductController::class, 'index'])->name('product.index.form');
     Route::get('/depoPanel', [StoreController::class, 'index'])->name('store.index.form');
     Route::get('/stokPanel', [StockController::class, 'index'])->name('stock.index.form');
@@ -59,14 +59,13 @@ Route::post('/musteri/uye-ol', [AuthController::class, 'customerRegister'])->nam
 
 Route::get('/product/{sku}', [ProductController::class, 'showDetails'])->name('product.details');
 
-Route::post('/seller/orders/approve-cancellation', [ManagerController::class, 'approveCancellation'])->name('seller.approveCancellation');
-Route::post('/seller/orders/update-store-status', [ManagerController::class, 'updateLineStatusForStore'])->name('seller.updateLineStatusForStore');
 
 Route::middleware(['auth'])->group(function () {        
     Route::get('/siparisler', [OrderDetailController::class, 'index'])->name('orders.index');
     Route::get('/order/{orderId}/detaylar', [OrderDetailController::class, 'showDetails'])->name('order.showDetails');
     Route::get('/orders/{orderId}/return/{store_id}', [OrderDetailController::class, 'showReturnForm'])->name('order.returnForm');
-    Route::post('/siparis/iade', [OrderDetailController::class, 'processReturn'])->name('order.processReturn');});
+    Route::post('/siparis/iade', [OrderDetailController::class, 'processReturn'])->name('order.processReturn');
+    Route::post('/seller/orders/approve-cancellation', [ManagerController::class, 'approveCancellation'])->name('seller.approveCancellation');});
     Route::get('/order-canseled-form', [OrderDetailController::class, 'showCanceledForm'])->name('order.canceledForm');
     Route::get('/admin/siparisler', [OrderDetailController::class, 'adminOrders'])->name('orders.indexAdmin');
     Route::get('/admin/siparis/{orderId}/detaylar', [OrderDetailController::class, 'showAdminDetails'])->name('order.showAdminDetails');
@@ -80,4 +79,3 @@ Route::get('/get-products-by-category', [ProductController::class, 'getProductsB
 
 Route::get('/products/brand/{brand}', [ProductController::class, 'brand'])->name('products.brand'); 
 Route::get('/product/{sku}/sizes', [ProductController::class, 'getSizes'])->name('product.sizes');
-

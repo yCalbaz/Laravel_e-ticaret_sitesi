@@ -8,9 +8,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="icon" href="{{ asset('storage/images/flo-logo-Photoroom.png') }}" type="image/png">
-    <style>
-        
-    </style>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 
@@ -29,7 +27,7 @@
                 <option value="kargoya verildi" {{ request('order_status') == 'kargoya verildi' ? 'selected' : '' }}>Kargoya Verilen Siparişler</option>
                 <option value="iptal talebi alındı" {{ request('order_status') == 'iptal talebi alındı' ? 'selected' : '' }}>İptal Talebi Gelen</option>
                 <option value="iptal talebi onaylandı" {{ request('order_status') == 'iptal talebi onaylandı' ? 'selected' : '' }}>İptal Talebi Onaylanan</option>
-                
+
             </select>
         </form>
     </div>
@@ -55,29 +53,29 @@
             @foreach ($groupedByStore as $storeId => $storeOrderLines)
                 <h5>
                     Depo: {{ App\Models\Store::find($storeId)->store_name ?? 'Bilinmeyen Depo' }}
-                    @if ($storeOrderLines->contains(function ($line) { return $line->order_status == 'sipari alındı' || $line->order_status == 'iptal talebi alındı'; }))
+                    @if ($storeOrderLines->contains(function ($line) { return $line->order_status == 'sipariş alındı' || $line->order_status == 'iptal talebi alındı'; }))
                         <i class="fas fa-exclamation-triangle warning-icon" title="Yeni sipariş veya iptal talebi var!"></i>
                     @endif
                 </h5>
                 <div class="d-flex justify-content-end mb-2">
                     @if ($storeOrderLines->contains(function ($line) { return $line->order_status == 'iptal talebi alındı'; }))
-                        <form method="POST" action="{{ route('seller.approveCancellation') }}" class="form-inline">
+                        <form method="POST" action="#" class="form-inline approve-cancellation-form">
                             @csrf
                             <input type="hidden" name="order_id" value="{{ $orderId }}">
                             <input type="hidden" name="store_id" value="{{ $storeId }}">
                             <button type="submit" class="btn btn-warning btn-sm">Bu Depodaki İptal Taleplerini Onayla</button>
                         </form>
                     @elseif (!$storeOrderLines->contains(function ($line) { return $line->order_status == 'iptal talebi onaylandı'; }))
-                        <form method="POST" action="{{ route('seller.updateLineStatusForStore') }}" class="form-inline">
+                    <form method="POST" action="#" class="update-store-status-form form-inline">
                             @csrf
                             <input type="hidden" name="order_id" value="{{ $orderId }}">
                             <input type="hidden" name="store_id" value="{{ $storeId }}">
                             <select name="order_status" class="form-control form-control-sm mr-2">
-                                <option value="sipari alındı" {{ $storeOrderLines->every(function ($line) { return $line->order_status == 'sipari alındı'; }) ? 'selected' : '' }}>Sipariş Alındı</option>
-                                <option value="hazırlanıyor" {{ $storeOrderLines->every(function ($line) { return $line->order_status == 'hazırlanıyor'; }) ? 'selected' : '' }}>Hazırlanıyor</option>
-                                <option value="kargoya verildi" {{ $storeOrderLines->every(function ($line) { return $line->order_status == 'kargoya verildi'; }) ? 'selected' : '' }}>Kargoya Verildi</option>
+                            <option value="sipariş alındı" {{ $storeOrderLines->first()->order_status == 'sipariş alındı' ? 'selected' : '' }}>Sipariş Alındı</option>
+                            <option value="hazırlanıyor" {{ $storeOrderLines->first()->order_status == 'hazırlanıyor' ? 'selected' : '' }}>Hazırlanıyor</option>
+                            <option value="kargoya verildi" {{ $storeOrderLines->first()->order_status == 'kargoya verildi' ? 'selected' : '' }}>Kargoya Verildi</option>
                             </select>
-                            <button type="submit" class="approvl">Tümünü Güncelle</button>
+                            <button type="submit" class="approvl"> Güncelle</button>
                         </form>
                     @endif
                 </div>
@@ -119,4 +117,115 @@
 </div>
 
 </body>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const updateStoreForms = document.querySelectorAll('.update-store-status-form');
+        updateStoreForms.forEach(form => {
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+                const orderId = this.querySelector('input[name="order_id"]').value;
+                const storeId = this.querySelector('input[name="store_id"]').value;
+                const orderStatus = this.querySelector('select[name="order_status"]').value;
+                const csrfToken = this.querySelector('input[name="_token"]').value;
+                const url = `/seller/orders/store/update-status`;
+
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    body: JSON.stringify({ order_id: orderId, store_id: storeId, order_status: orderStatus })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Başarılı!',
+                            text: data.message,
+                            timer: 1500,
+                            showConfirmButton: false
+                        }).then(() => {
+                            window.location.reload();
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Hata!',
+                            text: data.error || 'Bir hata oluştu!',
+                        });
+                    }
+                })
+                .catch(error => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Hata!',
+                        text: 'İstek sırasında bir hata oluştu: ' + error,
+                    });
+                });
+            });
+        });
+
+        const approveCancellationForms = document.querySelectorAll('.approve-cancellation-form');
+        approveCancellationForms.forEach(form => {
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+                const orderId = this.querySelector('input[name="order_id"]').value;
+                const storeId = this.querySelector('input[name="store_id"]').value;
+                const csrfToken = this.querySelector('input[name="_token"]').value;
+                const url = `/seller/orders/approve-cancellation`;
+
+                Swal.fire({
+                    title: 'Emin misiniz?',
+                    text: 'İptal taleplerini onaylamak istediğinize emin misiniz?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Evet, onayla!',
+                    cancelButtonText: 'İptal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        fetch(url, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': csrfToken
+                            },
+                            body: JSON.stringify({ order_id: orderId, store_id: storeId })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                Swal.fire({
+                                    title: 'Onaylandı!',
+                                    text: data.message,
+                                    icon: 'success',
+                                    timer: 1500,
+                                    showConfirmButton: false
+                                }).then(() => {
+                                    window.location.reload()
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Hata!',
+                                    text: data.error || 'İptal talepleri onaylanırken bir hata oluştu!',
+                                });
+                            }
+                        })
+                        .catch(error => {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Hata!',
+                                text: 'İstek sırasında bir hata oluştu: ' + error,
+                            });
+                        });
+                    }
+                });
+            });
+        });
+    });
+</script>
 </html>

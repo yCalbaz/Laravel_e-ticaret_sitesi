@@ -69,83 +69,104 @@ class ManagerController extends Controller
         return view('seller_orders', ['siparisler' => $siparisler]);
     }
 
-    public function updateLineStatus(Request $request,$lineId)
+    public function updateLineStatus(Request $request, $lineId)
     {
-        
-        $orderLine = OrderLine::find($lineId);
-            $orderId = $orderLine->order_id;
-            $storeId = $orderLine->store_id;
-            $orderStatus = $request->input('order_status');
+        $orderLine = OrderLine::findOrFail($lineId);
+        $currentStatus = $orderLine->order_status;
+        $newStatus = $request->input('order_status');
 
-            OrderLine::where('order_id', $orderId)
-                ->where('store_id', $storeId)
-                ->update(['order_status' => $orderStatus]);
-        return redirect()->back()->with('success', 'Sipariş durumu güncellendi.');
+        $allowedTransitions = [
+            'sipariş alındı' => ['hazırlanıyor', 'iptal talebi alındı'],
+            'hazırlanıyor' => ['kargoya verildi', 'iptal talebi alındı'],
+            'kargoya verildi' => [],
+            'iptal talebi alındı' => ['iptal talebi onaylandı'],
+            'iptal talebi onaylandı' => [],
+        ];
+
+        if (!isset($allowedTransitions[$currentStatus]) || !in_array($newStatus, $allowedTransitions[$currentStatus])) {
+            return response()->json(['error' => "Geçersiz statü geçişi: '$currentStatus' -> '$newStatus'."], 400);
+        }
+
+        $orderLine->update(['order_status' => $newStatus]);
+        return response()->json(['success' => true, 'message' => 'Sipariş durumu güncellendi.']);
     }
+        
+    public function updateLineStatusForStore(Request $request)
+    {
+        $orderId = $request->input('order_id');
+        $storeId = $request->input('store_id');
+        $newStatus = $request->input('order_status');
 
-    protected function getProduct()
+        $orderLines = OrderLine::where('order_id', $orderId)
+            ->where('store_id', $storeId)
+            ->where('order_status', '!=', 'iptal talebi onaylandı')
+            ->get();
+
+        foreach ($orderLines as $orderLine) {
+            $currentStatus = $orderLine->order_status;
+            $allowedTransitions = [
+                'sipariş alındı' => ['hazırlanıyor', 'iptal talebi alındı'],
+                'hazırlanıyor' => ['kargoya verildi', 'iptal talebi alındı'],
+                'kargoya verildi' => [],
+                'iptal talebi alındı' => ['iptal talebi onaylandı'],
+                'iptal talebi onaylandı' => [],
+            ];
+
+            if (!isset($allowedTransitions[$currentStatus]) || !in_array($newStatus, $allowedTransitions[$currentStatus])) {
+                return response()->json(['error' => "Geçersiz statü geçişi yaptınız."], 400);
+            }
+
+            $orderLine->update(['order_status' => $newStatus]);
+        }
+
+        return response()->json(['success' => true, 'message' =>'Sipariş Durumu' . $newStatus . ' olarak güncellendi.']);
+    }
+        protected function getProduct()
     {
         return Product::orderBy('id', 'desc')->take(10)->get();
     }
 
     public function approveCancellation(Request $request) //iade onaylamınca ilgili depoya stok gönder
-{
-    $orderId = $request->input('order_id');
-    $storeId = $request->input('store_id');
-
-    $orderLinesToCancel = OrderLine::where('order_id', $orderId)
-        ->where('store_id', $storeId)
-        ->where('order_status', 'iptal talebi alındı')
-        ->get();
-    //dd($orderLinesToCancel);
-    DB::beginTransaction();
-    try {
-        foreach ($orderLinesToCancel as $orderLine) {
-            //dd('İşlenen OrderLine:', $orderLine->id);
-            $orderLine->update(['order_status' => 'iptal talebi onaylandı']);
-
-            $product = Product::where('product_sku', $orderLine->product_sku)->first();
-            //dd('Bulunan Ürün:', $product);
-            if ($product) {
-                //dd('Bulunan Ürün SKU:', $product->product_sku);
-                $stock = \App\Models\Stock::where('product_sku', $orderLine->product_sku)
-                    ->where('store_id', $orderLine->store_id)
-                    ->where('size_id', $orderLine->product_size_id)
-                    ->first();
-                //dd('Bulunan Stok:', $stock);
-                if ($stock) {
-                    $stock->increment('product_piece', $orderLine->quantity);
-                } else {
-                    \App\Models\Stock::create([
-                        'product_sku' => $orderLine->product_sku, 
-                        'store_id' => $orderLine->store_id,
-                        'product_piece' => $orderLine->quantity,
-                        'size_id' => $orderLine->product_size_id,
-                    ]);
+    {
+        $orderId = $request->input('order_id');
+        $storeId = $request->input('store_id');
+    
+        $orderLinesToCancel = OrderLine::where('order_id', $orderId)
+            ->where('store_id', $storeId)
+            ->where('order_status', 'iptal talebi alındı')
+            ->get();
+    
+        DB::beginTransaction();
+        try {
+            foreach ($orderLinesToCancel as $orderLine) {
+                $orderLine->update(['order_status' => 'iptal talebi onaylandı']);
+    
+                $product = Product::where('product_sku', $orderLine->product_sku)->first();
+                if ($product) {
+                    $stock = \App\Models\Stock::where('product_sku', $orderLine->product_sku)
+                        ->where('store_id', $orderLine->store_id)
+                        ->where('size_id', $orderLine->product_size_id)
+                        ->first();
+                    if ($stock) {
+                        $stock->increment('product_piece', $orderLine->quantity);
+                    } else {
+                        \App\Models\Stock::create([
+                            'product_sku' => $orderLine->product_sku,
+                            'store_id' => $orderLine->store_id,
+                            'product_piece' => $orderLine->quantity,
+                            'size_id' => $orderLine->product_size_id,
+                        ]);
+                    }
                 }
             }
+            DB::commit();
+            return response()->json(['success' => true, 'message' => $orderId . ' ID\'li siparişin iptal talebi onaylandı ve stoklar güncellendi.']);
+    
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['success' => false, 'error' => 'İptal talebi onaylanırken bir hata oluştu: ' . $e->getMessage()]);
         }
-        //dd($product);
-        DB::commit();
-        return back()->with('success', $orderId . ' ID\'li siparişin ' . $storeId . ' deposundan çıkan ürünlerinin iptal talebi onaylandı ve stoklar güncellendi.');
-
-    } catch (\Exception $e) {
-        DB::rollBack();
-        return back()->with('error', 'İptal talebi onaylanırken bir hata oluştu: ' . $e->getMessage());
     }
-}
 
-    public function updateLineStatusForStore(Request $request)
-{
-    $orderId = $request->input('order_id');
-    $storeId = $request->input('store_id');
-    $orderStatus = $request->input('order_status');
-
-    OrderLine::where('order_id', $orderId)
-        ->where('store_id', $storeId)
-        ->where('order_status', '!=', 'iptal talebi onaylandı') 
-        ->update(['order_status' => $orderStatus]);
-
-    return back()->with('success', $storeId . ' deposundaki ürünlerin durumu ' . $orderStatus . ' olarak güncellendi.');
-}
+    
 }
