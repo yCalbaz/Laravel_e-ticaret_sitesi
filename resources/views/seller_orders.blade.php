@@ -4,19 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sipariş Detayları</title>
-    @vite(['resources/js/app.js', 'resources/css/style.css'])
+    @vite(['resources/js/app.js', 'resources/css/style.css', 'resources/css/seller.css'])
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="icon" href="{{ asset('storage/images/flo-logo-Photoroom.png') }}" type="image/png">
     <style>
-        .order_image {
-            width: 50px;
-            height: auto;
-        }
-        .warning-icon {
-            color: red;
-            margin-left: 5px;
-        }
+        
     </style>
 </head>
 <body>
@@ -25,9 +18,28 @@
 
 <div class="container mt-5">
     <h2>Gelen Siparişler</h2>
+    <br>
+    <div class="container">
+        <form method="GET" action="{{ url()->current() }}" class="form-inline">
+        <button type="submit" class="color">Filtrele</button>
+            <select name="order_status" id="status_filter" class="form-control form-control-sm mr-2">
+                <option value="">Tümü</option>
+                <option value="sipariş alındı" {{ request('order_status') == 'sipariş alındı' ? 'selected' : '' }}>Gelen Siparişler</option>
+                <option value="hazırlanıyor" {{ request('order_status') == 'hazırlanıyor' ? 'selected' : '' }}>Hazırlanan Siparişler </option>
+                <option value="kargoya verildi" {{ request('order_status') == 'kargoya verildi' ? 'selected' : '' }}>Kargoya Verilen Siparişler</option>
+                <option value="iptal talebi alındı" {{ request('order_status') == 'iptal talebi alındı' ? 'selected' : '' }}>İptal Talebi Gelen</option>
+                <option value="iptal talebi onaylandı" {{ request('order_status') == 'iptal talebi onaylandı' ? 'selected' : '' }}>İptal Talebi Onaylanan</option>
+                
+            </select>
+        </form>
+    </div>
 
     @php
-        $groupedByOrder = collect($siparisler)->groupBy('order_id');
+        $orderStatusFilter = request('order_status');
+        $filteredOrders = collect($siparisler)->filter(function($orderLine) use ($orderStatusFilter) {
+            return !$orderStatusFilter || $orderLine->order_status == $orderStatusFilter;
+        });
+        $groupedByOrder = $filteredOrders->groupBy('order_id');
     @endphp
 
     @foreach ($groupedByOrder as $orderId => $orderLines)
@@ -65,7 +77,7 @@
                                 <option value="hazırlanıyor" {{ $storeOrderLines->every(function ($line) { return $line->order_status == 'hazırlanıyor'; }) ? 'selected' : '' }}>Hazırlanıyor</option>
                                 <option value="kargoya verildi" {{ $storeOrderLines->every(function ($line) { return $line->order_status == 'kargoya verildi'; }) ? 'selected' : '' }}>Kargoya Verildi</option>
                             </select>
-                            <button type="submit" class="btn btn-primary btn-sm">Tümünü Güncelle</button>
+                            <button type="submit" class="approvl">Tümünü Güncelle</button>
                         </form>
                     @endif
                 </div>
@@ -75,6 +87,7 @@
                             <tr>
                                 <th>Ürün Resmi</th>
                                 <th>Ürün Adı</th>
+                                <th>Beden</th>
                                 <th>Adet</th>
                                 <th>Durum</th>
                             </tr>
@@ -90,6 +103,7 @@
                                         @endif
                                     </td>
                                     <td>{{ $line->product_name }}</td>
+                                    <td>{{ $line->size->size_name }}</td>
                                     <td>{{ $line->quantity }}</td>
                                     <td>{{ $line->order_status }}</td>
                                 </tr>

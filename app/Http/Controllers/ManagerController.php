@@ -62,10 +62,10 @@ class ManagerController extends Controller
             return redirect()->route('login');
         }
         
-        $siparisler = OrderLine::where('store_id', $storeId)
+        $siparisler = OrderLine::with('size')
+        ->where('store_id', $storeId)
         ->orderBy('id', 'desc')
         ->get();
-        
         return view('seller_orders', ['siparisler' => $siparisler]);
     }
 

@@ -1,17 +1,74 @@
-.order_image {
-    width: 50px;
-    height: auto;
+.color{
+    background-color: #ff671d;
+    border: #ff671d;
+    color: white;
+    border-radius: 5px;
+    height: 30px;
 }
-.warning-icon {
-    color: red;
-    margin-left: 5px;
+.approvl{
+    background-color: #ff671d;
+    border: #ff671d;
+    color: white;
+    border-radius: 5px;
+    height: 30px;
 }
-.status-button {
-    margin-right: 10px;
+.card-header {
+    position: relative;
+    display: flex; /* İçindeki öğeleri yan yana sıralamak için */
+    justify-content: space-between; /* Öğeleri olabildiğince uzaklaştırır */
+    align-items: center; /* Öğeleri dikeyde ortalar */
+    padding-right: 30px; /* Sağ tarafa ikonlar için boşluk bırakır */
 }
-.order-group {
-    display: none;
+
+.card-header-text {
+    flex-grow: 1; /* Başlık metninin mümkün olduğunca yer kaplamasını sağlar */
 }
-.order-group.active {
-    display: block;
+
+.card-header-icons {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    display: flex; /* İkonları yan yana sıralamak için */
+}
+
+.has-new-orders .card-header-icons::after {
+    content: '\f0f3'; /* Zil ikonu */
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    color: green;
+    font-size: 1.2em;
+    animation: pulse-red 1s infinite alternate;
+    margin-left: 5px; /* İkonlar arasında boşluk bırakır */
+}
+
+.has-refund-requests .card-header-icons::before {
+    content: '\f0e0'; /* Zarf ikonu */
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    color: orange;
+    font-size: 1.2em;
+    animation: pulse-yellow 1s infinite alternate;
+    margin-right: 5px; /* İkonlar arasında boşluk bırakır */
+}
+
+@keyframes pulse-red {
+    0% {
+        transform: scale(1);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(1.2);
+        opacity: 1;
+    }
+}
+
+@keyframes pulse-yellow {
+    0% {
+        transform: scale(1);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(1.2);
+        opacity: 1;
+    }
 }

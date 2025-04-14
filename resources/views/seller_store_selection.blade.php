@@ -4,9 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Depo Seçimi</title>
-    @vite(['resources/js/app.js', 'resources/css/style.css'])
+    @vite(['resources/js/app.js', 'resources/css/style.css','resources/css/seller.css'])
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="icon" href="{{ asset('storage/images/flo-logo-Photoroom.png') }}" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        
+    </style>
 </head>
 <body>
 
@@ -18,10 +22,25 @@
     @if(count($stores) > 0)
         <div class="row">
             @foreach ($stores as $store)
+                @php
+                    $hasNewOrders = \App\Models\OrderLine::where('store_id', $store->id)
+                        ->where('order_status', 'sipariş alındı') // Yeni sipariş statüsü
+                        ->exists();
+
+                    $hasRefundRequests = \App\Models\OrderLine::where('store_id', $store->id)
+                        ->where('order_status', 'iptal talebi alındı')
+                        ->exists();
+                @endphp
                 <div class="col-md-4 mb-3">
-                    <div class="card">
+                    <div class="card {{ $hasNewOrders ? 'has-new-orders' : '' }} {{ $hasRefundRequests ? 'has-refund-requests' : '' }}">
                         <div class="card-header">
-                            {{ $store->store_name }}
+                            <span class="card-header-text">{{ $store->store_name }}</span>
+                            <div class="card-header-icons">
+                                @if($hasRefundRequests)
+                                    @endif
+                                @if($hasNewOrders)
+                                    @endif
+                            </div>
                         </div>
                         <div class="card-body">
                             <a href="{{ route('seller.orders', ['storeId' => $store->id]) }}" class="btn btn-primary">Gelen Siparişler</a>
