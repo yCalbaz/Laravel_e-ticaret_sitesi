@@ -30,7 +30,7 @@ class OrderDetailController extends Controller
         $orders = OrderBatch::with('orderLines.product')
         ->where('customer_id', $customer)
         ->orderBy('created_at', 'desc')
-        ->paginate(5);
+        ->paginate(5);  
 
 
         foreach ($orders as $order) {
@@ -163,9 +163,9 @@ class OrderDetailController extends Controller
 
     public function adminOrders()
     {
-        $orders = OrderBatch::with('orderLines.product')->orderBy('created_at', 'desc')->get();
+        $orders = OrderBatch::with('orderLines.product')->orderBy('created_at', 'desc')->paginate(4);  
 
-        
+         
         foreach ($orders as $order) {
             $order->totalPrice = $order->orderLines->sum(function ($line) {
                 return $line->product_price * $line->product_piece;
@@ -197,4 +197,4 @@ class OrderDetailController extends Controller
     }
 
     
-}
+} 

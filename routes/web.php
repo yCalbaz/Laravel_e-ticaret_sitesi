@@ -11,7 +11,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\StockController;
 use App\Http\Controllers\OrderDetailController;
 use App\Http\Controllers\ProductController;
-
+use App\Models\Order;
 
 Route::get('/', [HomeProductController::class, 'productHome']);
 
@@ -34,6 +34,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/musteriPanel', [ManagerController::class, 'showMusteriPanel'])->name('musteriPanel'); 
     Route::post('/seller/orders/store/update-status', [ManagerController::class, 'updateLineStatusForStore'])->name('seller.updateLineStatusForStore');
     Route::get('/urunPanel', [HomeProductController::class, 'index'])->name('product.index.form');
+    Route::get('Urunlerim' , [OrderController::class, 'sellerProduct'])->name('seller.product');
     Route::get('/depoPanel', [StoreController::class, 'index'])->name('store.index.form');
     Route::get('/stokPanel', [StockController::class, 'index'])->name('stock.index.form');
     Route::get('/uyeler', [MemberController::class, 'index'])->name('members.index');

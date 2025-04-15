@@ -72,3 +72,82 @@
         opacity: 1;
     }
 }
+
+.order-store-button{
+    background-color: #ff671d;
+    color: azure;
+    width: 150px;
+    text-align: center;
+    border-radius: 5px;
+}
+
+/*panel header*/
+.panel-box {
+    text-decoration: none;
+}
+
+.box {
+    background-color: #ff671d;
+    padding: 50px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    color: white;
+}
+
+.box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3);
+}
+.card-body {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+}
+.category-menu {
+    background-color: #f8f9fa;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+    
+}
+
+.custom-header {
+    background-color: #fff;
+}
+
+.custom-header .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    
+}a
+
+.custom-header .navbar-brand img {
+    height: 40px;
+}
+
+.icon-weight {
+    height: 10;
+}
+
+.custom-header .navbar-nav .nav-link {
+    padding: 0.5rem 1rem;
+    
+} 
+/*satıcı depo siparişleri*/
+.table-responsive {
+    overflow-x: auto;
+}
+.order_image {
+    max-width: 80px;
+    max-height: 80px;
+    object-fit: contain;
+}
+

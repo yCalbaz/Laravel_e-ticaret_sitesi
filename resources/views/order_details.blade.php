@@ -63,7 +63,7 @@
                                     @php
                                         $displayedProducts[] = $uniqueKey;
                                     @endphp
-                                @endif
+                                @endif  
                             @else
                                 <div class="order-image-container">
                                     <img src="https://via.placeholder.com/80" alt="Ürün Yok">

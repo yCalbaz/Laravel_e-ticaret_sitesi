@@ -6,6 +6,7 @@
     <title>Tüm Siparişler (Admin)</title>
     @vite(['resources/js/app.js', 'resources/css/style.css'])
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="icon" href="{{ asset('storage/images/flo-logo-Photoroom.png') }}" type="image/png">
     <style>
         .table td {
         word-break: break-word;
@@ -25,14 +26,15 @@
     }
         @media (max-width: 768px) {
         .table td, .custom-details-button {
-            font-size: 12px; /* Küçük ekranlarda yazı boyutunu azalt */
-            padding: 3px; /* Küçük ekranlarda hücre dolgusunu azalt */
+            font-size: 12px; 
+            padding: 3px; 
         }
 
         .table td:nth-child(2) {
-            max-width: 80px; /* Küçük ekranlarda adres sütununu daha da daralt */
+            max-width: 80px; 
         }
     }
+    
     </style>
 </head>
 <body>
@@ -48,7 +50,7 @@
 <div class="container mt-5">
     <div class="card mb-3">
         <div class="card-header">
-            <h5>Tüm Siparişler:</h5>
+            <h5>Tüm Siparişler</h5>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -79,9 +81,11 @@
                         @endforeach
                     </tbody>
                 </table>
+                
             </div>
         </div>
-    </div>
+    </div><div class="abc">
+    {{ $orders->links() }}</div>
 </div>
 
 </body>

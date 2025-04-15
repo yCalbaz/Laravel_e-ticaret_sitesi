@@ -24,4 +24,8 @@ class Store extends Model
     {
         return $this->belongsTo(OrderLine::class, 'store_id');
     }
+    public function members()
+{
+    return $this->belongsToMany(Member::class, 'member_store', 'store_id', 'member_id');
+}
 }

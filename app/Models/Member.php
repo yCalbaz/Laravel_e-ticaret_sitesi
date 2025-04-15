@@ -24,4 +24,8 @@ class Member extends Authenticatable
         'password', 
         'remember_token',
     ];
+    public function stores()
+{
+    return $this->belongsToMany(Store::class, 'member_store', 'member_id', 'store_id');
+}
 }

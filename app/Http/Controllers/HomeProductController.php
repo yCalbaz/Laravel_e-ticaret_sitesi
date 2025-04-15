@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 
 class HomeProductController extends Controller 
-{
+{ 
 
     public function productHome()
     {
