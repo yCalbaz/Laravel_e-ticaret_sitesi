@@ -5,34 +5,35 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class HomeProductController extends Controller 
 { 
 
     public function productHome()
-    {
-        
-            $products = Product::orderBy('id', 'desc')->get()->filter(function($product) {
-                try {
-                    $response = Http::timeout(4)->get("http://host.docker.internal:3000/stock/{$product->product_sku}");
-                    
-                    if ($response->successful()) {
-                        $stockData = $response->json();
-                        $stock = $stockData['stores'][0]['stock'] ?? 0; 
-                        return $stock > 0;
+{
+    $products = Product::with('stocks')->get()->filter(function ($product) {
+        foreach ($product->stocks as $stock) {
+            try {
+                $response = Http::timeout(4)->get("http://host.docker.internal:3000/stock/{$product->product_sku}/{$stock->size_id}");
+                if ($response->successful()) {
+                    $stockData = $response->json();
+                    $currentStock = $stockData['stores'][0]['stock'] ?? 0;
+                    if ($currentStock > 0) {
+                        return true; 
                     }
-                } catch (\Exception $e) {
-                    
                 }
-                return false;
-            })->take(4);
-        
-            return view('home', compact('products'));
+            } catch (\Exception $e) {
+            
+            }
         }
+        return false; 
+    })->take(4);
 
-    
-    
+    return view('home', compact('products'));
+}
+ 
     public function index()
     {
         $categories = Category::all();

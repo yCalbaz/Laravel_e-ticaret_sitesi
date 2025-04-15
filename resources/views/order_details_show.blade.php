@@ -73,7 +73,7 @@
         return $item->product_sku . '-' . $item->product_size;
     });
 @endphp
-
+ 
 @foreach ($groupedProducts as $groupKey => $productLines)
     @php
         $firstLine = $productLines->first();

@@ -13,8 +13,9 @@ class ProductController extends Controller
     public function index()
     {
         $products = Product::all()->filter(function($product) {
+            foreach($product->stocks as $stock){
             try {
-                $response = Http::timeout(4)->get("http://host.docker.internal:3000/stock/{$product->product_sku}");
+                $response = Http::timeout(4)->get("http://host.docker.internal:3000/stock/{$product->product_sku}/{$stock->size_id}");
     
                 if ($response->successful()) {
                     $stockData = $response->json();
@@ -24,6 +25,7 @@ class ProductController extends Controller
             } catch (\Exception $e) {
                 
             }
+        }
             return false;
         });
     
