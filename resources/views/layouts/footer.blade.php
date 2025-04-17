@@ -34,7 +34,7 @@ function addCart(productSku) {
             confirmButtonText: "Beden seç"
         }).then((result) => {
             if (result.dismiss === Swal.DismissReason.confirm) {
-                window.location.href = "/product/" + productSku;
+                window.location.href = "/urun/" + productSku;
             } else {
                 location.reload();
             }

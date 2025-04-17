@@ -17,10 +17,10 @@ class Product extends Model
         'product_price', 
         'product_image',
         'details',
-        'category_id'
+        //'category_id'
     ];
 
-    public $timestamps = false;
+    public $timestamps = true;
     
     public function categories()
     {

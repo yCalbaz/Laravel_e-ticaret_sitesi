@@ -58,7 +58,7 @@ Route::get('/sepet/onay', [BasketController::class, 'approvl'])->name('   ');
 Route::get('/musteri/uye-ol', [AuthController::class, 'showRegisterForm'])->name('musteri.uye_ol');
 Route::post('/musteri/uye-ol', [AuthController::class, 'customerRegister'])->name('musteri.uye_ol.kayit');
 
-Route::get('/product/{sku}', [ProductController::class, 'showDetails'])->name('product.details');
+Route::get('/urun/{sku}', [ProductController::class, 'showDetails'])->name('product.details');
 
 
 Route::middleware(['auth'])->group(function () {        

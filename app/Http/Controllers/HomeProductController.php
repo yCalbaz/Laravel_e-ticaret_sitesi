@@ -12,28 +12,25 @@ class HomeProductController extends Controller
 { 
 
     public function productHome()
-{
-    $products = Product::with('stocks')->get()->filter(function ($product) {
-        foreach ($product->stocks as $stock) {
+    {
+         
+        $products = Product::orderBy('id', 'desc')->get()->filter(function($product) {
             try {
-                $response = Http::timeout(4)->get("http://host.docker.internal:3000/stock/{$product->product_sku}/{$stock->size_id}");
+                $response = Http::timeout(4)->get("http://host.docker.internal:3000/stock/{$product->product_sku}");
+                
                 if ($response->successful()) {
                     $stockData = $response->json();
-                    $currentStock = $stockData['stores'][0]['stock'] ?? 0;
-                    if ($currentStock > 0) {
-                        return true; 
-                    }
+                    $stock = $stockData['stores'][0]['stock'] ?? 0; 
+                    return $stock > 0;
                 }
             } catch (\Exception $e) {
-            
+                
             }
-        }
-        return false; 
-    })->take(4);
-
-    return view('home', compact('products'));
-}
- 
+            return false;
+        })->take(4);
+    
+        return view('home', compact('products'));
+    }
     public function index()
     {
         $categories = Category::all();
@@ -45,7 +42,7 @@ class HomeProductController extends Controller
         $request->validate([
             'product_name' => 'required|string|max:255',
             'product_sku' => 'required|string|unique:products,product_sku',
-            'product_price' => 'required|numeric|min:0',
+            'product_price' => 'required|numeric|min:0|max:9999999',
             'product_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'category_ids' => 'required|array|exists:categories,id',
         ]);

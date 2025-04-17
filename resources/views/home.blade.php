@@ -77,7 +77,7 @@
                         <a href="{{ route('product.details', ['sku' => $product->product_sku]) }}">
                             <img src="{{ asset($product->product_image) }}" class="card-img-top custom-img">
                         </a>
-                        <div class="card-body">
+                        <div class="card-body"> 
                             <h5 class="card-title">{{ $product->product_name }}</h5>
                             <p class="card-text font-weight-bold">{{ $product->product_price }} TL</p>
                             @csrf

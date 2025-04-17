@@ -19,7 +19,7 @@ class Stock extends Model
         'size_id'
     ];
 
-    public $timestamps = false;
+    public $timestamps = true;
 
     public function size()
     {

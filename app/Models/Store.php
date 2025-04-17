@@ -17,6 +17,7 @@ class Store extends Model
         'store_max',
         'store_priority',
         'is_active'
+        
     ];
 
     public $timestamps = false;

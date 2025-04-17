@@ -62,14 +62,14 @@
             </a>
         </div>
         
-        <!--
+        
         <div class="col-md-4 mx-2 mb-4">
             <a href="{{ route('store.index.form' )}}" class="panel-box">
                 <div class="box">
                     <h2>Depo Ekle</h2>
                 </div>
             </a>
-        </div>-->
+        </div>
         
     </div>
 </div>

@@ -1,5 +1,5 @@
 ## Proje Hakkında
-Bu proje, Laravel, Go ve Docker kullanılarak geliştirilmiştir. Kullanıcılar  sepetlerine ürün ekleyebilir, sipariş verebilirler.Ayrıca kullanıcı kendi bilgileri ile kayıt olabilir ve oturumu içinde yaptığı sepete ekleme işlemlerini ve önceki sipariş bilgilerini görebilirler.Önceden onaylanmış siparişlere iade taleb oluşturabilirler. Satıcı paneli üzerinden ürün, stok ve depo yönetimi yapılabilir. Admin paneli üzerinden ürün, stok, depo, siparişlerin, kullanıcıların yönetimi yapılabilir.
+Bu proje, Laravel, Go ve Docker kullanılarak geliştirilmiştir. Kullanıcılar  sepetlerine ürün ekleyebilir, sipariş verebilirler.Ayrıca kullanıcı kendi bilgileri ile kayıt olabilir ve oturumu içinde yaptığı sepete ekleme işlemlerini ve önceki sipariş bilgilerini görebilirler.Önceden onaylanmış siparişlere iade taleb oluşturabilirler. Satıcı paneli üzerinden ürün, stok, depo yönetimi, sipariş kontrolu ve statu değişimi yapılabilir. Admin paneli üzerinden ürün, stok, depo, siparişlerin, kullanıcıların yönetimi yapılabilir.
 
 ## Temel Özellikler
 - Ürün ekleme, düzenleme ve silme
@@ -11,9 +11,11 @@ Bu proje, Laravel, Go ve Docker kullanılarak geliştirilmiştir. Kullanıcılar
 - Depoya sipariş atama ve stoktan düşme
 
 
+
 # Kurulum
 ## Gereksinimler
 - PHP 8.1 veya üstü
+- Laravel
 - Composer
 - Docker ve Docker Compose (isteğe bağlı)
 - MySQL
@@ -34,4 +36,5 @@ Bu proje, Laravel, Go ve Docker kullanılarak geliştirilmiştir. Kullanıcılar
 - MySQL: Veritabanı yönetimi
 - Docker: Proje konteynerlemesi ve yönetimi
 - Vite: JavaScript derleyicisi
-- Html / Css
+- Html / Css : Sayfa görünüşü için
+- Ajax: Uyarıları vermek ve sayfayı yenilemek için
