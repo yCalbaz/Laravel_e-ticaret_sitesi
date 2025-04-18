@@ -12,6 +12,7 @@ class Product extends Model
     protected $table = 'products'; 
 
     protected $fillable = [
+        'customer_id',
         'product_name',
         'product_sku',
         'product_price', 
@@ -34,5 +35,9 @@ class Product extends Model
     {
         return $this->belongsTo(Product::class, 'product_sku', 'product_sku');
     }
+    public function customer()
+{
+    return $this->belongsTo(Member::class, 'customer_id');
+}
 }
 

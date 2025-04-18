@@ -51,7 +51,13 @@
                 </div>
                 </div>
                 <div class="row">
-                <div class="col-md-12 mb-3">
+                <div class="col-md-6 mb-3">
+                    <label for="details" class="form-label">Ürün Detayı</label>
+                    <input type="text" name="details" id="details" class="form-control" required> @error('product_name')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
+                </div>
+                <div class="col-md-6 mb-3">
                     <label for="categorySelect" class="form-label">Kategori</label>
                     <select name="category_ids[]" id="categorySelect" class="form-control select2-multiple" multiple required> @foreach($categories as $category)
                             <option value="{{ $category->id }}">{{ $category->category_name }}</option>

@@ -16,6 +16,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Str;
+
  
 class BasketController extends Controller
 {
@@ -160,8 +162,25 @@ class BasketController extends Controller
                     }
                 } else {
                     $customerId = mt_rand(10000000, 99999999);
-                }
-            }
+                    $member = new Member();
+                $member->id = $customerId;
+                $member->name = 'Misafir Kullanıcı';
+                $member->email = 'misafir_' . $customerId . '@ornek.com';
+                $member->password = bcrypt(Str::random(10));
+                $member->save();
+                Session::put('customer_id', $customerId); 
+                        }
+                    } else {
+                        if (!Member::where('id', $customerId)->exists()) {
+                            $member = new Member();
+                            $member->id = $customerId;
+                            $member->name = 'Misafir Kullanıcı';
+                            $member->email = 'misafir_' . $customerId . '@ornek.com';
+                            $member->password = bcrypt(Str::random(10));
+                            $member->save();
+                        }
+                                }
+                            
         
             $basket = Basket::where('customer_id', $customerId)->where('is_active', 1)->first();
         
@@ -254,7 +273,7 @@ class BasketController extends Controller
                     return redirect()->back()->with('error', 'Aşağıdaki ürünlerin stoğu yetersiz: ' . implode(', ', $outOfStockProducts));
                 }
                 if ($stokError) {
-                    return redirect()->back()->with('error', 'Yeterli stok yok'); // Genel bir hata mesajı, yukarıdaki daha detaylı.
+                    return redirect()->back()->with('error', 'Yeterli stok yok'); 
                 }
         
         

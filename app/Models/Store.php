@@ -20,7 +20,7 @@ class Store extends Model
         
     ];
 
-    public $timestamps = false;
+    public $timestamps = true;
     public function orderLines()
     {
         return $this->belongsTo(OrderLine::class, 'store_id');
