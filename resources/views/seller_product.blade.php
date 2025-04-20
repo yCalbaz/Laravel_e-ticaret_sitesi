@@ -18,11 +18,12 @@
             @foreach($urunler as $urun)
                     <div class="col-lg-3 col-md-6 col-sm-12 mb-4 d-flex justify-content-center">
                         <div class="card shadow-sm custom-card">
-                            <a href="{{ route('product.details', ['sku' => $urun->product_sku]) }}">
+                            <a href="{{ route('stock.create.form', ['product_sku' => $urun->product_sku]) }}">
                                 <img src="{{ asset($urun->product_image) }}" class="card-img-top custom-img">
                             </a>
                             <div class="card-body">
                                 <h5 class="card-title">{{ $urun->product_name }}</h5>
+                                <a href="{{ route('stock.create.form', ['product_sku' => $urun->product_sku]) }}" class="btn btn-sm btn-outline-primary mt-2">Stok Ekle</a>
                             </div>
                         </div>
                     </div>

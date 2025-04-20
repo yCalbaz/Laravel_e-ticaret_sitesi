@@ -12,9 +12,14 @@ class OrderController extends Controller
 {  
     public function index()
     {
-        $orders = OrderBatch::with('orderLines')->get(); 
-
-        return view('order_panel', compact('orders'));
+        { if (!Auth::check()) {
+            return redirect()->route('login')->with('error', 'Lütfen giriş yapın.');
+        }
+        $memberId = Auth::id();
+        
+        $urunler = Product::where('customer_id', $memberId)->get();
+        return view('seller_product', compact('urunler'));
+        }
     }
 
     public function sellerProduct()

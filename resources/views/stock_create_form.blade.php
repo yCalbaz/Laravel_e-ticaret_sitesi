@@ -8,6 +8,20 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="icon" href="{{ asset('storage/images/flo-logo-Photoroom.png') }}" type="image/png">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <style>
+        .product-info {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .product-image {
+            max-width: 150px;
+            height: auto;
+            margin-bottom: 10px;
+        }
+    </style>
 </head>
 <body>
 
@@ -19,28 +33,36 @@
             <h2 class="text-center mb-4">Stok Ekle</h2>
             @include('components.alert')
 
+            <div class="product-info text-center">
+                @if ($product->product_image)
+                    <img src="{{ asset($product->product_image) }}" alt="{{ $product->product_name }}" class="product-image">
+                @else
+                    <p>Görsel Yok</p>
+                @endif
+                <h3>{{ $product->product_name }}</h3>
+                <p>Fiyat: {{ $product->product_price }} TL</p>
+                <p>Detaylar: {{ $product->details }}</p>
+            </div>
+
             <form action="{{ route('stock.store') }}" method="POST">
                 @csrf
+                <input type="hidden" name="product_sku" value="{{ $product->product_sku }}">
 
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        <label for="product_sku" class="form-label">Ürün Kodu</label>
-                        <input type="text" name="product_sku" id="product_sku" class="form-control form-control-lg" required>
-                        @error('product_sku')
-                            <div class="text-danger">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    <div class="col-md-6 mb-3">
-                        <label for="store_id" class="form-label">Depo ID</label>
-                        <input type="number" name="store_id" id="store_id" class="form-control form-control-lg" min="1" required>
+                    <label for="store_id" class="form-label">Depo Seçin</label>
+                        <select name="store_id" id="store_id" class="form-control form-control-lg" required>
+                            <option value="">Lütfen bir depo seçin</option>
+                            @foreach ($memberStore as $store)
+                                <option value="{{ $store->id }}">{{ $store->store_name }}</option>
+                            @endforeach
+                        </select>
                         @error('store_id')
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
                     </div>
-                </div>
-                <div class="row">
-                <div class="col-md-12 mb-3">
+
+                    <div class="col-md-12 mb-3">
                         <label for="sizeSelect" class="form-label">Ürün Bedeni</label>
                         <select name="size_ids[]" id="sizeSelect" class="form-control form-control-lg select2-multiple" multiple>
                             @foreach($sizes as $size)
@@ -58,6 +80,7 @@
 
                 <div class="mt-3">
                     <button type="submit" class="btn btn-primary btn-lg w-100">Stok Ekle</button>
+                    <a href="{{ route('seller.product') }}" class="btn btn-secondary mt-2 w-100">Geri</a>
                 </div>
             </form>
         </div>
@@ -73,7 +96,7 @@
 
         $('#sizeSelect').on('change', function() {
             var selectedSizes = $(this).select2('data');
-            sizeInputsContainer.empty(); 
+            sizeInputsContainer.empty();
 
             if (selectedSizes.length > 0) {
                 selectedSizes.forEach(function(size) {
@@ -87,9 +110,9 @@
                     inputGroup.append(labelCol).append(inputCol);
                     sizeInputsContainer.append(inputGroup);
                 });
-            } else {
             }
         });
+        
     });
 </script>
 </body>

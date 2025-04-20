@@ -13,6 +13,7 @@ use App\Http\Controllers\OrderDetailController;
 use App\Http\Controllers\ProductController;
 use App\Models\Order;
 
+Route::get('/deneme', function () { return view('deneme_login'); });
 Route::get('/', [HomeProductController::class, 'productHome']);
 
 Route::get('/urun', [ProductController::class, 'index'])->name('urun');
@@ -36,10 +37,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/urunPanel', [HomeProductController::class, 'index'])->name('product.index.form');
     Route::get('Urunlerim' , [OrderController::class, 'sellerProduct'])->name('seller.product');
     Route::get('/depoPanel', [StoreController::class, 'index'])->name('store.index.form');
-    Route::get('/stokPanel', [StockController::class, 'index'])->name('stock.index.form');
     Route::get('/uyeler', [MemberController::class, 'index'])->name('members.index');
     Route::delete('/uyeler/{id}', [MemberController::class, 'delete'])->name('members.delete');
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::get('/stock/create/{product_sku}', [StockController::class, 'showCreateForm'])->name('stock.create.form');
 });
 
 Route::post('/products', [HomeProductController::class, 'store'])->name('products.store'); 

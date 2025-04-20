@@ -24,16 +24,15 @@ class ProductController extends Controller
                 }
             } catch (\Exception $e) {
                 
+                }
             }
-        }
-            return false;
-        });
-    
-        return view('product', ['urunler' => $products]);
+                return false;
+            });
+        
+            return view('product', ['urunler' => $products]);
     }
     
     
-
     public function showDetails($sku)
     {
         
@@ -67,25 +66,38 @@ class ProductController extends Controller
     }
     
     public function productCategory($category_slug)
-    {
-        $kategori = Category::where('category_slug', $category_slug)->first();
-        $altKategori = null;
+{
+    $kategori = Category::where('category_slug', $category_slug)->first();
+    $altKategori = null;
 
-        if (!$kategori) {
-            $altKategori = Category::whereHas('parentCategories', function ($query) use ($category_slug) {
-                $query->where('category_slug', $category_slug);
-            })->first();
+    if (!$kategori) {
+        $altKategori = Category::whereHas('parentCategories', function ($query) use ($category_slug) {
+            $query->where('category_slug', $category_slug);
+        })->first();
 
-            if (!$altKategori) {
-                return abort(404, 'Kategori bulunamadı.');
+        if (!$altKategori) {
+            return abort(404, 'Kategori bulunamadı.');
+        }
+    }
+
+    $urunler = ($kategori ? $kategori->products() : $altKategori->products())->get()->filter(function ($product) {
+        foreach ($product->stocks as $stock) {
+            try {
+                $response = Http::timeout(4)->get("http://host.docker.internal:3000/stock/{$product->product_sku}/{$stock->size_id}");
+
+                if ($response->successful()) {
+                    $stockData = $response->json();
+                    $stockAdedi = $stockData['stores'][0]['stock'] ?? 0;
+                    return $stockAdedi > 0;
+                }
+            } catch (\Exception $e) {
             }
         }
+        return false;
+    });
 
-        $urunler = $kategori ? $kategori->products : $altKategori->products;
-        //dd($urunler);
-
-        return view('category_product', ['urunler' => $urunler, 'kategori' => $kategori ? $kategori->category_name : $altKategori->category_name]);
-    }
+    return view('category_product', ['urunler' => $urunler, 'kategori' => $kategori ? $kategori->category_name : $altKategori->category_name]);
+}
 
     public function getProductsByCategory(Request $request)
 {

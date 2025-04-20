@@ -29,7 +29,7 @@
         <a class="navbar-brand" href="/adminPanel">
             <img src="{{ asset('storage/images/flo-logo-Photoroom.png') }}" alt="" height="50">
         </a>
-
+ 
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -43,7 +43,7 @@
                 @guest
                     <li class="nav-item"><a class="nav-link" href="{{ route('login') }}"> Giriş </a></li>
                 @endguest
-                <li class="nav-item"><a class="nav-link" href="{{route('stock.index.form')}}">Stok Ekle</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{route('seller.product')}}">Stok Ekle</a></li>
                 
                 <li class="nav-item"><a class="nav-link" href="{{route('product.index.form')}}">Ürün Ekle</a></li>
                
