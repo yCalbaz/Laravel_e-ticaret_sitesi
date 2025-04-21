@@ -100,110 +100,58 @@ class OrderDetailController extends Controller
         $request->validate([
             'details' => 'required|string',
             'return_address' => 'nullable|string',
+            'product_sku' => 'required|array', // Birden fazla SKU beklenebilir
         ]);
-
+    
         $order = OrderBatch::where('id', $request->order_id)->first();
         if (!$order) {
             return back()->with('error', 'Sipariş bulunamadı.');
         }
-
+    
         if ($order->created_at->diffInDays(now()) > 15) {
             return response()->json('Bu sipariş için iade süresi dolmuştur.');
         }
-
+    
         $storeId = $request->store_id;
-
-        $productSkus = is_array($request->product_sku) ? $request->product_sku : [$request->product_sku];
-
-        
-        $skuList = implode(',', $productSkus);
-
+        $productSkusToReturn = $request->product_sku; 
+        $skuList = implode(',', $productSkusToReturn);
         $productImages = [];
         $productPrices = [];
-
-        foreach ($productSkus as $sku) {
-            $orderLine = $order->orderLines()->where('product_sku', $sku)->where('store_id', $storeId)->first();
-
-            if (!$orderLine) {
-                continue;
+    
+        DB::beginTransaction();
+        try {
+            
+            $allOrderLinesOfStore = $order->orderLines()->where('store_id', $storeId)->get();
+            foreach ($allOrderLinesOfStore as $orderLine) {
+                $orderLine->update(['order_status' => self::ORDER_STATUS_CANCEL_REQUESTED]);
+                if ($orderLine->product) {
+                    $productImages[] = $orderLine->product->product_image;
+                    $productPrices[] = $orderLine->product->product_price;
+                }
             }
-
-            $productImages[] = $orderLine->product->product_image;
-            $productPrices[] = $orderLine->product->product_price;
-
-            $orderLine->update(['order_status' => 'iptal talebi alındı']);
+    
+            $totalPrice = array_sum($productPrices);
+    
+            OrderCanceled::create([
+                'order_id' => $request->order_id,
+                'product_sku' => $skuList, 
+                'details' => $request->details,
+                'store_id' => $storeId,
+                'product_price' => $totalPrice,
+                'product_image' => implode(',', array_unique($productImages)),
+                'customer_id' => Auth::user()->customer_id,
+                'return_address' => $request->return_address
+            ]);
+    
+            DB::commit();
+            return redirect()->route('orders.index')->with('success', 'İade talebiniz alındı.');
+    
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'İade işlemi sırasında bir hata oluştu: ' . $e->getMessage());
         }
-
-        $totalPrice = array_sum($productPrices);
-
-        OrderCanceled::create([
-            'order_id' => $request->order_id,
-            'product_sku' => $skuList, 
-            'details' => $request->details,
-            'store_id' => $storeId,
-            'product_price' => $totalPrice,
-            'product_image' => implode(',', $productImages), 
-            'customer_id' => Auth::user()->customer_id,
-            'return_address' => $request->return_address
-        ]);
-
-        return redirect()->route('orders.index')->with('success', 'İade talebiniz alındı.');
     }
-
-    public function processReturnAll(Request $request)
-{
-    $orderId = $request->input('order_id');
-    $storeId = $request->input('store_id');
-
-    $order = OrderBatch::where('order_id', $orderId)->first();
-    if (!$order) {
-        return response()->json(['error' => 'Sipariş bulunamadı.'], 404);
-    }
-
-    if ($order->created_at->diffInDays(now()) > 15) {
-        return response()->json(['error' => 'Bu sipariş için iade süresi dolmuştur.'], 400);
-    }
-
-    $orderLinesToReturn = $order->orderLines()->where('store_id', $storeId)->get();
-
-    if ($orderLinesToReturn->isEmpty()) {
-        return response()->json(['error' => 'Bu satıcıya ait sipariş kalemi bulunamadı.'], 404);
-    }
-
-    DB::beginTransaction();
-    try {
-        $productSkus = [];
-        $productImages = [];
-        $totalPrice = 0;
-
-        foreach ($orderLinesToReturn as $orderLine) {
-            $orderLine->update(['order_status' => self::ORDER_STATUS_CANCEL_REQUESTED]);
-            $productSkus[] = $orderLine->product_sku;
-            if ($orderLine->product) {
-                $productImages[] = $orderLine->product->product_image;
-                $totalPrice += $orderLine->product->product_price * $orderLine->product_piece;
-            }
-        }
-
-        OrderCanceled::create([
-            'order_id' => $orderId,
-            'product_sku' => implode(',', array_unique($productSkus)), // Tekrarlayan SKU'ları önlemek için
-            'details' => 'Tüm sipariş (satıcı: ' . $storeId . ') iade talebi', // İsteğe bağlı detay
-            'store_id' => $storeId,
-            'product_price' => $totalPrice,
-            'product_image' => implode(',', array_unique($productImages)), // Tekrarlayan görselleri önlemek için
-            'customer_id' => Auth::user()->customer_id,
-            'return_address' => $order->customer_address, // Varsayılan olarak müşteri adresini alabilirsiniz
-        ]);
-
-        DB::commit();
-        return response()->json(['success' => true, 'message' => 'Bu satıcının gönderdiği tüm ürünler için iade talebi başarıyla oluşturuldu.']);
-
-    } catch (\Exception $e) {
-        DB::rollBack();
-        return response()->json(['error' => 'İade işlemi sırasında bir hata oluştu: ' . $e->getMessage()], 500);
-    }
-}
+    
 
     public function showCanceledForm(Request $request)
     {
