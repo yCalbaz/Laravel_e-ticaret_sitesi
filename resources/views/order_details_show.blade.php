@@ -42,72 +42,79 @@
             @endphp
 
             @foreach ($groupedOrderLines as $storeId => $lines)
-                <div class="card mb-3">
-                    <div class="card-header">
-                        Satıcı: {{ $lines->first()->store->store_name ?? 'Satıcı Bilgisi Bulunamadı' }} <br>
-                        Sipariş Numarası: {{ $lines->first()->order_id }}
-                        <span style="margin: 0 20px">
-                        @if($isCancelable)
-                            <button class="iptalEtBtnClass custom-details-button" data-id="{{ $order->order_id }}" data-store-id="{{ $storeId }}">
-                                İade Et
-                            </button>
-                            @endif
-                        </span>
-                    </div>
-                    <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Ürün Resmi</th>
-                                    <th>Ürün Adı</th>
-                                    <th>Beden</th>
-                                    <th>Adet</th>
-                                    <th>Fiyat</th>
-                                    <th>Sipariş Durumu</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            @php
-    $groupedProducts = $lines->groupBy(function ($item) {
-        return $item->product_sku . '-' . $item->product_size;
-    });
-@endphp
- 
-@foreach ($groupedProducts as $groupKey => $productLines)
-    @php
-        $firstLine = $productLines->first();
-        $quantity = $productLines->count();
-    @endphp
-    <tr>
-        <td>
-            @if($firstLine->product)
-                <a href="{{ route('product.details', ['sku' => $firstLine->product->product_sku]) }}">
-                    <img src="{{ asset($firstLine->product->product_image) }}" class="order_image">
-                </a>
-            @else
-                Ürün Bulunamadı.
+    <div class="card mb-3">
+        <div class="card-header">
+            Satıcı: {{ $lines->first()->store->store_name ?? 'Satıcı Bilgisi Bulunamadı' }} <br>
+            Sipariş Numarası: {{ $lines->first()->order_id }}
+            <span style="margin: 0 20px">
+            @php
+                $hasCanceledOrRequestedForStore = false;
+                $isCancelableForStore = true; // Varsayılan olarak iptal edilebilir kabul edelim (satıcı özelinde)
+
+                // Satıcıya ait ürünleri kontrol et
+                foreach ($lines as $line) {
+                    if (in_array($line->order_status, [\App\Http\Controllers\OrderDetailController::ORDER_STATUS_CANCEL_REQUESTED, \App\Http\Controllers\OrderDetailController::ORDER_STATUS_CANCEL_APPROVED])) {
+                        $hasCanceledOrRequestedForStore = true;
+                        break; // Satıcının bir ürünü iptal sürecindeyse, diğerlerine bakmaya gerek yok
+                    }
+
+                    // İptal edilebilir genel süreyi de burada kontrol edebilirsiniz (isteğe bağlı)
+                    if ($order->created_at->diffInDays(now()) > 15) {
+                        $isCancelableForStore = false;
+                    }
+                }
+            @endphp
+            @if($isCancelableForStore && !$hasCanceledOrRequestedForStore)
+                <button class="iptalEtBtnClass custom-details-button" data-id="{{ $order->order_id }}" data-store-id="{{ $storeId }}">
+                    İade Et
+                </button>
             @endif
-        </td>
-        <td>{{ $firstLine->product_name }}</td>
-        <td>{{ $firstLine->size->size_name }}</td>
-        <td>{{ $quantity }}</td>
-        <td>
-            @if($firstLine->product)
-                {{ $firstLine->product->product_price }}TL
-            @else
-                Ürün Bulunamadı.
-            @endif
-        </td>
-        <td>{{ $firstLine->order_status }}</td>
-    </tr>
+            </span>
+        </div>
+        <div class="card-body">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Ürün Resmi</th>
+                        <th>Ürün Adı</th>
+                        <th>Beden</th>
+                        <th>Adet</th>
+                        <th>Fiyat</th>
+                        <th>Sipariş Durumu</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($lines as $line)
+                        <tr>
+                            <td>
+                                @if($line->product)
+                                    <a href="{{ route('product.details', ['sku' => $line->product->product_sku]) }}">
+                                        <img src="{{ asset($line->product->product_image) }}" class="order_image">
+                                    </a>
+                                @else
+                                    Ürün Bulunamadı.
+                                @endif
+                            </td>
+                            <td>{{ $line->product_name }}</td>
+                            <td>{{ $line->size->size_name }}</td>
+                            <td>{{ $line->product_piece }}</td>
+                            <td>
+                                @if($line->product)
+                                    {{ $line->product->product_price }}TL
+                                @else
+                                    Ürün Bulunamadı.
+                                @endif
+                            </td>
+                            <td>{{ $line->order_status }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+        </div>
+    </div>
 @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                    </div>
-                </div>
-            @endforeach
         </div>
 
         <div class="col-md-4">

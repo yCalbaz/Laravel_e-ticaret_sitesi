@@ -6,6 +6,7 @@ use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 
 class ManagerController extends Controller
 {
@@ -37,7 +38,21 @@ class ManagerController extends Controller
         if(session('user_authority') !== self::CUSTOMER_ROLE_ID){
             return redirect()->route('login');
         }
-        $products = $this->getProduct();
+        $products = Product::orderBy('id', 'desc')->get()->filter(function($product) {
+            try {
+                $response = Http::timeout(4)->get("http://host.docker.internal:3000/stock/{$product->product_sku}");
+                
+                if ($response->successful()) {
+                    $stockData = $response->json();
+                    $stock = $stockData['stores'][0]['stock'] ?? 0; 
+                    return $stock > 0;
+                }
+            } catch (\Exception $e) {
+                
+            }
+            return false;
+        })->take(4);
+    
         return view('home', compact('products'));
     }
     public function showSellerStores()
@@ -65,7 +80,7 @@ class ManagerController extends Controller
         $siparisler = OrderLine::with('size')
         ->where('store_id', $storeId)
         ->orderBy('id', 'desc')
-        ->get();
+        ->get(); 
         return view('seller_orders', ['siparisler' => $siparisler]);
     }
 

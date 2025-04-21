@@ -15,6 +15,12 @@ use Illuminate\Support\Facades\Session;
 class OrderDetailController extends Controller
 {
     const SELLER_ROLE_ID = 2;
+    const ORDER_STATUS_RECEIVED = 'sipariş alındı';
+    const ORDER_STATUS_PREPARING = 'hazırlanıyor';
+    const ORDER_STATUS_SHIPPED = 'kargoya verildi';
+    const ORDER_STATUS_DELIVERED = 'teslim edildi';
+    const ORDER_STATUS_CANCEL_REQUESTED = 'iptal talebi alındı';
+    const ORDER_STATUS_CANCEL_APPROVED = 'iptal talebi onaylandı';
     public function index()
     {
         if (Auth::check()) {
@@ -39,7 +45,14 @@ class OrderDetailController extends Controller
             });
         }
 
-        return view('order_details', compact('orders'));
+        return view('order_details', compact('orders'))->with([
+            'status_received' => self::ORDER_STATUS_RECEIVED,
+            'status_preparing' => self::ORDER_STATUS_PREPARING,
+            'status_shipped' => self::ORDER_STATUS_SHIPPED,
+            'status_delivered' => self::ORDER_STATUS_DELIVERED,
+            'status_canseled' => self::ORDER_STATUS_CANCEL_REQUESTED,
+            'status_canseled_approve' => self::ORDER_STATUS_CANCEL_APPROVED,
+        ]);;
     
 }
     
@@ -58,7 +71,7 @@ class OrderDetailController extends Controller
         foreach ($order->orderLines as $line) {
             if (in_array($line->order_status, ['iptal talebi alındı', 'iptal talebi onaylandı'])) {
                 $isCancelable = false;
-                break;
+                break; 
             }
         }
         return view('order_details_show', compact('order', 'allOrderStatuses', 'orderStatusHistory','isCancelable'));
@@ -136,6 +149,61 @@ class OrderDetailController extends Controller
 
         return redirect()->route('orders.index')->with('success', 'İade talebiniz alındı.');
     }
+
+    public function processReturnAll(Request $request)
+{
+    $orderId = $request->input('order_id');
+    $storeId = $request->input('store_id');
+
+    $order = OrderBatch::where('order_id', $orderId)->first();
+    if (!$order) {
+        return response()->json(['error' => 'Sipariş bulunamadı.'], 404);
+    }
+
+    if ($order->created_at->diffInDays(now()) > 15) {
+        return response()->json(['error' => 'Bu sipariş için iade süresi dolmuştur.'], 400);
+    }
+
+    $orderLinesToReturn = $order->orderLines()->where('store_id', $storeId)->get();
+
+    if ($orderLinesToReturn->isEmpty()) {
+        return response()->json(['error' => 'Bu satıcıya ait sipariş kalemi bulunamadı.'], 404);
+    }
+
+    DB::beginTransaction();
+    try {
+        $productSkus = [];
+        $productImages = [];
+        $totalPrice = 0;
+
+        foreach ($orderLinesToReturn as $orderLine) {
+            $orderLine->update(['order_status' => self::ORDER_STATUS_CANCEL_REQUESTED]);
+            $productSkus[] = $orderLine->product_sku;
+            if ($orderLine->product) {
+                $productImages[] = $orderLine->product->product_image;
+                $totalPrice += $orderLine->product->product_price * $orderLine->product_piece;
+            }
+        }
+
+        OrderCanceled::create([
+            'order_id' => $orderId,
+            'product_sku' => implode(',', array_unique($productSkus)), // Tekrarlayan SKU'ları önlemek için
+            'details' => 'Tüm sipariş (satıcı: ' . $storeId . ') iade talebi', // İsteğe bağlı detay
+            'store_id' => $storeId,
+            'product_price' => $totalPrice,
+            'product_image' => implode(',', array_unique($productImages)), // Tekrarlayan görselleri önlemek için
+            'customer_id' => Auth::user()->customer_id,
+            'return_address' => $order->customer_address, // Varsayılan olarak müşteri adresini alabilirsiniz
+        ]);
+
+        DB::commit();
+        return response()->json(['success' => true, 'message' => 'Bu satıcının gönderdiği tüm ürünler için iade talebi başarıyla oluşturuldu.']);
+
+    } catch (\Exception $e) {
+        DB::rollBack();
+        return response()->json(['error' => 'İade işlemi sırasında bir hata oluştu: ' . $e->getMessage()], 500);
+    }
+}
 
     public function showCanceledForm(Request $request)
     {

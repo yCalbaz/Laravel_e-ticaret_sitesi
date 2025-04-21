@@ -8,21 +8,21 @@
     <link rel="icon" href="{{ asset('storage/images/flo-logo-Photoroom.png') }}" type="image/png">
     @vite(['resources/js/app.js', 'resources/css/header.css', 'resources/css/order.css'])
     <style>.advertisement-container {
-    display: flex; /* Yan yana veya alt alta sıralamak için */
-    flex-direction: column; /* Alt alta sıralamak için */
-    gap: 15px; /* Afişler arasında boşluk */
+    display: flex; 
+    flex-direction: column; 
+    gap: 15px; 
 }
 
 .advertisement-item {
-    /* Her bir afiş öğesi için stil (gerekirse) */
-    border: 1px solid #eee; /* İsteğe bağlı çerçeve */
-    border-radius: 8px; /* İsteğe bağlı köşe yuvarlaklığı */
-    overflow: hidden; /* Resimlerin taşımasını engellemek için */
+    
+    border: 1px solid #eee;
+    border-radius: 8px; 
+    overflow: hidden; 
 }
 
 .advertisement-image {
-    width: 100%; /* Ana div'in genişliğinin tamamını kapla */
-    height: auto; /* Oranını koru */
+    width: 100%;
+    height: auto; 
     display: block;
 }</style>
 </head>
@@ -78,22 +78,25 @@
                     <div class="order-info-line">
                         <div class="order-id">Sipariş No: {{ $order->order_id }}</div>
                         <div class="order-status">
-                            Durum:
+                        Durum:
                             @if($order->orderLines->isNotEmpty())
-                                @if($order->orderLines->first()->order_status == 'sipariş alındı')
+                                @php
+                                    $orderStatus = $order->orderLines->first()->order_status;
+                                @endphp
+                                @if($orderStatus == $status_received)
                                     Sipariş Alındı
-                                @elseif($order->orderLines->first()->order_status == 'hazırlanıyor')
+                                @elseif($orderStatus == $status_preparing)
                                     Hazırlanıyor
-                                @elseif($order->orderLines->first()->order_status == 'kargoya verildi')
+                                @elseif($orderStatus == $status_shipped)
                                     Kargoya Verildi
-                                @elseif($order->orderLines->first()->order_status == 'teslim edildi')
+                                @elseif($orderStatus == $status_delivered)
                                     Teslim Edildi
-                                @elseif($order->orderLines->first()->order_status == 'iptal edildi')
+                                @elseif($orderStatus == $status_canseled)
                                     İptal Edildi
-                                @elseif($order->orderLines->first()->order_status == 'iade edildi')
+                                @elseif($orderStatus == $status_canseled_approve)
                                     İade Edildi
                                 @else
-                                    {{ $order->orderLines->first()->order_status }}
+                                    {{ $orderStatus }}
                                 @endif
                             @else
                                 Durum Bilgisi Yok
@@ -107,7 +110,7 @@
             </div>
         @endforeach
 
-        {{ $orders->links() }} {{-- Sayfalama linklerini buraya ekleyin --}}
+        {{ $orders->links() }} 
     @else
         <p>Henüz siparişiniz bulunmamaktadır.</p>
     @endif

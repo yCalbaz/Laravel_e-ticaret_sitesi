@@ -65,6 +65,7 @@ Route::get('/urun/{sku}', [ProductController::class, 'showDetails'])->name('prod
 Route::middleware(['auth'])->group(function () {        
     Route::get('/siparisler', [OrderDetailController::class, 'index'])->name('orders.index');
     Route::get('/order/{orderId}/detaylar', [OrderDetailController::class, 'showDetails'])->name('order.showDetails');
+    Route::post('/order/return/process-all', [OrderDetailController::class, 'processReturnAll'])->name('order.return.processAll');
     Route::get('/orders/{orderId}/return/{store_id}', [OrderDetailController::class, 'showReturnForm'])->name('order.returnForm');
     Route::post('/siparis/iade', [OrderDetailController::class, 'processReturn'])->name('order.processReturn');
     Route::post('/seller/orders/approve-cancellation', [ManagerController::class, 'approveCancellation'])->name('seller.approveCancellation');});
