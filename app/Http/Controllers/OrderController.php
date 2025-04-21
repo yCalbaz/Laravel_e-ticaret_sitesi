@@ -6,7 +6,9 @@ use App\Models\MemberStore;
 use App\Models\OrderBatch;
 use App\Models\Product;
 use App\Models\Stock;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 
 class OrderController extends Controller
 {  
@@ -17,18 +19,63 @@ class OrderController extends Controller
         }
         $memberId = Auth::id();
         
-        $urunler = Product::where('customer_id', $memberId)->get();
-        return view('seller_product', compact('urunler'));
+        $products = Product::where('customer_id', $memberId)->get();
+        return view('seller_product', compact('products'));
         }
     }
 
-    public function sellerProduct()
-    { if (!Auth::check()) {
-        return redirect()->route('login')->with('error', 'Lütfen giriş yapın.');
-    }
-    $memberId = Auth::id();
-    
-    $urunler = Product::where('customer_id', $memberId)->get();
-    return view('seller_product', compact('urunler'));
-    }
+    public function sellerProduct(Request $request)
+    {
+        if (!Auth::check()) {
+            return redirect()->route('login')->with('error', 'Lütfen giriş yapın.');
+        }
+        $memberId = Auth::id();
+
+        $query = Product::where('customer_id', $memberId);
+
+        $storeName = $request->input('depo_adi');
+        if ($storeName) {
+            $query->whereHas('stocks.store', function ($q) use ($storeName) {
+                $q->where('store_name', 'like', '%' . $storeName . '%');
+            });
+        }
+
+        $products = $query->get()->map(function ($product) {
+            $stoktaHave = false;
+            foreach ($product->stocks as $stock) {
+                try {
+                    $response = Http::timeout(4)->get("http://host.docker.internal:3000/stock/{$product->product_sku}/{$stock->size_id}");
+                    if ($response->successful()) {
+                        $stockData = $response->json();
+                        $stockQuantity = collect($stockData['stores'])->sum('stock');
+                        if ($stockQuantity > 0) {
+                            $stoktaHave = true;
+                            break;
+                        }
+                    }
+                } catch (\Exception $e) {
+                }
+            }
+            $product['stokta_var'] = $stoktaHave;
+            return $product;
+        });
+
+        $stokStatus = $request->input('stok_durumu');
+        if ($stokStatus === 'stokta_var') {
+            $products = $products->where('stokta_var', true);
+        } elseif ($stokStatus === 'stokta_yok') {
+            $products = $products->where('stokta_var', false);
+        }
+
+        $stores = \App\Models\Stock::with('store')
+            ->whereHas('product', function ($q) use ($memberId) {
+                $q->where('customer_id', $memberId);
+            })
+            ->distinct('store_id')
+            ->get()
+            ->pluck('store.store_name', 'store.store_name')
+            ->toArray();
+
+        return view('seller_product', compact('products', 'stores'));
+}
 }

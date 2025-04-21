@@ -42,26 +42,26 @@
 
     <div class="container mt-5 ">
     
-
+ 
         <div class="container mt-5">
-            <a href="{{ route('products.brand', ['brand' => 'adidas']) }}">
+            <a href="{{ route('category.product', ['category_slug' => 'adidas']) }}">
                 <img src="{{ asset('storage/images/banner31.png') }}" class="img-fluid" alt="Banner">
             </a>
         </div>
         <div class="mt-5 brand-container">
             <div class="row brand-row">
                 <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-4">
-                    <a href="{{ route('products.brand', ['brand' => 'nike']) }}">
+                    <a href="{{ route('category.product', ['category_slug' => 'nike']) }}">
                         <img src="{{ asset('storage/images/nike.png') }}" class="img-fluid" alt="nike">
                     </a>
                 </div>
                 <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-4">
-                    <a href="{{ route('products.brand', ['brand' => 'adidas']) }}">
+                    <a href="{{ route('category.product', ['category_slug' => 'lumberjack']) }}">
                         <img src="{{ asset('storage/images/adidas.png') }}" class="img-fluid" alt="adidas">
                     </a>
                 </div>
                 <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-4">
-                    <a href="{{ route('products.brand', ['brand' => 'lumberjack']) }}">
+                    <a href="{{ route('category.product', ['category_slug' => 'adidas']) }}">
                         <img src="{{ asset('storage/images/lumberjack.png') }}" class="img-fluid" alt="lumberjack">
                     </a>
                 </div>
@@ -104,7 +104,7 @@
     </div>
 </div>
 <div class="container mt-5">
-            <a href="{{ route('products.brand', ['brand' => 'adidas']) }}">
+            <a href="{{ route('category.product', ['category_slug' => 'adidas']) }}">
                 <img src="{{ asset('storage/images/banner12.png') }}" class="img-fluid" alt="Banner">
             </a>
         </div>

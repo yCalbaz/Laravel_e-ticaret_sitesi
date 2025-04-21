@@ -100,7 +100,7 @@ class OrderDetailController extends Controller
         $request->validate([
             'details' => 'required|string',
             'return_address' => 'nullable|string',
-            'product_sku' => 'required|array', // Birden fazla SKU beklenebilir
+            'product_sku' => 'required|array', 
         ]);
     
         $order = OrderBatch::where('id', $request->order_id)->first();
@@ -176,7 +176,7 @@ class OrderDetailController extends Controller
 
         return view('order_canceled_form', compact('order', 'orderId', 'storeId'));
     } 
-
+ 
     public function adminOrders()
     {
         $orders = OrderBatch::with('orderLines.product')->orderBy('created_at', 'desc')->paginate(4);  

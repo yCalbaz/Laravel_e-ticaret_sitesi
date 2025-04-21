@@ -68,7 +68,7 @@ function addCart(productSku) {
                 reverseButtons: true
             }).then((result) => {
                 if (result.dismiss === Swal.DismissReason.cancel) {
-                    window.location.href = "/cart";
+                    window.location.href = "/sepet";
                 } else {
                     location.reload();
                 }

@@ -13,7 +13,8 @@ class StockController extends Controller
 {
 
 
-public function showCreateForm($productSku) {
+public function showCreateForm($productSku) 
+{
     $product = Product::where('product_sku', $productSku)->firstOrFail();
     $sizes = Size::all();
     $memberID = Auth::id();

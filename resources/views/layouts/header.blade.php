@@ -44,7 +44,7 @@
                 @guest
                     <li class="nav-item"><a class="nav-link" href="{{ route('login') }}"> Giriş </a></li>
                 @endguest
-                <li class="nav-item"><a class="nav-link" href="{{ route('sepet.index') }}">
+                <li class="nav-item"><a class="nav-link" href="{{ route('cart.index') }}">
                         Sepetim
                         <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-light text-dark">
                             {{ $sepetSayisi ?? 0 }}

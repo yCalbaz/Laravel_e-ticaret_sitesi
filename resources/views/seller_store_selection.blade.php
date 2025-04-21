@@ -55,7 +55,7 @@
 
     <div class="row justify-content-center">
         <div class="col-md-4 mx-2 mb-4">
-            <a href="{{ route('seller.product') }}" class="panel-box">
+            <a href="{{ route('seller.products') }}" class="panel-box">
                 <div class="box">
                     <h2>Ürünlerim</h2>
                 </div>

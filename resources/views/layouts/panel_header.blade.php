@@ -43,7 +43,7 @@
                 @guest
                     <li class="nav-item"><a class="nav-link" href="{{ route('login') }}"> Giriş </a></li>
                 @endguest
-                <li class="nav-item"><a class="nav-link" href="{{route('seller.product')}}">Stok Ekle</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{route('seller.products')}}">Stok Ekle</a></li>
                 
                 <li class="nav-item"><a class="nav-link" href="{{route('product.index.form')}}">Ürün Ekle</a></li>
                

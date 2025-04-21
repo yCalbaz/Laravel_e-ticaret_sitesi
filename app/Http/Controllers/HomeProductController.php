@@ -13,11 +13,12 @@ class HomeProductController extends Controller
 { 
 
     public function productHome()
-    {
+    { 
          
         $products = Product::orderBy('id', 'desc')->get()->filter(function($product) {
+            foreach ($product->stocks as $stock) {
             try {
-                $response = Http::timeout(4)->get("http://host.docker.internal:3000/stock/{$product->product_sku}");
+                $response = Http::timeout(4)->get("http://host.docker.internal:3000/stock/{$product->product_sku}/{$stock->size_id}");
                 
                 if ($response->successful()) {
                     $stockData = $response->json();
@@ -26,7 +27,7 @@ class HomeProductController extends Controller
                 }
             } catch (\Exception $e) {
                 
-            }
+            }}
             return false;
         })->take(4);
     

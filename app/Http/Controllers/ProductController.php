@@ -136,16 +136,6 @@ class ProductController extends Controller
     return view('partials.product_list', ['urunler' => $urunler]);
 }
 
-    
-public function brand($brand_slug)
-{
-    $category = Category::where('category_slug', $brand_slug)->firstOrFail();
-
-    $products = Product::where('product_name', 'LIKE', '%' . $category->category_name . '%')->get();
-
-    return view('products.brand', compact('products', 'category'));
-}
-
 public function getSizes($sku)
 {
     $product = Product::where('product_sku', $sku)->firstOrFail();

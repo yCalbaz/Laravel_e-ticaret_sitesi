@@ -8,9 +8,11 @@ use Illuminate\Support\Facades\Auth;
 
 class StoreController extends Controller
 {
-public function index(){
+public function index()
+{
     return view('store_panel');
 }
+
 public function store(Request $request)
 {
     $request->validate([

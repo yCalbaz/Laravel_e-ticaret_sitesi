@@ -39,8 +39,9 @@ class ManagerController extends Controller
             return redirect()->route('login');
         }
         $products = Product::orderBy('id', 'desc')->get()->filter(function($product) {
+            foreach ($product->stocks as $stock){
             try {
-                $response = Http::timeout(4)->get("http://host.docker.internal:3000/stock/{$product->product_sku}");
+                $response = Http::timeout(4)->get("http://host.docker.internal:3000/stock/{$product->product_sku}/{$stock->size_id}");
                 
                 if ($response->successful()) {
                     $stockData = $response->json();
@@ -49,7 +50,7 @@ class ManagerController extends Controller
                 }
             } catch (\Exception $e) {
                 
-            }
+            }}
             return false;
         })->take(4);
     
@@ -77,11 +78,11 @@ class ManagerController extends Controller
             return redirect()->route('login');
         }
         
-        $siparisler = OrderLine::with('size')
+        $orders = OrderLine::with('size')
         ->where('store_id', $storeId)
         ->orderBy('id', 'desc')
         ->get(); 
-        return view('seller_orders', ['siparisler' => $siparisler]);
+        return view('seller_orders', ['siparisler' => $orders]);
     }
 
     public function updateLineStatus(Request $request, $lineId)

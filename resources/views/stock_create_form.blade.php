@@ -80,7 +80,7 @@
 
                 <div class="mt-3">
                     <button type="submit" class="btn btn-primary btn-lg w-100">Stok Ekle</button>
-                    <a href="{{ route('seller.product') }}" class="btn btn-secondary mt-2 w-100">Geri</a>
+                    <a href="{{ route('seller.products') }}" class="btn btn-secondary mt-2 w-100">Geri</a>
                 </div>
             </form>
         </div>
