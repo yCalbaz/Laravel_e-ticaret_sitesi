@@ -20,7 +20,13 @@
                             </a>
                             <div class="card-body">
                                 <h5 class="card-title">{{ $urun->product_name }}</h5>
-                                <p class="card-text">{{ $urun->product_price }} TL</p>
+                                @if ($urun->discount_rate > 0 && $urun->discounted_price !== null)
+                            <p class="card-text original-price text-danger" style="margin-bottom: 2px;"><del>{{ $urun->product_price }} TL</del></p>
+                            <p class=" text-success " style="font-size: 15px; margin-bottom: 2px;">İNDİRİMLİ FİYAT</p>
+                            <p class="  text-success"  style="font-size: 25px; margin-bottom: 2px;">{{ number_format($urun->discounted_price, 2) }} TL</p>
+                        @else
+                            <p class="card-text">{{ $urun->product_price }} TL</p>
+                        @endif
                                 <button type="submit" class=" cart-add-btn" onclick="addCart('{{ $urun->product_sku }}')">Sepete Ekle</button>
                             </div>
                         </div>

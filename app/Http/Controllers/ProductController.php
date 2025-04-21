@@ -80,7 +80,8 @@ class ProductController extends Controller
         }
     }
 
-    $urunler = ($kategori ? $kategori->products() : $altKategori->products())->get()->filter(function ($product) {
+    $urunlerQuery = ($kategori ? $kategori->products() : $altKategori->products());
+    $urunler = $urunlerQuery->get()->filter(function ($product) {
         foreach ($product->stocks as $stock) {
             try {
                 $response = Http::timeout(4)->get("http://host.docker.internal:3000/stock/{$product->product_sku}/{$stock->size_id}");
@@ -94,6 +95,13 @@ class ProductController extends Controller
             }
         }
         return false;
+    })->map(function ($urun) {
+        if ($urun->discount_rate > 0) {
+            $urun->discounted_price = $urun->product_price - ($urun->product_price * ($urun->discount_rate / 100));
+        } else {
+            $urun->discounted_price = null;
+        }
+        return $urun;
     });
 
     return view('category_product', ['urunler' => $urunler, 'kategori' => $kategori ? $kategori->category_name : $altKategori->category_name]);

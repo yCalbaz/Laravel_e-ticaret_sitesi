@@ -18,7 +18,7 @@ class Product extends Model
         'product_price', 
         'product_image',
         'details',
-        //'category_id'
+        'discount_rate'
     ];
 
     public $timestamps = true;

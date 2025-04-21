@@ -42,13 +42,21 @@ class BasketController extends Controller
         $cartItems = BasketItem::where('order_id', $basket->id)->get();
         foreach ($cartItems as $item) {
             $size = Size::find($item->size_id);
+            $product = Product::where('product_sku', $item->product_sku)->first();
             //dd($item->size_id, $size);
             $item->size_name = $size ? $size->size_name : 'Beden Yok';
+            $item->discount_rate = $product ? $product->discount_rate : 0;
+            $item->discounted_price = $product && $product->discount_rate > 0 ? ($item->product_price - ($item->product_price * ($product->discount_rate / 100))) : null;
         }
 
         $totalPrice = 0;
         foreach ($cartItems as $item) {
-            $totalPrice += ($item->product_price * $item->product_piece);
+            if ($item->discounted_price !== null) {
+                $totalPrice += ($item->discounted_price * $item->product_piece);
+            } else {
+                $totalPrice += ($item->product_price * $item->product_piece);
+            }
+        
         }
         $cargoTotalPrice= $totalPrice + 45;
     

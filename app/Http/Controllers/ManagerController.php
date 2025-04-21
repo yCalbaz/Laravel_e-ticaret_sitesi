@@ -184,5 +184,20 @@ class ManagerController extends Controller
         }
     }
 
+    public function campaignAdd(Request $request, $id)
+{
+    $request->validate([
+        'discount_rate' => 'required|numeric|min:0|max:100',
+    ]);
+
+    $product = Product::findOrFail($id);
+    $discountRate = $request->input('discount_rate');
+
+    $product->update([
+        'discount_rate' => $discountRate,
+    ]);
+
+    return redirect()->route('seller.products')->with('success', $product->product_name . ' ürününe %' . $discountRate . ' kampanya eklendi.');
+}
     
 }
