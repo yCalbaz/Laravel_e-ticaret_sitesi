@@ -220,8 +220,8 @@ class BasketController extends Controller
             $groupedItems = [];
             foreach ($cartItems as $item) {
                 $product = Product::where('product_sku', $item->product_sku)->first();
-                $item->discount_rate = $product ? $product->discount_rate : 0;
-                $item->discounted_price = $product && $product->discount_rate > 0 ? ($item->product_price - ($item->product_price * ($product->discount_rate / 100))) : null;
+            $item->discount_rate = $product ? $product->discount_rate : 0;
+            $item->discounted_price = $product && $product->discount_rate > 0 ? ($item->product_price - ($item->product_price * ($product->discount_rate / 100))) : null;
                 if ($item->product_piece < 1) {
                     return redirect()->back()->with('error', 'Sepette geçersiz ürün adedi var!');
                 }
