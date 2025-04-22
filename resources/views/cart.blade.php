@@ -55,7 +55,6 @@
                                                 <td>
                                                 @if ($item->discount_rate > 0 && $item->discounted_price !== null)
                                                     <p class="card-text original-price text-danger" style="margin-bottom: 2px;"><del>{{ $item->product_price }} TL</del></p>
-                                                    <p class=" text-success " style="font-size: 15px; margin-bottom: 2px;">İNDİRİMLİ FİYAT</p>
                                                     <p class="  text-success"  style="font-size: 25px; margin-bottom: 2px;">{{ number_format($item->discounted_price, 2) }} TL</p>
                                                 @else
                                                     <p class="card-text">{{ $item->product_price }} TL</p>

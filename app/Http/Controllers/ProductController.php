@@ -27,28 +27,40 @@ class ProductController extends Controller
                 }
             }
                 return false;
+            })->map(function ($product) {
+                if ($product->discount_rate > 0) {
+                    $product->discounted_price = $product->product_price - ($product->product_price * ($product->discount_rate / 100));
+                } else {
+                    $product->discounted_price = null;
+                }
+                return $product;
             });
-        
+            
+         
             return view('product', ['urunler' => $products]);
     }
     
     
     public function showDetails($sku)
-    {
-        
-        $product = Product::where('product_sku', $sku)->firstOrFail();
-        $product->load('stocks.size');
-        $groupedStocks = $product->stocks->groupBy('size.id')->map(function ($items) {
-            return [
-                'size' => $items->first()->size,
-                'total_piece' => $items->sum('product_piece'),
-            ];
-        })->values();
-    
+{
+    $product = Product::where('product_sku', $sku)->firstOrFail();
 
-        
-        return view('product_details', compact('product', 'groupedStocks'));
+    $discountRate = $product->discount_rate ?? 0;
+    $discountedPrice = null;
+    if ($discountRate > 0) {
+        $discountedPrice = $product->product_price - ($product->product_price * ($discountRate / 100));
     }
+
+    $product->load('stocks.size');
+    $groupedStocks = $product->stocks->groupBy('size.id')->map(function ($items) {
+        return [
+            'size' => $items->first()->size,
+            'total_piece' => $items->sum('product_piece'),
+        ];
+    })->values();
+
+    return view('product_details', compact('product', 'groupedStocks','discountRate','discountedPrice'));
+}
         
 
     public function search(Request $request)
@@ -78,10 +90,10 @@ class ProductController extends Controller
         if (!$altKategori) {
             return abort(404, 'Kategori bulunamadı.');
         }
-    }
+    }  
 
-    $urunlerQuery = ($kategori ? $kategori->products() : $altKategori->products());
-    $urunler = $urunlerQuery->get()->filter(function ($product) {
+    $productsQuery = ($kategori ? $kategori->products() : $altKategori->products());
+    $products = $productsQuery->get()->filter(function ($product) {
         foreach ($product->stocks as $stock) {
             try {
                 $response = Http::timeout(4)->get("http://host.docker.internal:3000/stock/{$product->product_sku}/{$stock->size_id}");
@@ -95,16 +107,16 @@ class ProductController extends Controller
             }
         }
         return false;
-    })->map(function ($urun) {
-        if ($urun->discount_rate > 0) {
-            $urun->discounted_price = $urun->product_price - ($urun->product_price * ($urun->discount_rate / 100));
+    })->map(function ($product) {
+        if ($product->discount_rate > 0) {
+            $product->discounted_price = $product->product_price - ($product->product_price * ($product->discount_rate / 100));
         } else {
-            $urun->discounted_price = null;
+            $product->discounted_price = null;
         }
-        return $urun;
+        return $product;
     });
 
-    return view('category_product', ['urunler' => $urunler, 'kategori' => $kategori ? $kategori->category_name : $altKategori->category_name]);
+    return view('category_product', ['urunler' => $products, 'kategori' => $kategori ? $kategori->category_name : $altKategori->category_name]);
 }
 
     public function getProductsByCategory(Request $request)

@@ -29,6 +29,13 @@ class HomeProductController extends Controller
                 
             }}
             return false;
+        })->map(function ($product) {
+            if ($product->discount_rate > 0) {
+                $product->discounted_price = $product->product_price - ($product->product_price * ($product->discount_rate / 100));
+            } else {
+                $product->discounted_price = null;
+            }
+            return $product;
         })->take(4);
     
         return view('home', compact('products'));

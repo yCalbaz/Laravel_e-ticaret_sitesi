@@ -23,10 +23,20 @@
         </div>
         <div class="col-md-6 product-info">
             <h2>{{ $product->product_name }}</h2>
-            <p class="product-price">{{ $product->product_price }} TL</p>
-            <p class="product-description">{{ $product->details }}</p>
+            @if ($discountRate > 0 && $discountedPrice !== null)
+                <p class="original-price" style=" color: red; margin-bottom:2px;">Önceki Fiyat:</p>
+                <p class="original-price" style="text-decoration: line-through; color: red;">{{ $product->product_price }} TL</p>
+                <p class="discounted-price" style="color: green; font-weight: bold; font-size:20px;">{{ number_format($discountedPrice, 2) }} TL </p>
+            @else
+                <p class="product-price">{{ $product->product_price }} TL</p>
+            @endif
+            <details>
+                <summary style="font-size: large;" >Ürün Detayı</summary>
+                <p class="product-description">{{ $product->details }}</p>
+            </details>
+            <br>
             <h5>Beden Seçimi:</h5>
-            <div class="size">
+            <div class="size" >
                 @foreach ($groupedStocks as $stock)
                     @if ($stock['total_piece'] > 0 && $stock['size'])
                         <button data-size-id="{{ $stock['size']->id }}" class="size-button">{{ $stock['size']->size_name }}</button>
