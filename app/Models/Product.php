@@ -39,5 +39,6 @@ class Product extends Model
 {
     return $this->belongsTo(Member::class, 'customer_id');
 }
+
 }
 

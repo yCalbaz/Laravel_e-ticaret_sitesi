@@ -29,4 +29,5 @@ class Category extends Model
         {
             return $this->hasMany(CategorySub::class, 'parent_id');
         }
+        public $timestamps=false;
 }

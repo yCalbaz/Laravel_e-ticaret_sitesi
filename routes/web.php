@@ -13,8 +13,8 @@ use App\Http\Controllers\OrderDetailController;
 use App\Http\Controllers\ProductController;
 use App\Models\Order;
 
-Route::get('/deneme', function () { return view('deneme_login'); });
-Route::get('/', [HomeProductController::class, 'productHome']);
+
+Route::get('/', [HomeProductController::class, 'productHome'])->name('home.product');
 
 Route::get('/urun', [ProductController::class, 'index'])->name('urun');
 
@@ -80,3 +80,4 @@ Route::get('/get-products-by-category', [ProductController::class, 'getProductsB
 
  
 Route::get('/product/{sku}/sizes', [ProductController::class, 'getSizes'])->name('product.sizes');
+

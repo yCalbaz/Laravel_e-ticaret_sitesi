@@ -51,10 +51,27 @@ class HomeProductController extends Controller
         $request->validate([
             'product_name' => 'required|string|max:255',
             'product_sku' => 'required|string|unique:products,product_sku',
-            'product_price' => 'required|numeric|min:0|max:9999999',
+            'product_price' => 'required|numeric|min:0.01|max:9999999',
             'product_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'category_ids' => 'required|array|exists:categories,id',
             'details'=>'required',
+        ],[
+            'product_name.required' => 'Ürün adı gereklidir.',
+            'product_name.string' => 'Ürün adı geçerli bir metin olmalıdır.',
+            'product_name.max' => 'Ürün adı 255 karakterden uzun olamaz.',
+            'product_sku.required' => 'Ürün SKU kodu gereklidir.',
+            'product_sku.unique' => 'Bu SKU kodu zaten kullanılıyor.',
+            'product_price.required' => 'Ürün fiyatı gereklidir.',
+            'product_price.numeric' => 'Ürün fiyatı geçerli bir sayı olmalıdır.',
+            'product_price.min' => 'Ürün fiyatı sıfırdan büyük olmalıdır.',
+            'product_price.max' => 'Ürün fiyatı çok fazla.',
+            'product_image.image' => 'Ürün görseli geçerli dosya olmalıdır.',
+            'product_image.mimes' => 'Ürün görseli yalnızca jpeg, png, jpg veya gif formatlarında olabilir.',
+            'product_image.max' => 'Ürün görseli boyutu çok fazla.',
+            'category_ids.required' => 'Kategori seçimi gereklidir.',
+            'category_ids.array' => 'Kategori seçimi gereklidir,',
+            'category_ids.exists' => 'Seçilen kategori mevcut değil.',
+            'details.required' => 'Ürün açıklaması gereklidir.',
         ]);
 
         if(Auth::check()){
