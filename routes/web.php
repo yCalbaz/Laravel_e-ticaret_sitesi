@@ -22,7 +22,7 @@ Route::get('/giris', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/giris', [AuthController::class, 'login'])->name('login.post'); 
 
 Route::post('/cıkıs', [AuthController::class, 'logout'])->name('admin.logout');
-Route::get('/cıkıs', [AuthController::class, 'logout'])->name('admin.logout');
+//Route::get('/cıkıs', [AuthController::class, 'logout'])->name('admin.logout');
 
 
 
@@ -52,7 +52,7 @@ Route::post('/cart/add/{product_sku}', [BasketController::class, 'add'])->name('
 Route::get('/sepet', [BasketController::class, 'index'])->name('cart.index');
 Route::delete('/cart/{id}', [BasketController::class, 'delete'])->name('cart.delete');
 Route::post('/sepet/onay', [BasketController::class, 'approvl'])->name('sepet.approvl');
-Route::get('/sepet/onay', [BasketController::class, 'approvl'])->name('   ');
+Route::get('/sepet/onay', [BasketController::class, 'approvl'])->name('sepet.approvl');
 
 
 

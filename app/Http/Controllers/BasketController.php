@@ -75,14 +75,15 @@ class BasketController extends Controller
             'quantity.integer' => 'Ürün adedi sayı olmalıdır.',
             'quantity.min' => 'Ürün adedi en az 1 olmalıdır.',
             'size_id.required' => 'Beden seçimi zorunludur.',
-                'size_id.integer' => 'Beden ID\'si sayı olmalıdır.',
-                'size_id.exists' => 'Seçilen beden geçersizdir.',
+            'size_id.integer' => 'Beden ID\'si sayı olmalıdır.',
+            'size_id.exists' => 'Seçilen beden geçersizdir.',
         ]);
+       
         //tokenin validasyonunu da ekle!!
 
         
         $product = Product::where('product_sku', $product_sku)->first();
-
+        
         if (!$product) {
             return response()->json(['error' => 'Ürün bulunamadı'], 404);
         }
@@ -397,11 +398,6 @@ class BasketController extends Controller
         return view('cart_approve', $data);
     }
        
-
-    
-        
-    
-
     public function update(Request $request, $id)
     {
         $basketItem = BasketItem::find($id);

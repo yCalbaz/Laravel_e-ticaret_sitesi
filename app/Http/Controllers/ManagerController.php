@@ -32,7 +32,6 @@ class ManagerController extends Controller
         return redirect()->route('saticiPanel');
     }
     
-
     public function showMusteriPanel()
     {
         if(session('user_authority') !== self::CUSTOMER_ROLE_ID){

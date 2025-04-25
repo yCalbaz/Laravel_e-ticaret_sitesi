@@ -14,7 +14,7 @@
 </head>
 <body>
  
-@include('layouts.header')
+@include('layouts.header')  
 
 <div class="container product-detail-container">
     <div class="row">
@@ -51,7 +51,7 @@
         </div>
     </div>
 </div>
-
+<br>
 @include('layouts.footer')
 
 
