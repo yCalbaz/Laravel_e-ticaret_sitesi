@@ -54,7 +54,7 @@ class OrderDetailController extends Controller
             'status_canseled_approve' => self::ORDER_STATUS_CANCEL_APPROVED,
         ]);;
     
-}
+    }
     
 
     public function showDetails($orderId) 

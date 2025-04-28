@@ -166,7 +166,10 @@ class HomeControllerTest extends TestCase
 
     public function testProductHome()
 {
-    DeleteHelper::delete(['products']);
+    DeleteHelper::delete([
+        'products',
+        'stores'
+    ]);
     Http::fake([
         'http://host.docker.internal:3000/stock/*' => Http::response(['stores' => [['stock' => 10]]], 200),
     ]);

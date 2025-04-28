@@ -214,8 +214,38 @@ class CartControllerTest extends TestCase
 
     }
 
+    public function testAddProductNotService()
+    {
+        
+            DeleteHelper::delete([
+                'basket_items',
+                'baskets',
+                'sizes',
+                'members',
+                'products',
+            ]);
+            $member = Member::factory()->create(['customer_id' => 123]);
+            $product = Product::factory()->create(['product_sku' => 'SKU-1234']);
+            $size = Size::factory()->create();
     
-    public function testAddProductTokenError()//hatalı bu kontrol et
+            Session::put('customer_id', $member->customer_id);
+            Http::fake([
+                "http://host.docker.internal:3000/stock/{$product->product_sku}/{$size->id}" => Http::response('Service Unavailable', 503),
+            ]);
+    
+            $response = $this->actingAs($member)->post(route('cart.add', $product->product_sku), [
+                'quantity' => 1,
+                'size_id' => $size->id,
+                '_token' => csrf_token(),
+            ]);
+    
+            $response->assertStatus(500);
+            $response->assertJson(['error' => 'Servise ulaşılamadı']);
+            $this->assertDatabaseMissing('basket_items', ['product_sku' => $product->product_sku]);
+        
+    }
+
+    public function testAddProductResponseFalse()
     {
         DeleteHelper::delete([
             'basket_items',
@@ -224,26 +254,183 @@ class CartControllerTest extends TestCase
             'members',
             'products',
         ]);
-        $member= Member::factory()->create(['customer_id'=>1111222]);
-        $product= Product::factory()->create(['product_sku'=>'SKU-1324', 'product_price'=>100]);
-        $size= Size::factory()->create();
+        $member = Member::factory()->create(['customer_id' => 77778888]);
+        $product = Product::factory()->create(['product_sku' => 'SKU-1234']);
+        $size = Size::factory()->create();
 
-        Session::put('customer_id',$member->customer_id);
-        $invalidToken= 'invalid_token';
+        Session::put('customer_id', $member->customer_id);
+        Http::fake([
+            "http://host.docker.internal:3000/stock/{$product->product_sku}/{$size->id}" => Http::response(['not_stores' => []], 200),
+        ]);
 
-        
+        $response = $this->actingAs($member)->post(route('cart.add', $product->product_sku), [
+            'quantity' => 1,
+            'size_id' => $size->id,
+            '_token' => csrf_token(),
+        ]);
+
+        $response->assertStatus(500);
+        $response->assertJson(['error' => 'Servis yanıtı geçersiz']);
+        $this->assertDatabaseMissing('basket_items', ['product_sku' => $product->product_sku]);
+    
+    }
+
+    public function testAddProducMultiplyHaveStock()
+    {
+        DeleteHelper::delete([
+            'basket_items',
+            'baskets',
+            'sizes',
+            'members',
+            'products',
+        ]);
+        $member = Member::factory()->create(['customer_id' => 123]);
+        $product = Product::factory()->create(['product_sku' => 'SKU-1234', 'product_price' => 50]);
+        $size = Size::factory()->create(['size_name' => 'M']);
+        $basket = Basket::create(['customer_id' => $member->customer_id, 'is_active' => 1]);
+
+        BasketItem::create([
+            'order_id' => $basket->id,
+            'product_sku' => $product->product_sku,
+            'product_name' => $product->product_name,
+            'product_price' => $product->product_price,
+            'product_image' => 'old_image.png',
+            'product_piece' => 1,
+            'size_id' => $size->id,
+        ]);
+
+        Session::put('customer_id', $member->customer_id);
+
+        Http::fake([
+            "http://host.docker.internal:3000/stock/{$product->product_sku}/{$size->id}" => Http::response(['stores' => [['store_id' => 1, 'stock' => 5]]], 200),
+        ]);
+
         $response = $this->actingAs($member)->post(route('cart.add', $product->product_sku), [
             'quantity' => 2,
             'size_id' => $size->id,
-           '_token' => $invalidToken
+            '_token' => csrf_token(),
         ]);
-            
-        //$response->assertStatus(500);
-        $response->assertStatus(419);
-        $response->assertJson([
-            'error' => 'CSRF token uyuşmazlığı. Lütfen sayfayı yenileyin ve tekrar deneyin.'
+
+        $response->assertStatus(200);
+        $response->assertJson(['success' => 'Ürün sepete eklendi!', 'cartCount' => 3]);
+        $this->assertDatabaseHas('basket_items', [
+            'order_id' => $basket->id,
+            'product_sku' => $product->product_sku,
+            'size_id' => $size->id,
+            'product_piece' => 3, 
         ]);
     }
+
+    public function testAddInsufficientStock()
+    {
+        DeleteHelper::delete([
+            'basket_items',
+            'baskets',
+            'sizes',
+            'members',
+            'products',
+        ]);
+        $member = Member::factory()->create(['customer_id' => 55667788]);
+        $product = Product::factory()->create(['product_sku' => 'INSUFFICIENT-SKU', 'product_price' => 75]);
+        $size = Size::factory()->create(['size_name' => 'L']);
+        $basket = Basket::create(['customer_id' => $member->customer_id, 'is_active' => 1]);
+        BasketItem::create([
+            'order_id' => $basket->id,
+            'product_sku' => $product->product_sku,
+            'product_name' => $product->product_name,
+            'product_price' => $product->product_price,
+            'product_image' => 'another_image.png',
+            'product_piece' => 2,
+            'size_id' => $size->id,
+        ]);
+
+        Session::put('customer_id', $member->customer_id);
+
+        Http::fake([
+            "http://host.docker.internal:3000/stock/{$product->product_sku}/{$size->id}" => Http::response(['stores' => [['store_id' => 2, 'stock' => 1]]], 200),
+        ]);
+
+        $response = $this->actingAs($member)->post(route('cart.add', $product->product_sku), [
+            'quantity' => 2, 
+            'size_id' => $size->id,
+            '_token' => csrf_token(),
+        ]);
+
+        $response->assertStatus(400);
+        $response->assertJson(['error' => 'Yeterli stok bulunmamaktadır.']);
+        $this->assertDatabaseHas('basket_items', [
+            'order_id' => $basket->id,
+            'product_sku' => $product->product_sku,
+            'size_id' => $size->id,
+            'product_piece' => 2, 
+        ]);
+    }
+
+    public function testAddCreateCartForCustomer()
+    {
+        DeleteHelper::delete([
+            'basket_items',
+            'baskets',
+            'sizes',
+            'products',
+        ]);
+        $product = Product::factory()->create(['product_sku' => '123', 'product_price' => 250]);
+        $size = Size::factory()->create();
+        Http::fake([
+            "http://host.docker.internal:3000/stock/{$product->product_sku}/{$size->id}" => Http::response(['stores' => [['store_id' => 1, 'stock' => 3]]], 200),
+        ]);
+
+        $response = $this->post(route('cart.add', $product->product_sku), [
+            'quantity' => 1,
+            'size_id' => $size->id,
+            '_token' => csrf_token(),
+        ]);
+
+        $response->assertStatus(200);
+        $response->assertJson(['success' => 'Ürün sepete eklendi!', 'cartCount' => 1]);
+        $this->assertDatabaseHas('baskets', ['is_active' => 1]);
+        $basket = Basket::where('is_active', 1)->first();
+        $this->assertNotNull($basket->customer_id);
+
+        $this->assertEquals($basket->customer_id, Session::get('customer_id'));
+
+        $this->assertDatabaseHas('basket_items', [
+            'order_id' => $basket->id,
+            'product_sku' => $product->product_sku,
+            'size_id' => $size->id,
+            'product_piece' => 1,
+        ]);
+    }
+    
+
+    
+    /*public function testAddProductTokenError()
+{
+    DeleteHelper::delete([
+        'basket_items',
+        'baskets',
+        'sizes',
+        'members',
+        'products',
+    ]);
+    $member= Member::factory()->create(['customer_id'=>1111222]);
+    $product= Product::factory()->create(['product_sku'=>'SKU-1324', 'product_price'=>100]);
+    $size= Size::factory()->create();
+
+    Session::put('customer_id',$member->customer_id);
+    $invalidToken= 'invalid_token';
+
+    $response = $this->actingAs($member)->post(route('cart.add', $product->product_sku), [
+        'quantity' => 2,
+        'size_id' => $size->id,
+        '_token' => $invalidToken 
+    ]);
+
+    $response->assertStatus(419);
+    $response->assertJson([
+        'error' => 'CSRF token uyuşmazlığı. Lütfen sayfayı yenileyin ve tekrar deneyin.'
+    ]);
+}*/
 
 }
     
