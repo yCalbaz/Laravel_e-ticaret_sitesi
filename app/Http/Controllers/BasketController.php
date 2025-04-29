@@ -174,7 +174,7 @@ class BasketController extends Controller
                 $member = new Member();
                 $member->id = $customerId;
                 $member->name = 'Misafir Kullanıcı';
-                $member->email = 'misafir_' . $customerId . '@ornek.com';
+                $member->email = 'misafir_' . $customerId . '@gmail.com';
                 $member->password = bcrypt(Str::random(10));
                 $member->save();
                 Session::put('customer_id', $customerId);
@@ -184,7 +184,7 @@ class BasketController extends Controller
                 $member = new Member();
                 $member->id = $customerId;
                 $member->name = 'Misafir Kullanıcı';
-                $member->email = 'misafir_' . $customerId . '@ornek.com';
+                $member->email = 'misafir_' . $customerId . '@gmail.com';
                 $member->password = bcrypt(Str::random(10));
                 $member->save();
             }
@@ -193,7 +193,7 @@ class BasketController extends Controller
         $basket = Basket::where('customer_id', $customerId)->where('is_active', 1)->first();
 
         if (!$basket) {
-            return redirect()->back()->with('error', 'Sepet bulunamadı.');
+            return response()->json(['error' => 'Sepet bulunamadı.'], 404);
         }
 
         if ($request->isMethod('post')) {
@@ -221,20 +221,21 @@ class BasketController extends Controller
             $groupedItems = [];
             foreach ($cartItems as $item) {
                 $product = Product::where('product_sku', $item->product_sku)->first();
-            $item->discount_rate = $product ? $product->discount_rate : 0;
-            $item->discounted_price = $product && $product->discount_rate > 0 ? ($item->product_price - ($item->product_price * ($product->discount_rate / 100))) : null;
+                $item->discount_rate = $product ? $product->discount_rate : 0;
+                $item->discounted_price = $product && $product->discount_rate > 0 ? ($item->product_price - ($item->product_price * ($product->discount_rate / 100))) : null;
                 if ($item->product_piece < 1) {
-                    return redirect()->back()->with('error', 'Sepette geçersiz ürün adedi var!');
+                    return response()->json(['error' => 'Sepette geçersiz ürün adedi var!'], 400);
                 }
                 $response = Http::get("http://host.docker.internal:3000/stock/{$item->product_sku}/{$item->size_id}");
 
                 if ($response->failed()) {
-                    return redirect()->back()->with('error', 'Stok servis bağlantısında bir hata oluştu.');
+                    return response()->json(['error' => 'Stok servis bağlantısında bir hata oluştu.'], 503);
+                    
                 }
 
                 $stockData = $response->json();
                 if (!isset($stockData['stores'])) {
-                    return redirect()->back()->with('error', 'Yeterli stok yok');
+                    return response()->json(['error' => 'Yeterli stok yok'], 400);
                 }
 
                 usort($stockData['stores'], function ($a, $b) {
@@ -295,7 +296,7 @@ class BasketController extends Controller
             }
 
             if ($stokError) {
-                return redirect()->back()->with('error', 'Yeterli stok yok!');
+                return  response()->json(['error' => 'Yeterli stok yok!'], 400);
             }
 
             $name = $request->input('name');
@@ -333,7 +334,7 @@ class BasketController extends Controller
                 try {
                     OrderLine::insert($orderLinesData);
                 } catch (\Exception $e) {
-                    return redirect()->back()->with('error', 'Sipariş oluşturulurken hata oldu.' . $e->getMessage());
+                    return response()->json(['error' => 'Sipariş oluşturulurken hata oldu.', 'message' => $e->getMessage()], 500);
                 }
                 $subOrderId++;
             }
@@ -359,7 +360,7 @@ class BasketController extends Controller
                             'store_id' => $storeId,
                             'size_id' => $item->size_id,
                         ]));
-                        return redirect()->back()->with('error', 'Stok güncelleme sırasında bir hata oluştu!');
+                        return response()->json(['error' => 'Stok güncelleme sırasında bir hata oluştu!'], 500);
                     }
 
                     Log::info("Stok Güncellendi: " . json_encode([
@@ -372,7 +373,7 @@ class BasketController extends Controller
 
             $basket->update(['is_active' => 0]);
             BasketItem::where('order_id', $basket->id)->delete();
-            return redirect()->route('cart.index')->with('success', 'Sipariş onaylandı!');
+            return response()->json(['success' => 'Sipariş onaylandı!']);
         }
 
         $cartItems = BasketItem::where('order_id', $basket->id)->get();

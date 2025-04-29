@@ -56,9 +56,7 @@ class OrderDetailController extends Controller
     
     }
     
-
     public function showDetails($orderId) 
-
     {
         $order = OrderBatch::with(['orderLines.product', 'orderLines.store', 'orderLines.size'])->where('order_id', $orderId)->first();
         if (!$order) {

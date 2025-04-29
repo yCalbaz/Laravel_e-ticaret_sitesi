@@ -285,7 +285,7 @@ class CartControllerTest extends TestCase
             'products',
         ]);
         $member = Member::factory()->create(['customer_id' => 123]);
-        $product = Product::factory()->create(['product_sku' => 'SKU-1234', 'product_price' => 50]);
+        $product = Product::factory()->create(['product_sku' => 'SKU-1234', 'product_price' => 10, ]);
         $size = Size::factory()->create(['size_name' => 'M']);
         $basket = Basket::create(['customer_id' => $member->customer_id, 'is_active' => 1]);
 
@@ -331,7 +331,7 @@ class CartControllerTest extends TestCase
             'products',
         ]);
         $member = Member::factory()->create(['customer_id' => 55667788]);
-        $product = Product::factory()->create(['product_sku' => 'INSUFFICIENT-SKU', 'product_price' => 75]);
+        $product = Product::factory()->create(['product_sku' => 'SKU-1234', 'product_price' => 75]);
         $size = Size::factory()->create(['size_name' => 'L']);
         $basket = Basket::create(['customer_id' => $member->customer_id, 'is_active' => 1]);
         BasketItem::create([
@@ -401,9 +401,6 @@ class CartControllerTest extends TestCase
             'product_piece' => 1,
         ]);
     }
-    
-
-    
     /*public function testAddProductTokenError()
 {
     DeleteHelper::delete([
@@ -432,6 +429,323 @@ class CartControllerTest extends TestCase
     ]);
 }*/
 
+/* Delete fonksiyonu */
+
+    public function testDeleteTrue()
+    {
+        DeleteHelper::delete([
+            'basket_items',
+            'baskets',
+            'sizes',
+            'products',
+            'members',
+            
+        ]);
+
+        $member = Member::factory()->create(['customer_id' => 55667788]);
+        $product = Product::factory()->create(['product_sku' => 'SKU-123', 'product_price' => 75]);
+        $size = Size::factory()->create(['size_name' => 'L']);
+        $basket = Basket::create(['customer_id' => $member->customer_id, 'is_active' => 1]);
+        $basketItem= BasketItem::create([
+            'order_id' => $basket->id,
+            'product_sku' => $product->product_sku,
+            'product_name' => $product->product_name,
+            'product_price' => $product->product_price,
+            'product_image' => 'test_img.png',
+            'product_piece' => 2,
+            'size_id' => $size->id,
+        ]);
+
+        Session::put('customer_id', $member->customer_id);
+
+        $response =$this-> actingAs($member)->delete(route('cart.delete',$basketItem->id),[
+            'order_id' => $basket->id,
+            'product_sku' => $product->product_sku,
+            'product_name' => $product->product_name,
+            'product_price' => $product->product_price,
+            'product_image' => 'test_img.png',
+            'quantity' => 1, 
+            'size_id' => $size->id,
+            '_token' => csrf_token(),
+        ]);
+        $response->assertStatus(200);
+        $response->assertJson(['message' => 'Ürün sepetten kaldırıldı!']);
+    }
+
+/* Approvl */
+
+    public function testApprovlNotFoundCart()
+    {
+        
+        $member = Member::factory()->create(['customer_id' => 1234]);
+        Session::put('customer_id', $member->customer_id);
+    
+        $response = $this->actingAs($member)->get(route('sepet.approvl'));
+        
+        $response->assertStatus(404); 
+        $response->assertJson(['error' => 'Sepet bulunamadı.']);
+    }
+
+    public function testApprovlQuantityOneLittle()
+    {
+        DeleteHelper::delete([
+            'basket_items',
+            'baskets',
+            'sizes',
+            'members',
+            'products',
+            'order_lines',
+            'order_batches'
+        ]);
+        $member = Member::factory()->create(['customer_id' => 123]);
+        Session::put('customer_id', $member->customer_id);
+        $size = Size::factory()->create();
+        $product = Product::factory()->create(['product_sku' => 'SKU-1234']);
+        $basket = Basket::create(['customer_id' => $member->customer_id, 'is_active' => 1]);
+
+        BasketItem::create([
+            'order_id' => $basket->id,
+            'product_sku' => $product->product_sku,
+            'product_name' => $product->product_name,
+            'product_price' => $product->product_price,
+            'product_image' => 'test.jpg',
+            'product_piece' => 0,
+            'size_id' => $size->id,
+        ]); 
+        $requestData = [
+            'name' => 'Test İsim',
+            'address' => 'Test adres, Test adres, Test adres, Test adres, 12345, Test adres',
+            'cardNumber' => '1234567890123456',
+            'expiryDate' => '12/24',
+            'cvv' => '123',
+            'cardHolderName' => 'Test İsim',
+        ];
+        Http::fake([
+            "http://host.docker.internal:3000/stock/{$product->product_sku}/{$size->id}" => Http::response(['stores' => [['store_id' => 1, 'stock' => 3, 'store_max'=>25, 'store_priority' => 1]]], 200),
+        ]);
+        $response = $this->actingAs($member)->post(route('sepet.approvl'), [
+            'quantity' => 0,
+            'size_id' => $size->id,
+            '_token' => csrf_token(),
+        ]+ $requestData);
+
+        $response->assertStatus(400);
+        $response->assertJson(['error' => 'Sepette geçersiz ürün adedi var!']);
+        
+    
+    }
+
+    public function testApprovlNotService()
+    {
+         DeleteHelper::delete([
+            'order_lines',
+            'order_batches',
+            'baskets',
+            'basket_items',
+            'members',
+            'products',
+            'sizes',
+        ]);
+        $member = Member::factory()->create(['customer_id' => 123]);
+        Session::put('customer_id', $member->customer_id);
+        $size = Size::factory()->create();
+        $product = Product::factory()->create(['product_sku' => 'SKU-1234']);
+        $basket = Basket::create(['customer_id' => $member->customer_id, 'is_active' => 1]);
+        
+        Http::fake([
+            "http://host.docker.internal:3000/stock/{$product->product_sku}/{$size->id}" => Http::response([], 503),
+        ]);
+        BasketItem::create([
+            'order_id' => $basket->id,
+            'product_sku' => $product->product_sku,
+            'product_name' => $product->product_name,
+            'product_price' => $product->product_price,
+            'product_image' => 'test.jpg',
+            'product_piece' => 1,
+            'size_id' => $size->id,
+        ]); 
+        $requestData = [
+            'name' => 'Test İsim',
+            'address' => 'Test adres, Test adres, Test adres, Test adres, 12345, Test adres',
+            'cardNumber' => '1234567890123456',
+            'expiryDate' => '12/24',
+            'cvv' => '123',
+            'cardHolderName' => 'Test İsim',
+        ];
+        $response = $this->actingAs($member)->post(route('sepet.approvl'),$requestData);
+
+        $response->assertStatus(503);
+        $response->assertJson(['error'=> 'Stok servis bağlantısında bir hata oluştu.']);
+        
+    
+    }
+
+    public function testApprovlNotStock()
+    {
+        DeleteHelper::delete([
+            'basket_items',
+            'baskets',
+            'sizes',
+            'members',
+            'products',
+            'order_lines',
+            'order_batches'
+        ]);
+        $member = Member::factory()->create(['customer_id' => 123]);
+        Session::put('customer_id', $member->customer_id);
+        $size = Size::factory()->create();
+        $product = Product::factory()->create(['product_sku' => 'SKU-1234']);
+        $basket = Basket::create(['customer_id' => $member->customer_id, 'is_active' => 1]);
+
+        BasketItem::create([
+            'order_id' => $basket->id,
+            'product_sku' => $product->product_sku,
+            'product_name' => $product->product_name,
+            'product_price' => $product->product_price,
+            'product_image' => 'test.jpg',
+            'product_piece' => 4,
+            'size_id' => $size->id,
+        ]); 
+        $requestData = [
+            'name' => 'Test İsim',
+            'address' => 'Test adres, Test adres, Test adres, Test adres, 12345, Test adres',
+            'cardNumber' => '1234567890123456',
+            'expiryDate' => '12/24',
+            'cvv' => '123',
+            'cardHolderName' => 'Test İsim',
+        ];
+        Http::fake([
+            "http://host.docker.internal:3000/stock/{$product->product_sku}/{$size->id}" => Http::response(['stores' => [['store_id' => 1, 'stock' => 3, 'store_max'=>25, 'store_priority' => 1]]], 200),
+        ]);
+
+        $response = $this->actingAs($member)->post(route('sepet.approvl'), [
+            'quantity' => 4,
+            'size_id' => $size->id,
+            '_token' => csrf_token(),
+        ]+ $requestData);
+
+        $response->assertStatus(400);
+        $response->assertJson(['error' => 'Yeterli stok yok!']);
+        
+    }
+    public function testApprovlValidation()
+    {
+        DeleteHelper::delete([
+            'basket_items',
+            'baskets',
+            'sizes',
+            'members',
+            'products',
+            'order_lines',
+            'order_batches'
+        ]);
+        $member = Member::factory()->create(['customer_id' => 123]);
+        Session::put('customer_id', $member->customer_id);
+        $size = Size::factory()->create();
+        $product = Product::factory()->create(['product_sku' => 'SKU-1234']);
+        $basket = Basket::create(['customer_id' => $member->customer_id, 'is_active' => 1]);
+        BasketItem::create([
+            'order_id' => $basket->id,
+            'product_sku' => $product->product_sku,
+            'product_name' => $product->product_name,
+            'product_price' => $product->product_price,
+            'product_image' => 'test.jpg',
+            'product_piece' => 4,
+            'size_id' => $size->id,
+        ]); 
+
+        $response = $this->post(route('sepet.approvl'), [
+            
+            'name' => '', 
+            'address' => 'Ankara', 
+            'cardNumber' => '123456', 
+            'expiryDate' => '13/30', 
+            'cvv' => '12', 
+            'cardHolderName' => '', 
+        ],['Accept' => 'application/json']);
+
+        $response->assertStatus(422);
+
+        $response->assertJsonValidationErrors([
+            'name',
+            'address',
+            'cardNumber',
+            'expiryDate',
+            'cvv',
+            'cardHolderName'
+        ]);
+    }
+    
+ /* Update */
+
+    public function testUpdateTrue()
+    {
+        DeleteHelper::delete([
+            'basket_items',
+            'baskets',
+            'members',
+            'sizes',
+            'products'
+        ]);
+
+        $member = Member::factory()->create([
+            'customer_id'=>1234
+        ]);
+
+        Session::put('customer_id', $member->customer_id);
+
+        $basket = Basket::create([
+            'customer_id'=>$member->customer_id,
+            'is_active'=>1
+        ]);
+
+        $size = Size::factory()->create();
+        $basketItem = BasketItem::create([
+            'order_id' =>$basket->id,
+            'product_sku' => 'SKU-123',
+            'product_name' => 'test ürün',
+            'product_price' => 100,
+            'product_image' => 'test.jpg',
+            'product_piece' => 4,
+            'size_id' => $size->id,
+        ]);
+
+        $newQuantity=5;
+
+        $response =$this->put(route('cart.update',$basketItem->id),[
+            'adet'=>$newQuantity
+        ]);
+
+        $response->assertStatus(200);
+        $response->assertJson(['success' => 'Sepet güncellendi.', 'totalPrice' => 100 *$newQuantity]);
+
+        $this->assertDatabaseHas('basket_items', [
+            'id' => $basketItem->id,
+            'product_piece' => $newQuantity,
+        ]);
+
+    }
+
+    public function testUpdateFalse()
+    {
+        DeleteHelper::delete([
+            'basket_items',
+            'baskets',
+            'members',
+            'sizes',
+            'products'
+        ]);
+
+        $notBasket = 99999;
+        $response =$this->put(route('cart.update',$notBasket),[
+            'adet'=>2
+        ]);
+
+        $response->assertStatus(404);
+        $response->assertJson(['error' => 'Ürün bulunamadı.']);
+    }
 }
+
+
     
 
