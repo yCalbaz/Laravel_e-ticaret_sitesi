@@ -20,24 +20,24 @@ class AdminAuthMiddleware extends Middleware
             if( ! Auth::check()){
                 return route('login');
             }
-            $userRore =session('user_authority');
+            $userRole =(int) session('user_authority');
 
-            if(! $userRore){
+            if(! $userRole){
                 return route('login');
             }
             if($request->is('adminPanel')|| $request->is('adminPanel/*')){
-                if($userRore !== self::ADMIN_ROLE_ID){
+                if($userRole !== self::ADMIN_ROLE_ID){
                     return route('login');
                 }
             }
             elseif ($request->is('saticiPanel') || $request->is('saticiPanel/*')) {
-                if($userRore !== self::SATICI_ROLE_ID){
+                if($userRole !== self::SATICI_ROLE_ID){
                     return route('login');
                 }
             }
             elseif ($request->is('musteriPanel') || $request->is('musteriPanel/*')){
-                if($userRore !== self::MUSTERI_ROLE_ID){
-                    return route('anasayfa');
+                if($userRole !== self::MUSTERI_ROLE_ID){
+                    return route('home.product');
                 }
             }
         }

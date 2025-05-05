@@ -15,9 +15,43 @@ use Illuminate\Support\Facades\Http;
 class HomeControllerTest extends TestCase
 {
     /**
-     * A basic unit test example.
+     * index
      */
-    
+    public function testIndexGetCategory()
+    {
+        DeleteHelper::delete(['categories']);
+        $member = Member::factory()->create();
+        $this->actingAs($member);
+
+        $category = Category::factory()->create([
+            'category_name'=> 'test kategori',
+            'category_slug'=> 'test-kategori'
+        ]);
+
+        $response=$this->get(route('product.index.form'));
+        $response->assertStatus(200);
+        $response->assertViewIs('product_panel');
+        $response->assertViewHas('categories');
+        $this->assertTrue($response->viewData('categories')->contains($category));
+
+    }
+    public function testAuthIndexGetCategory()
+    {
+        DeleteHelper::delete(['categories']);
+
+        $category = Category::factory()->create([
+            'category_name'=> 'test kategori',
+            'category_slug'=> 'test-kategori'
+        ]);
+
+        $response=$this->get(route('product.index.form'));
+        $response->assertStatus(302);
+        $response->assertRedirect(route('login'));
+
+    }
+    /**
+     * store
+     */
     public function testProductCreate(): void
     {
         DeleteHelper::delete([
@@ -131,62 +165,31 @@ class HomeControllerTest extends TestCase
         $response->assertSessionHasErrors('product_price');
     }
 
-    public function testIndexGetCategory()
-    {
-        DeleteHelper::delete(['categories']);
-        $member = Member::factory()->create();
-        $this->actingAs($member);
-
-        $category = Category::factory()->create([
-            'category_name'=> 'test kategori',
-            'category_slug'=> 'test-kategori'
-        ]);
-
-        $response=$this->get(route('product.index.form'));
-        $response->assertStatus(200);
-        $response->assertViewIs('product_panel');
-        $response->assertViewHas('categories');
-        $this->assertTrue($response->viewData('categories')->contains($category));
-
-    }
-    public function testAuthIndexGetCategory()
-    {
-        DeleteHelper::delete(['categories']);
-
-        $category = Category::factory()->create([
-            'category_name'=> 'test kategori',
-            'category_slug'=> 'test-kategori'
-        ]);
-
-        $response=$this->get(route('product.index.form'));
-        $response->assertStatus(302);
-        $response->assertRedirect(route('login'));
-
-    }
+   
 
     public function testProductHome()
-{
-    DeleteHelper::delete([
-        'products',
-        'stores'
-    ]);
-    Http::fake([
-        'http://host.docker.internal:3000/stock/*' => Http::response(['stores' => [['stock' => 10]]], 200),
-    ]);
+    {
+        DeleteHelper::delete([
+            'products',
+            'stores'
+        ]);
+        Http::fake([
+            'http://host.docker.internal:3000/stock/*' => Http::response(['stores' => [['stock' => 10]]], 200),
+        ]);
 
-    $store =Store::factory()->create([
-        'id' => 1, 
-    ]);
-    
-    $product = Product::factory()->create(); 
-    $product->stocks()->create([
-        'size_id' => 1, 
-        'stock' => 10,  
-        'store_id' => 1,
-    ]);
-    $response = $this->get(route('home.product')); 
+        $store =Store::factory()->create([
+            'id' => 1, 
+        ]);
+        
+        $product = Product::factory()->create(); 
+        $product->stocks()->create([
+            'size_id' => 1, 
+            'stock' => 10,  
+            'store_id' => 1,
+        ]);
+        $response = $this->get(route('home.product')); 
 
-    $response->assertStatus(200);
-    $this->assertCount(1, $response->viewData('products')); 
-}
+        $response->assertStatus(200);
+        $this->assertCount(1, $response->viewData('products')); 
+    }
 }

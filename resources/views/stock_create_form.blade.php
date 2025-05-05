@@ -44,13 +44,13 @@
                 <p>Detaylar: {{ $product->details }}</p>
             </div>
 
-            <form action="{{ route('stock.store') }}" method="POST">
+            <form action="{{ route('stock.store') }}" method="POST" id="storeForm">
                 @csrf
                 <input type="hidden" name="product_sku" value="{{ $product->product_sku }}">
 
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                    <label for="store_id" class="form-label">Depo Seçin</label>
+                        <label for="store_id" class="form-label">Depo Seçin</label>
                         <select name="store_id" id="store_id" class="form-control form-control-lg" required>
                             <option value="">Lütfen bir depo seçin</option>
                             @foreach ($memberStore as $store)
@@ -73,10 +73,9 @@
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
                     </div>
-                </div>
+                </div>  
 
-                <div id="sizeInputsContainer">
-                    </div>
+                <div id="sizeInputsContainer"></div>
 
                 <div class="mt-3">
                     <button type="submit" class="btn btn-primary btn-lg w-100">Stok Ekle</button>
@@ -89,6 +88,7 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     $(document).ready(function() {
         $('.select2-multiple').select2();
@@ -112,7 +112,59 @@
                 });
             }
         });
-        
+
+        $('#storeForm').on('submit', function(e) {
+            e.preventDefault();
+
+            let form = $(this);
+            let url = form.attr('action');
+            let formData = form.serialize();
+
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                success: function(response) {
+                    if (response.success) {
+                        Swal.fire({
+                            title: 'Başarılı!',
+                            text: response.success,
+                            icon: 'success',
+                            confirmButtonText: 'Tamam',
+                            customClass: {
+                                confirmButton: 'btn btn-success'
+                            }
+                        }).then(() => {
+                            window.location.href = "{{ route('seller.products') }}";
+                        });
+                    }
+                },
+                error: function(xhr) {
+                    let errorMessages = '';
+                    if (xhr.status === 422) {
+                        let errors = xhr.responseJSON.errors;
+                        Object.values(errors).forEach(function(messages) {
+                            errorMessages += `${messages[0]}<br>`;
+                        });
+                    } else if (xhr.status === 401) {
+                        errorMessages = xhr.responseJSON.error || 'Bir hata oluştu.';
+                    }
+
+                    Swal.fire({
+                        title: 'Hata!',
+                        html: errorMessages,
+                        icon: 'error',
+                        confirmButtonText: 'Tamam',
+                        customClass: {
+                            confirmButton: 'btn btn-danger'
+                        }
+                    });
+                }
+            });
+        });
     });
 </script>
 </body>

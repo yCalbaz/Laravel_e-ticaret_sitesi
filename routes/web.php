@@ -22,14 +22,14 @@ Route::get('/giris', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/giris', [AuthController::class, 'login'])->name('login.post'); 
 
 Route::post('/cıkıs', [AuthController::class, 'logout'])->name('admin.logout');
-//Route::get('/cıkıs', [AuthController::class, 'logout'])->name('admin.logout');
+Route::get('/cıkıs', [AuthController::class, 'logout'])->name('admin.logout');
 
 
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/adminPanel', [ManagerController::class, 'showAdminPanel'])->name('adminPanel'); 
     Route::get('/saticiPanel', [ManagerController::class, 'showSaticiPanel'])->name('saticiPanel');
-    Route::get('/saticiPanel', [ManagerController::class, 'showSellerStores'])->name('saticiPanel'); 
+    Route::get('/saticiPanelDepo', [ManagerController::class, 'showSellerStores'])->name('saticiPanel'); 
     Route::get('/satici/siparisler/{storeId}', [ManagerController::class, 'showSellerOrders'])->name('seller.orders');
     Route::post('/seller/orders/{lineId}/status', [ManagerController::class, 'updateLineStatus'])->name('seller.updateLineStatus');
     Route::get('/musteriPanel', [ManagerController::class, 'showMusteriPanel'])->name('musteriPanel'); 

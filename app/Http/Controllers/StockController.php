@@ -26,19 +26,20 @@ public function showCreateForm($productSku)
     ->get();
     return view('stock_create_form',compact('product','sizes','memberStore'));
 }
-
+  
 public function store(Request $request)
 {
     $request->validate([
         'store_id'=>'required',
-        'sizes' => 'required|nullable|array',
+        'sizes' => 'required|array',
         'sizes.*' => 'required|numeric|min:1',
+        'size_ids' => 'required|array',
     ]);
 
     $storeExists = Store::where('id', $request->store_id)->exists();
 
     if (!$storeExists) {
-        return redirect()->back()->withErrors(['store_id' => 'Geçerli depo girin.'])->withInput();
+        return response()->json(['error' => 'Geçerli depo girin.'], 400);
         }
 
     $memberId = Auth::id();
@@ -49,10 +50,12 @@ public function store(Request $request)
         ->toArray();
 
     if (!in_array($request->store_id, $authorityStores)) {
-        return redirect()->back()->withErrors(['store_id' => 'Bu depoya stok ekleme yetkiniz yok.']);
+        return response()->json([
+            'error' => 'Bu depoya stok ekleme yetkiniz yok.'
+        ], 403);
     }
-
-    if ($request->has('sizes')) {
+    
+    
         foreach ($request->sizes as $sizeId => $piece) {
             if (in_array($sizeId, $request->input('size_ids', []))) {
                 Stock::updateOrCreate(
@@ -67,20 +70,10 @@ public function store(Request $request)
                 );
             }
         }
-        return redirect()->route('stock.create.form', ['product_sku' => $request->product_sku])->with('success', 'Stok başarıyla eklendi :)');
-    } else {
-        Stock::create([
-            'product_sku' => $request->product_sku,
-            'store_id' => $request->store_id,
-            'product_piece' => $request->input('product_piece', 0),
-            'size_id' => null,
-        ]);
-
-        return redirect()->route('stock.create.form', ['product_sku' => $request->product_sku])
-        ->with('success', 'Stok başarıyla eklendi :)');
+        return response()->json([
+            'success' => 'Stok başarıyla eklendi :)'
+        ], 200);
     }
-}
-
 
 
 }

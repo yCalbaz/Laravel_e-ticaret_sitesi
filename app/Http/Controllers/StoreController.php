@@ -19,6 +19,19 @@ public function store(Request $request)
         'store_name' => 'required|string|max:255',
         'store_max' => 'required|numeric|min:1',
         'store_priority' => 'required|numeric|min:1|unique:stores,store_priority'
+    ],[
+        'store_name.required'=>'Depo ismi boş geçilemez',
+        'store_name.string'=>'Depo ismi geçerli değil',
+        'store_name.max'=>'Depo ismi çok uzun',
+
+        'store_max.required'=>'Max satış adedi boş geçilemez',
+        'store_max.numeric'=>'Max satış adedi sayı olmalıdır',
+        'store_max.min'=>'Max satış adedi geçerli sayı olmalıdır',
+
+        'store_priority.required'=>'Depo önceliği boş geçilemez',
+        'store_priority.min'=>'Depo önceliği geçerli sayı olmalıdır',
+        'store_priority.numeric'=>'Depo önceliği sayı olmalıdır',
+        'store_priority.unique'=>'Depo önceliği geçerli değil',
     ]);
 
     $store = Store::create([
@@ -37,10 +50,11 @@ public function store(Request $request)
             'store_id' => $store->id,
         ]);
     } else {
-        return redirect()->route('store.index.form')->with('error', 'Oturum bilgisi bulunamadı. Depo yetkisi atanamadı.');
+        return response()->json(['error' => 'Oturum bilgisi bulunamadı. Depo yetkisi atanamadı.' ], 401);
     }
 
-    return redirect()->route('store.index.form')->with('success', 'Depo başarıyla eklendi ve yetkisi verildi :)');
+    return response()->json(['success'=> 'Depo başarıyla eklendi ve yetkisi verildi :)'
+    ]);
 }
 
 }

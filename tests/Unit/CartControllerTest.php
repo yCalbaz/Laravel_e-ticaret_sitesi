@@ -15,6 +15,15 @@ use Illuminate\Support\Facades\Http;
 
 class CartControllerTest extends TestCase
 {
+
+    private function memberControl()
+    {
+        $member = Member::factory()->create();
+        Session::put('customer_id',$member->customer_id);
+        $this->actingAs($member);
+        return $member;
+    }
+    // Api'leri config tablosunda tut burada kullanacağın yerde kullan.
     /**
      * İndex FOnksiyonu
      */
@@ -29,7 +38,7 @@ class CartControllerTest extends TestCase
             
         ]);
 
-        $member = Member::factory()->create(['customer_id' => 12345678]);
+        $member = $this->memberControl();
         $product = Product::factory()->create([
             'product_sku' => 'TEST-SKU',
             'product_price' => 100,
@@ -82,8 +91,7 @@ class CartControllerTest extends TestCase
     public function testIndexNotFoundBasket()
     {
         DeleteHelper::delete(['members']);
-        $member = Member::factory()->create(['customer_id' => 999]);
-        Session::put('customer_id', $member->customer_id);
+        $member = $this->memberControl();
         $response = $this->actingAs($member)->get(route('cart.index'));
 
         $response->assertStatus(200);
@@ -105,11 +113,10 @@ class CartControllerTest extends TestCase
             'members',
             'products',
         ]);
-        $member= Member::factory()->create(['customer_id'=>1111222]);
+        $member = $this->memberControl();
         $product= Product::factory()->create(['product_sku'=>'SKU-1324', 'product_price'=>100]);
         $size= Size::factory()->create();
 
-        Session::put('customer_id', $member->customer_id);
 
         Http::fake(["http://host.docker.internal:3000/stock/{$product->product_sku}/{$size->id}"
                         =>Http::response([
@@ -148,17 +155,13 @@ class CartControllerTest extends TestCase
             'products',
         ]);
 
-        $member= Member::factory()->create([
-            'customer_id'=>1123
-        ]);
+        $member = $this->memberControl();
 
         $product = Product::factory()->create([
             'product_sku'=>'SKU-123',
             'product_price'=>19
         ]);
         $size = Size::factory()->create();
-
-        Session::put('customer_id',$member->customer_id);
         Http::fake(["http://host.docker.internal:3000/stock/{$product->product_sku}/{$size->id}"
         =>Http::response([
             'stores'=>[
@@ -192,13 +195,9 @@ class CartControllerTest extends TestCase
                 'products'
             ]);
 
-        $member = Member::factory()->create(
-            [
-                'customer_id'=>1234
-            ]);
+        $member = $this->memberControl();
         $size = Size::factory()->create();
         $product_sku = 'SKU-1234'; 
-        Session::put('customer_id', $member->customer_id);
         Http::fake(["http://host.docker.internal:3000/stock/{$product_sku}/{$size->id}"
         =>Http::response([],200)
         ]);
@@ -224,11 +223,9 @@ class CartControllerTest extends TestCase
                 'members',
                 'products',
             ]);
-            $member = Member::factory()->create(['customer_id' => 123]);
+            $member = $this->memberControl();
             $product = Product::factory()->create(['product_sku' => 'SKU-1234']);
             $size = Size::factory()->create();
-    
-            Session::put('customer_id', $member->customer_id);
             Http::fake([
                 "http://host.docker.internal:3000/stock/{$product->product_sku}/{$size->id}" => Http::response('Service Unavailable', 503),
             ]);
@@ -254,11 +251,9 @@ class CartControllerTest extends TestCase
             'members',
             'products',
         ]);
-        $member = Member::factory()->create(['customer_id' => 77778888]);
+        $member = $this->memberControl();
         $product = Product::factory()->create(['product_sku' => 'SKU-1234']);
         $size = Size::factory()->create();
-
-        Session::put('customer_id', $member->customer_id);
         Http::fake([
             "http://host.docker.internal:3000/stock/{$product->product_sku}/{$size->id}" => Http::response(['not_stores' => []], 200),
         ]);
@@ -284,7 +279,7 @@ class CartControllerTest extends TestCase
             'members',
             'products',
         ]);
-        $member = Member::factory()->create(['customer_id' => 123]);
+        $member = $this->memberControl();
         $product = Product::factory()->create(['product_sku' => 'SKU-1234', 'product_price' => 10, ]);
         $size = Size::factory()->create(['size_name' => 'M']);
         $basket = Basket::create(['customer_id' => $member->customer_id, 'is_active' => 1]);
@@ -298,8 +293,6 @@ class CartControllerTest extends TestCase
             'product_piece' => 1,
             'size_id' => $size->id,
         ]);
-
-        Session::put('customer_id', $member->customer_id);
 
         Http::fake([
             "http://host.docker.internal:3000/stock/{$product->product_sku}/{$size->id}" => Http::response(['stores' => [['store_id' => 1, 'stock' => 5]]], 200),
@@ -330,7 +323,7 @@ class CartControllerTest extends TestCase
             'members',
             'products',
         ]);
-        $member = Member::factory()->create(['customer_id' => 55667788]);
+        $member = $this->memberControl();
         $product = Product::factory()->create(['product_sku' => 'SKU-1234', 'product_price' => 75]);
         $size = Size::factory()->create(['size_name' => 'L']);
         $basket = Basket::create(['customer_id' => $member->customer_id, 'is_active' => 1]);
@@ -343,8 +336,6 @@ class CartControllerTest extends TestCase
             'product_piece' => 2,
             'size_id' => $size->id,
         ]);
-
-        Session::put('customer_id', $member->customer_id);
 
         Http::fake([
             "http://host.docker.internal:3000/stock/{$product->product_sku}/{$size->id}" => Http::response(['stores' => [['store_id' => 2, 'stock' => 1]]], 200),
@@ -442,7 +433,7 @@ class CartControllerTest extends TestCase
             
         ]);
 
-        $member = Member::factory()->create(['customer_id' => 55667788]);
+        $member = $this->memberControl();
         $product = Product::factory()->create(['product_sku' => 'SKU-123', 'product_price' => 75]);
         $size = Size::factory()->create(['size_name' => 'L']);
         $basket = Basket::create(['customer_id' => $member->customer_id, 'is_active' => 1]);
@@ -455,8 +446,6 @@ class CartControllerTest extends TestCase
             'product_piece' => 2,
             'size_id' => $size->id,
         ]);
-
-        Session::put('customer_id', $member->customer_id);
 
         $response =$this-> actingAs($member)->delete(route('cart.delete',$basketItem->id),[
             'order_id' => $basket->id,
@@ -477,8 +466,7 @@ class CartControllerTest extends TestCase
     public function testApprovlNotFoundCart()
     {
         
-        $member = Member::factory()->create(['customer_id' => 1234]);
-        Session::put('customer_id', $member->customer_id);
+        $member = $this->memberControl();
     
         $response = $this->actingAs($member)->get(route('sepet.approvl'));
         
@@ -497,8 +485,7 @@ class CartControllerTest extends TestCase
             'order_lines',
             'order_batches'
         ]);
-        $member = Member::factory()->create(['customer_id' => 123]);
-        Session::put('customer_id', $member->customer_id);
+        $member = $this->memberControl();
         $size = Size::factory()->create();
         $product = Product::factory()->create(['product_sku' => 'SKU-1234']);
         $basket = Basket::create(['customer_id' => $member->customer_id, 'is_active' => 1]);
@@ -546,8 +533,7 @@ class CartControllerTest extends TestCase
             'products',
             'sizes',
         ]);
-        $member = Member::factory()->create(['customer_id' => 123]);
-        Session::put('customer_id', $member->customer_id);
+        $member = $this->memberControl();
         $size = Size::factory()->create();
         $product = Product::factory()->create(['product_sku' => 'SKU-1234']);
         $basket = Basket::create(['customer_id' => $member->customer_id, 'is_active' => 1]);
@@ -591,8 +577,7 @@ class CartControllerTest extends TestCase
             'order_lines',
             'order_batches'
         ]);
-        $member = Member::factory()->create(['customer_id' => 123]);
-        Session::put('customer_id', $member->customer_id);
+        $member = $this->memberControl();
         $size = Size::factory()->create();
         $product = Product::factory()->create(['product_sku' => 'SKU-1234']);
         $basket = Basket::create(['customer_id' => $member->customer_id, 'is_active' => 1]);
@@ -639,8 +624,7 @@ class CartControllerTest extends TestCase
             'order_lines',
             'order_batches'
         ]);
-        $member = Member::factory()->create(['customer_id' => 123]);
-        Session::put('customer_id', $member->customer_id);
+        $member = $this->memberControl();
         $size = Size::factory()->create();
         $product = Product::factory()->create(['product_sku' => 'SKU-1234']);
         $basket = Basket::create(['customer_id' => $member->customer_id, 'is_active' => 1]);
@@ -688,11 +672,7 @@ class CartControllerTest extends TestCase
             'products'
         ]);
 
-        $member = Member::factory()->create([
-            'customer_id'=>1234
-        ]);
-
-        Session::put('customer_id', $member->customer_id);
+        $member = $this->memberControl();
 
         $basket = Basket::create([
             'customer_id'=>$member->customer_id,

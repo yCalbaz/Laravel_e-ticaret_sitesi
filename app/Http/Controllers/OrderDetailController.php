@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
-
+use Laravel\Pail\ValueObjects\Origin\Console;
 
 class OrderDetailController extends Controller
 {
@@ -97,7 +97,11 @@ class OrderDetailController extends Controller
     {
         $request->validate([
             'details' => 'required|string',
-            'return_address' => 'nullable|string',
+            'return_address' => ['required',
+                    'string', 
+                    'min:3',
+                    'max:255',
+                    'regex:/^([a-zA-ZÇçĞğİıÖöŞşÜü\s]+),\s*([a-zA-ZÇçĞğİıÖöŞşÜü\s]+),\s*([a-zA-ZÇçĞğİıÖöŞşÜü\s]+),\s*([a-zA-ZÇçĞğİıÖöŞşÜü\s]+),\s*(\d+),\s*([a-zA-ZÇçĞğİıÖöŞşÜü\s]+)$/u'],
             'product_sku' => 'required|array', 
         ]);
     
@@ -107,8 +111,8 @@ class OrderDetailController extends Controller
         }
     
         if ($order->created_at->diffInDays(now()) > 15) {
-            return response()->json('Bu sipariş için iade süresi dolmuştur.');
-        }
+            return response()->json(['error'=>'Bu sipariş için iade süresi dolmuştur.'],400);
+        } 
     
         $storeId = $request->store_id;
         $productSkusToReturn = $request->product_sku; 
@@ -138,15 +142,17 @@ class OrderDetailController extends Controller
                 'product_price' => $totalPrice,
                 'product_image' => implode(',', array_unique($productImages)),
                 'customer_id' => Auth::user()->customer_id,
-                'return_address' => $request->return_address
+                'return_address' => $request->return_address,
+                'created_at'=>now(),
+                'updated_at'=>now(),
             ]);
     
             DB::commit();
-            return redirect()->route('orders.index')->with('success', 'İade talebiniz alındı.');
+            return response()->json(['success' => 'İade talebiniz alındı.'],200);
     
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'İade işlemi sırasında bir hata oluştu: ' . $e->getMessage());
+            return response()->json(['error' => 'İade işlemi sırasında bir hata oluştu: ' . $e->getMessage()], 500);
         }
     }
     
@@ -209,6 +215,8 @@ class OrderDetailController extends Controller
     
         return view('admin_order_details_show', compact('order', 'groupedOrderLines', 'allOrderStatuses', 'orderStatusHistory'));
     }
+    
+    
 
     
 } 

@@ -39,9 +39,10 @@ class BasketController extends Controller
             return view('cart', ['cartItems' => [], 'sepetSayisi' => 0]); 
         }
     
+        $size = new Size();//kullanıma bak
         $cartItems = BasketItem::where('order_id', $basket->id)->get();
         foreach ($cartItems as $item) {
-            $size = Size::find($item->size_id);
+            $size = $size::find($item->size_id);
             $product = Product::where('product_sku', $item->product_sku)->first();
             //dd($item->size_id, $size);
             $item->size_name = $size ? $size->size_name : 'Beden Yok';
@@ -201,7 +202,7 @@ class BasketController extends Controller
                 'name' => ['required', 'string', 'min:3', 'max:255'],
                 'address' => [
                     'required',
-                    'string',
+                    'string', 
                     'min:3',
                     'max:255',
                     'regex:/^([a-zA-ZÇçĞğİıÖöŞşÜü\s]+),\s*([a-zA-ZÇçĞğİıÖöŞşÜü\s]+),\s*([a-zA-ZÇçĞğİıÖöŞşÜü\s]+),\s*([a-zA-ZÇçĞğİıÖöŞşÜü\s]+),\s*(\d+),\s*([a-zA-ZÇçĞğİıÖöŞşÜü\s]+)$/u'

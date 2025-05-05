@@ -77,5 +77,5 @@ class OrderController extends Controller
             ->toArray();
 
         return view('seller_product', compact('products', 'stores'));
-}
+    }
 }
