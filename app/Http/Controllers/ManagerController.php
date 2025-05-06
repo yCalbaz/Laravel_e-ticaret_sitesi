@@ -13,7 +13,10 @@ class ManagerController extends Controller
     const ADMIN_ROLE_ID = 1;
     const SELLER_ROLE_ID = 2;
     const CUSTOMER_ROLE_ID = 3;
-
+    protected function getProduct()
+    {
+        return Product::orderBy('id', 'desc')->take(10)->get();
+    }
     
     public function showAdminPanel()
     {
@@ -143,12 +146,8 @@ class ManagerController extends Controller
 
         return response()->json(['success' => true, 'message' =>'Sipariş Durumu' . $newStatus . ' olarak güncellendi.']);
     }
-        protected function getProduct()
-    {
-        return Product::orderBy('id', 'desc')->take(10)->get();
-    }
 
-    public function approveCancellation(Request $request) //iade onaylamınca ilgili depoya stok gönder
+    public function approveCancellation(Request $request) 
     {
         $orderId = $request->input('order_id');
         $storeId = $request->input('store_id');
@@ -191,19 +190,19 @@ class ManagerController extends Controller
     }
 
     public function campaignAdd(Request $request, $id)
-{
-    $request->validate([
-        'discount_rate' => 'required|numeric|min:0|max:100',
-    ]);
+    {
+        $request->validate([
+            'discount_rate' => 'required|numeric|min:0|max:100',
+        ]);
 
-    $product = Product::findOrFail($id);
-    $discountRate = $request->input('discount_rate');
+        $product = Product::findOrFail($id);
+        $discountRate = $request->input('discount_rate');
 
-    $product->update([
-        'discount_rate' => $discountRate,
-    ]);
+        $product->update([
+            'discount_rate' => $discountRate,
+        ]);
 
-    return redirect()->route('seller.products')->with('success', $product->product_name . ' ürününe %' . $discountRate . ' kampanya eklendi.');
-}
+        return redirect()->route('seller.products')->with('success', $product->product_name . ' ürününe %' . $discountRate . ' kampanya eklendi.');
+    }
     
 }

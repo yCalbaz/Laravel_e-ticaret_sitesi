@@ -13,6 +13,29 @@ class AuthController extends Controller
     const SATICI_ROLE_ID = 2;
     const MUSTERI_ROLE_ID = 3;
 
+    protected function databaseCustomerId()
+    {
+        $lastCustomer = cache()->remember('last_customer_id', 60, function () {
+            return Member::whereNotNull('customer_id')->orderBy('customer_id', 'desc')->first();
+        });
+        return $lastCustomer ? $lastCustomer->customer_id + 1 : 1;
+    }
+
+    protected function redirectUser($user)
+    {
+        $authority = Session::get('user_authority');
+        switch ($authority) {
+            case  self::ADMIN_ROLE_ID:
+                return redirect()->route('adminPanel');
+            case self::SATICI_ROLE_ID:
+                return redirect()->route('saticiPanel');
+            case self::MUSTERI_ROLE_ID:
+                return redirect()->route('musteriPanel');
+            default:
+                return route('/');
+        }
+    }
+
     public function showLoginForm()
     {
         if(Auth::check()) {
@@ -71,28 +94,6 @@ class AuthController extends Controller
         return redirect()->route('musteri.uye_ol')->with('success', 'Müşteri üye eklendi :)');
     }
 
-    protected function databaseCustomerId()
-    {
-        $lastCustomer = cache()->remember('last_customer_id', 60, function () {
-            return Member::whereNotNull('customer_id')->orderBy('customer_id', 'desc')->first();
-        });
-        return $lastCustomer ? $lastCustomer->customer_id + 1 : 1;
-    }
-
-    protected function redirectUser($user)
-    {
-        $authority = Session::get('user_authority');
-        switch ($authority) {
-            case  self::ADMIN_ROLE_ID:
-                return redirect()->route('adminPanel');
-            case self::SATICI_ROLE_ID:
-                return redirect()->route('saticiPanel');
-            case self::MUSTERI_ROLE_ID:
-                return redirect()->route('musteriPanel');
-            default:
-                return route('/');
-        }
-    }
 
     public function logout(Request $request)
     {

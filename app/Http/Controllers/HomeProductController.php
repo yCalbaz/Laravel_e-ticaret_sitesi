@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\ConfigModel;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use Illuminate\Support\Facades\Auth;
@@ -14,11 +15,12 @@ class HomeProductController extends Controller
 
     public function productHome()
     { 
-         
         $products = Product::orderBy('id', 'desc')->get()->filter(function($product) {
+            $apiConfig = ConfigModel::where('api_name','stok_api')->first();
+            $apiUrl = $apiConfig->api_url;
             foreach ($product->stocks as $stock) {
             try {
-                $response = Http::timeout(4)->get("http://host.docker.internal:3000/stock/{$product->product_sku}/{$stock->size_id}");
+                $response = Http::timeout(4)->get($apiUrl . "{$product->product_sku}/{$stock->size_id}");
                 
                 if ($response->successful()) {
                     $stockData = $response->json();

@@ -91,7 +91,7 @@
                         <h5>Sipariş Detayları:</h5>
                         <div class="col-md-12 cart-summary">
                             <p class=> Ürünler: <span id="total-price">{{ $totalPrice }}</span> TL</p>
-                            <p class="cargo" > Kargo: <span id="total-price">45TL</span></p>
+                            <p class="cargo" > Kargo: <span id="total-price">{{ $cargoPrice }}</span></p>
                             <p class="total-price"> Toplam: <span id="total-price">{{ $cargoTotalPrice }} </span> TL</p>
                             <a href="{{ route('sepet.approvl') }}" class="btn btn-confirm">SEPETİ ONAYLA</a>
                         </div>

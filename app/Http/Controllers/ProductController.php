@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\ConfigModel;
 use App\Models\Product;
 use App\Models\Stock;
 use Illuminate\Http\Request;
@@ -15,7 +16,9 @@ class ProductController extends Controller
         $products = Product::all()->filter(function($product) {
             foreach($product->stocks as $stock){
             try {
-                $response = Http::timeout(4)->get("http://host.docker.internal:3000/stock/{$product->product_sku}/{$stock->size_id}");
+                $apiConfig = ConfigModel::where('api_name','stok_api')->first();
+                $apiUrl = $apiConfig->api_url;
+                $response = Http::timeout(4)->get($apiUrl."{$product->product_sku}/{$stock->size_id}");
     
                 if ($response->successful()) {
                     $stockData = $response->json();
@@ -40,29 +43,27 @@ class ProductController extends Controller
             return view('product', ['urunler' => $products]);
     }
     
-    
     public function showDetails($sku)
-{
-    $product = Product::where('product_sku', $sku)->firstOrFail();
+    {
+        $product = Product::where('product_sku', $sku)->firstOrFail();
 
-    $discountRate = $product->discount_rate ?? 0;
-    $discountedPrice = null;
-    if ($discountRate > 0) {
-        $discountedPrice = $product->product_price - ($product->product_price * ($discountRate / 100));
+        $discountRate = $product->discount_rate ?? 0;
+        $discountedPrice = null;
+        if ($discountRate > 0) {
+            $discountedPrice = $product->product_price - ($product->product_price * ($discountRate / 100));
+        }
+
+        $product->load('stocks.size');
+        $groupedStocks = $product->stocks->groupBy('size.id')->map(function ($items) {
+            return [
+                'size' => $items->first()->size,
+                'total_piece' => $items->sum('product_piece'),
+            ];
+        })->values();
+
+        return view('product_details', compact('product', 'groupedStocks','discountRate','discountedPrice'));
     }
-
-    $product->load('stocks.size');
-    $groupedStocks = $product->stocks->groupBy('size.id')->map(function ($items) {
-        return [
-            'size' => $items->first()->size,
-            'total_piece' => $items->sum('product_piece'),
-        ];
-    })->values();
-
-    return view('product_details', compact('product', 'groupedStocks','discountRate','discountedPrice'));
-}
         
-
     public function search(Request $request)
     {
         $query = $request->input('query');
@@ -72,102 +73,112 @@ class ProductController extends Controller
             ->orWhereHas('categories', function ($q) use ($query) {
                 $q->where('category_name', 'LIKE', "%$query%");
             })
-            ->get();
+            ->get()
+            ->map(function ($product) {
+                if ($product->discount_rate > 0) {
+                    $product->discounted_price = $product->product_price - ($product->product_price * ($product->discount_rate / 100));
+                } else {
+                    $product->discounted_price = null;
+                }
+                return $product;
+            });
 
         return view('search-results', compact('products', 'query'));
     }
     
     public function productCategory($category_slug)
-{
-    $kategori = Category::where('category_slug', $category_slug)->first();
-    $altKategori = null;
+    {
+        $kategori = Category::where('category_slug', $category_slug)->first();
+        $altKategori = null;
 
-    if (!$kategori) {
-        $altKategori = Category::whereHas('parentCategories', function ($query) use ($category_slug) {
-            $query->where('category_slug', $category_slug);
-        })->first();
+        if (!$kategori) {
+            $altKategori = Category::whereHas('parentCategories', function ($query) use ($category_slug) {
+                $query->where('category_slug', $category_slug);
+            })->first();
 
-        if (!$altKategori) {
-            return abort(404, 'Kategori bulunamadı.');
-        }
-    }  
-
-    $productsQuery = ($kategori ? $kategori->products() : $altKategori->products());
-    $products = $productsQuery->get()->filter(function ($product) {
-        foreach ($product->stocks as $stock) {
-            try {
-                $response = Http::timeout(4)->get("http://host.docker.internal:3000/stock/{$product->product_sku}/{$stock->size_id}");
-
-                if ($response->successful()) {
-                    $stockData = $response->json();
-                    $stockAdedi = $stockData['stores'][0]['stock'] ?? 0;
-                    return $stockAdedi > 0;
-                }
-            } catch (\Exception $e) {
+            if (!$altKategori) {
+                return abort(404, 'Kategori bulunamadı.');
             }
-        }
-        return false;
-    })->map(function ($product) {
-        if ($product->discount_rate > 0) {
-            $product->discounted_price = $product->product_price - ($product->product_price * ($product->discount_rate / 100));
-        } else {
-            $product->discounted_price = null;
-        }
-        return $product;
-    });
+        }  
 
-    return view('category_product', ['urunler' => $products, 'kategori' => $kategori ? $kategori->category_name : $altKategori->category_name]);
-}
+        $productsQuery = ($kategori ? $kategori->products() : $altKategori->products());
+        $products = $productsQuery->get()->filter(function ($product) {
+            $apiConfig = ConfigModel::where('api_name','stok_api')->first();
+            $apiUrl= $apiConfig->api_url;
+            foreach ($product->stocks as $stock) {
+                try {
+                    $response = Http::timeout(4)->get($apiUrl . "{$product->product_sku}/{$stock->size_id}");
+
+                    if ($response->successful()) {
+                        $stockData = $response->json();
+                        $stockAdedi = $stockData['stores'][0]['stock'] ?? 0;
+                        return $stockAdedi > 0;
+                    }
+                } catch (\Exception $e) {
+                }
+            }
+            return false;
+        })->map(function ($product) {
+            if ($product->discount_rate > 0) {
+                $product->discounted_price = $product->product_price - ($product->product_price * ($product->discount_rate / 100));
+            } else {
+                $product->discounted_price = null;
+            }
+            return $product;
+        });
+
+        return view('category_product', ['urunler' => $products, 'kategori' => $kategori ? $kategori->category_name : $altKategori->category_name]);
+    }
 
     public function getProductsByCategory(Request $request)
-{
-    $categories = $request->categories;
+    {
+        $categories = $request->categories;
 
-    if (empty($categories)) {
-        $urunler = Product::all();
-    } else {
-        $urunler = Product::whereHas('categories', function ($query) use ($categories) {
-            $query->whereIn('category_slug', $categories);
-        })->get();
+        if (empty($categories)) {
+            $urunler = Product::all();
+        } else {
+            $urunler = Product::whereHas('categories', function ($query) use ($categories) {
+                $query->whereIn('category_slug', $categories);
+            })->get();
+        }
+
+        return response()->json($urunler);
     }
-
-    return response()->json($urunler);
-}
 
     public function filterProducts(Request $request)
-{
-    $categories = $request->input('categories', []);
-    $genders = $request->input('genders', []);
+    {
+        $categories = $request->input('categories', []);
+        $genders = $request->input('genders', []);
 
-    $urunler = Product::query();
- 
-    if (!empty($categories)) {
-        $urunler->whereHas('categories', function ($query) use ($categories) {
-            $query->whereIn('categories.id', $categories);
-        });
+        $urunler = Product::query();
+    
+        if (!empty($categories)) {
+            $urunler->whereHas('categories', function ($query) use ($categories) {
+                $query->whereIn('categories.id', $categories);
+            });
+        }
+
+        if (!empty($genders)) {
+            $urunler->whereIn('gender', $genders);
+        }
+
+        $urunler = $urunler->get();
+
+        return view('partials.product_list', ['urunler' => $urunler]);
     }
 
-    if (!empty($genders)) {
-        $urunler->whereIn('gender', $genders);
+    public function getSizes($sku)
+    {
+        $product = Product::where('product_sku', $sku)->firstOrFail();
+        $stocks = Stock::where('product_sku', $sku) 
+            ->where('product_piece', '>', 0)
+            ->whereNotNull('size_id')
+            ->with('size')
+            ->get();
+
+        $sizes = $stocks->pluck('size');
+
+        return response()->json($sizes);
     }
-
-    $urunler = $urunler->get();
-
-    return view('partials.product_list', ['urunler' => $urunler]);
-}
-
-public function getSizes($sku)
-{
-    $product = Product::where('product_sku', $sku)->firstOrFail();
-    $stocks = Stock::where('product_sku', $sku) 
-        ->where('product_piece', '>', 0)
-        ->whereNotNull('size_id')
-        ->with('size')
-        ->get();
-
-    $sizes = $stocks->pluck('size');
-
-    return response()->json($sizes);
-}
 
 }

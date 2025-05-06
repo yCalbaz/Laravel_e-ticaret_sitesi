@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Basket;
 use App\Models\BasketItem;
+use App\Models\ConfigModel;
+use App\Models\Log as ModelsLog;
 use Illuminate\Http\Request;
 use App\Models\Member;
 use App\Models\Product;
@@ -21,8 +23,22 @@ use Illuminate\Support\Str;
  
 class BasketController extends Controller
 {
+    const cargoPrice = 45;
+    private function logRequest($operation, $message = null, $requestData = null)
+    {
+        Log::create([
+            'log_title' => 'API Request',
+            'operaton' => $operation,
+            'message' => $message,
+            'error' => null,
+            'success' => 'Başarılı İstek',
+            'request' => json_encode($requestData),
+            'response' => null,
+        ]);
+    }
     public function index()
     {
+        
         if (Auth::check()) {
             $customer = Auth::user(); 
             Session::put('customer_id', $customer->customer_id); 
@@ -59,14 +75,15 @@ class BasketController extends Controller
             }
         
         }
-        $cargoTotalPrice= $totalPrice + 45;
-    
-        return view('cart', compact('cartItems', 'totalPrice','cargoTotalPrice'));
+        $cargoPrice= self::cargoPrice;
+        $cargoTotalPrice= $totalPrice + $cargoPrice;
+        return view('cart', compact('cartItems', 'totalPrice','cargoTotalPrice','cargoPrice'));
     }
     
 
     public function add(Request $request, $product_sku)
     {
+        
         try {
         $request->validate([
             'quantity' => 'required|integer|min:1',
@@ -88,8 +105,9 @@ class BasketController extends Controller
         if (!$product) {
             return response()->json(['error' => 'Ürün bulunamadı'], 404);
         }
-
-        $response = Http::get("http://host.docker.internal:3000/stock/{$product->product_sku}/{$request->size_id}");
+        $apiConfig = ConfigModel::where('api_name', 'stok_api')->first();
+        $apiUrl= $apiConfig->api_url;
+        $response = Http::get($apiUrl."{$product->product_sku}/{$request->size_id}");
 
         if ($response->failed()) {
             return response()->json(['error' => 'Servise ulaşılamadı'], 500);
@@ -227,7 +245,10 @@ class BasketController extends Controller
                 if ($item->product_piece < 1) {
                     return response()->json(['error' => 'Sepette geçersiz ürün adedi var!'], 400);
                 }
-                $response = Http::get("http://host.docker.internal:3000/stock/{$item->product_sku}/{$item->size_id}");
+                
+                $apiConfig = ConfigModel::where('api_name', 'stok_api')->first();
+                $apiUrl= $apiConfig->api_url;
+                $response = Http::get($apiUrl."{$item->product_sku}/{$item->size_id}");
 
                 if ($response->failed()) {
                     return response()->json(['error' => 'Stok servis bağlantısında bir hata oluştu.'], 503);
@@ -293,7 +314,7 @@ class BasketController extends Controller
                     }
                 
                 }
-                $cargoTotalPrice= $totalPrice + 45;
+                $cargoTotalPrice= $totalPrice + self::cargoPrice;
             }
 
             if ($stokError) {
@@ -364,12 +385,14 @@ class BasketController extends Controller
                         return response()->json(['error' => 'Stok güncelleme sırasında bir hata oluştu!'], 500);
                     }
 
-                    Log::info("Stok Güncellendi: " . json_encode([
+                    $logSuccess= Log::info("Stok Güncellendi: " . json_encode([
                         'product_sku' => $item->product_sku,
                         'store_id' => $storeId,
                         'size_id' => $item->size_id,
                     ]));
+                    
                 }
+                
             }
 
             $basket->update(['is_active' => 0]);
@@ -394,7 +417,7 @@ class BasketController extends Controller
             }
         
         }
-        $cargoTotalPrice= $totalPrice + 45;
+        $cargoTotalPrice= $totalPrice + self::cargoPrice;
 
         $data = compact('cartItems', 'cargoTotalPrice');
         return view('cart_approve', $data);

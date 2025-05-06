@@ -23,11 +23,17 @@
                         <a href="{{ route('product.details', ['sku' => $product->product_sku]) }}"><img src="{{ asset($product->product_image) }}" class="card-img-top custom-img"></a>
                             <div class="card-body">
                                 <h5 class="card-title">{{ $product->product_name }}</h5>
-                                <p class="card-text font-weight-bold">{{ $product->product_price }} TL</p>
+                                @if ($product->discount_rate > 0 && $product->discounted_price !== null)
+                                    <p class="card-text original-price text-danger" style="margin-bottom: 2px;"><del>{{ $product->product_price }} TL</del></p>
+                                    <p class=" text-success " style="font-size: 15px; margin-bottom: 2px;">İNDİRİMLİ FİYAT</p>
+                                    <p class="  text-success"  style="font-size: 25px; margin-bottom: 2px;">{{ number_format($product->discounted_price, 2) }} TL</p>
+                                @else
+                                    <p class="card-text">{{ $product->product_price }} TL</p>
+                                @endif
                                 <button type="submit" class="cart-add-btn" onclick="addCart( '{{$product->product_sku }}')">Sepete Ekle</button>
                             </div>
                         </div>
-                    </div>
+                    </div>  
                 @endforeach
             </div>
         @else 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ConfigModel;
 use App\Models\MemberStore;
 use App\Models\OrderBatch;
 use App\Models\Product;
@@ -14,18 +15,27 @@ class OrderController extends Controller
 {  
     public function index()
     {
-        { if (!Auth::check()) {
+        { if (!Auth::check()) { 
             return redirect()->route('login')->with('error', 'Lütfen giriş yapın.');
         }
         $memberId = Auth::id();
         
-        $products = Product::where('customer_id', $memberId)->get();
+        $products = Product::where('customer_id', $memberId)->get()
+        ->map(function ($product) {
+            if ($product->discount_rate > 0) {
+                $product->discounted_price = $product->product_price - ($product->product_price * ($product->discount_rate / 100));
+            } else {
+                $product->discounted_price = null;
+            }
+            return $product;
+        });
         return view('seller_product', compact('products'));
         }
     }
 
     public function sellerProduct(Request $request)
     {
+        
         if (!Auth::check()) {
             return redirect()->route('login')->with('error', 'Lütfen giriş yapın.');
         }
@@ -41,22 +51,24 @@ class OrderController extends Controller
         }
 
         $products = $query->get()->map(function ($product) {
-            $stoktaHave = false;
+            $apiConfig = ConfigModel::where('api_name', 'stok_api')->first();
+            $apiUrl= $apiConfig->api_url;
+            $stockHave = false;
             foreach ($product->stocks as $stock) {
                 try {
-                    $response = Http::timeout(4)->get("http://host.docker.internal:3000/stock/{$product->product_sku}/{$stock->size_id}");
+                    $response = Http::timeout(4)->get($apiUrl . "{$product->product_sku}/{$stock->size_id}");
                     if ($response->successful()) {
                         $stockData = $response->json();
                         $stockQuantity = collect($stockData['stores'])->sum('stock');
                         if ($stockQuantity > 0) {
-                            $stoktaHave = true;
+                            $stockHave = true;
                             break;
                         }
                     }
                 } catch (\Exception $e) {
                 }
             }
-            $product['stokta_var'] = $stoktaHave;
+            $product['stokta_var'] = $stockHave;
             return $product;
         });
 
@@ -78,4 +90,4 @@ class OrderController extends Controller
 
         return view('seller_product', compact('products', 'stores'));
     }
-}
+}  
