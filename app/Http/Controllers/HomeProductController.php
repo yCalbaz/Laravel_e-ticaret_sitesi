@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\ConfigModel;
+use App\Models\ModelLog;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use Illuminate\Support\Facades\Auth;
@@ -12,7 +13,18 @@ use Illuminate\Support\Facades\Storage;
 
 class HomeProductController extends Controller 
 { 
-
+    private function logRequest($operation, $message = null, $requestData = null, $error = null, $response = null)
+    {
+        ModelLog::create([
+            'log_title' => 'API Request',
+            'operaton' => $operation,
+            'message' => $message,
+            'error' => $error ?? "",
+            'success' => $error ? null : 'Başarılı İstek',
+            'request' => json_encode($requestData),
+            'response' => $response ? json_encode($response) : null,
+        ]);
+    }
     public function productHome()
     { 
         $products = Product::orderBy('id', 'desc')->get()->filter(function($product) {
@@ -21,14 +33,25 @@ class HomeProductController extends Controller
             foreach ($product->stocks as $stock) {
             try {
                 $response = Http::timeout(4)->get($apiUrl . "{$product->product_sku}/{$stock->size_id}");
-                
+                $this->logRequest(
+                    'HomeController/productHome',  
+                    'Stok API isteği gönderildi', 
+                    ["product_sku" => $product->product_sku, "size_id" => $stock->size_id],
+                    $response->failed() ?  'Stok servisine ulaşılamadı' : null, 
+                    $response->successful() ? $response->json() : null  
+                );
                 if ($response->successful()) {
                     $stockData = $response->json();
                     $stock = $stockData['stores'][0]['stock'] ?? 0; 
                     return $stock > 0;
                 }
             } catch (\Exception $e) {
-                
+                $this->logRequest(
+                    'HomeController/productHome',
+                    'Stok API isteği sırasında hata oluştu',
+                    ["product_sku" => $product->product_sku, "size_id" => $stock->size_id],
+                    $e->getMessage()
+                );
             }}
             return false;
         })->map(function ($product) {

@@ -13,28 +13,27 @@
         overflow-wrap: break-word;
         vertical-align: top;
         padding: 5px;
-        font-size: 18px; /* Varsayılan yazı boyutu */
-    }
-
-    .table td:nth-child(2) {
-        max-width: 120px;
-        word-break: break-all;
-    }
-
-    .table td:nth-child(4) {
-        white-space: nowrap;
-    }
-        @media (max-width: 768px) {
-        .table td, .custom-details-button {
-            font-size: 12px; 
-            padding: 3px; 
+        font-size: 18px; 
         }
 
         .table td:nth-child(2) {
-            max-width: 80px; 
+            max-width: 120px;
+            word-break: break-all;
         }
-    }
-    
+
+        .table td:nth-child(4) {
+            white-space: nowrap;
+        }
+            @media (max-width: 768px) {
+            .table td, .custom-details-button {
+                font-size: 12px; 
+                padding: 3px; 
+            }
+
+            .table td:nth-child(2) {
+                max-width: 80px; 
+            }
+        }
     </style>
 </head>
 <body>

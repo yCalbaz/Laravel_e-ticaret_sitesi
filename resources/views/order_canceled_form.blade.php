@@ -6,8 +6,6 @@
     <title>Ürün İade Formu</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="icon" href="{{ asset('storage/images/flo-logo-Photoroom.png') }}" type="image/png">
-
-    
     @vite(['resources/js/app.js' ,'resources/css/style.css'])
 </head>
 <body>
@@ -69,64 +67,64 @@
         </form>
     </div><br>
     @include('layouts.footer')
-    
-</body>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-    $(document).ready(function () {
-        $('#returnForm').on('submit', function (e) {
-            e.preventDefault();
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        $(document).ready(function () {
+            $('#returnForm').on('submit', function (e) {
+                e.preventDefault();
 
-            let form = $(this);
-            let url = form.attr('action');
-            let formData = form.serialize();
+                let form = $(this);
+                let url = form.attr('action');
+                let formData = form.serialize();
 
-            $.ajax({
-                type: 'POST',
-                url: url,
-                data: formData,
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
-                },
-                success: function (response) {
-                    if (response.success) {
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire({
+                                title: 'İade Talebi Alındı!',
+                                text: response.success,
+                                icon: 'success',
+                                confirmButtonText: 'Tamam',
+                                customClass: {
+                                    confirmButton: 'btn btn-success'
+                                }
+                            }).then(() => {
+                                window.location.href = "{{ route('order.showDetails', ['orderId' => $order->id]) }}" ;
+                            });
+                        }
+                    },
+                    error: function (xhr) {
+                        let errorMessages = '';
+                        if (xhr.status === 422) {
+                            let errors = xhr.responseJSON.errors;
+                            Object.values(errors).forEach(function (messages) {
+                                errorMessages += `${messages[0]}<br>`;
+                            });
+                        } else {
+                            errorMessages = xhr.responseJSON?.error || 'Bir hata oluştu.';
+                        }
+
                         Swal.fire({
-                            title: 'İade Talebi Alındı!',
-                            text: response.success,
-                            icon: 'success',
+                            title: 'İade Başarısız!',
+                            html: errorMessages,
+                            icon: 'error',
                             confirmButtonText: 'Tamam',
                             customClass: {
-                                confirmButton: 'btn btn-success'
+                                confirmButton: 'btn btn-danger'
                             }
-                        }).then(() => {
-                            window.location.href = "{{ route('order.showDetails', ['orderId' => $order->id]) }}" ;
                         });
                     }
-                },
-                error: function (xhr) {
-                    let errorMessages = '';
-                    if (xhr.status === 422) {
-                        let errors = xhr.responseJSON.errors;
-                        Object.values(errors).forEach(function (messages) {
-                            errorMessages += `${messages[0]}<br>`;
-                        });
-                    } else {
-                        errorMessages = xhr.responseJSON?.error || 'Bir hata oluştu.';
-                    }
-
-                    Swal.fire({
-                        title: 'İade Başarısız!',
-                        html: errorMessages,
-                        icon: 'error',
-                        confirmButtonText: 'Tamam',
-                        customClass: {
-                            confirmButton: 'btn btn-danger'
-                        }
-                    });
-                }
+                });
             });
         });
-    });
     </script>
+</body>
+
 </html>

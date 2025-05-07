@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Basket;
 use App\Models\BasketItem;
 use App\Models\ConfigModel;
-use App\Models\Log as ModelsLog;
+use App\Models\ModelLog;
 use Illuminate\Http\Request;
 use App\Models\Member;
 use App\Models\Product;
@@ -24,16 +24,16 @@ use Illuminate\Support\Str;
 class BasketController extends Controller
 {
     const cargoPrice = 45;
-    private function logRequest($operation, $message = null, $requestData = null)
+    private function logRequest($operation, $message = null, $requestData = null, $error = null, $response = null)
     {
-        Log::create([
+        ModelLog::create([
             'log_title' => 'API Request',
             'operaton' => $operation,
             'message' => $message,
-            'error' => null,
-            'success' => 'Başarılı İstek',
+            'error' => $error ?? "",
+            'success' => $error ? null : 'Başarılı İstek',
             'request' => json_encode($requestData),
-            'response' => null,
+            'response' => $response ? json_encode($response) : null,
         ]);
     }
     public function index()
@@ -103,6 +103,7 @@ class BasketController extends Controller
         $product = Product::where('product_sku', $product_sku)->first();
         
         if (!$product) {
+            $this->logRequest('add_to_cart', 'Ürün bulunamadı', $request->all(), 'Ürün bulunamadı');
             return response()->json(['error' => 'Ürün bulunamadı'], 404);
         }
         $apiConfig = ConfigModel::where('api_name', 'stok_api')->first();
@@ -110,16 +111,21 @@ class BasketController extends Controller
         $response = Http::get($apiUrl."{$product->product_sku}/{$request->size_id}");
 
         if ($response->failed()) {
+            $this->logRequest('add_to_cart', 'Stok servisine ulaşılamadı', $request->all(), 'Servise ulaşılamadı', $response->body());
             return response()->json(['error' => 'Servise ulaşılamadı'], 500);
         }
 
         $stockData = $response->json();
+        $this->logRequest('add_to_cart','Stok servisi yanıtı',$request->all(), null, $stockData );
+        
         if (!isset($stockData['stores'])) {
+            $this->logRequest('add_to_cart', 'Geçersiz stok servisi yanıtı', $request->all(), 'Geçersiz servis yanıtı', $response->body());
             return response()->json(['error' => 'Servis yanıtı geçersiz'], 500);
         }
 
         $totalStock = collect($stockData['stores'])->sum('stock');
         if ($totalStock < $request->quantity) {
+            $this->logRequest('add_to_cart', 'Yetersiz stok', $request->all(), 'Yeterli stok yok', $response->body());
             return response()->json(['error' => 'Yeterli stok bulunmamaktadır.'], 400);
         }
 
@@ -145,6 +151,7 @@ class BasketController extends Controller
 
         if ($basketItem) {
             if ($basketItem->product_piece + $request->quantity > $totalStock) {
+                $this->logRequest('add_to_cart', 'Sepetteki ürün adedi toplam stoku aşıyor', $request->all(), 'Yeterli stok yok', $response->body());
                 return response()->json(['error' => 'Yeterli stok yok.'], 400);
             }
             $basketItem->increment('product_piece', $request->quantity);
@@ -161,9 +168,13 @@ class BasketController extends Controller
         }
 
         $cartCount = BasketItem::where('order_id', $basket->id)->sum('product_piece');
-            
+        $this->logRequest('add_to_cart', 'Ürün sepete eklendi', $request->all(), null, [
+            'product_sku' => $product->product_sku,
+            'cartCount' => $cartCount
+        ]);
         return response()->json(['success' => 'Ürün sepete eklendi!', 'cartCount' => $cartCount]);
         } catch (TokenMismatchException $exception) {
+            $this->logRequest('add_to_cart', 'Token uyuşmazlığı', $request->all(), $exception->getMessage());
             return response()->json(['error' => 'CSRF token uyuşmazlığı. Lütfen sayfayı yenileyin ve tekrar deneyin.'], 419);
         }
     }
@@ -363,12 +374,16 @@ class BasketController extends Controller
 
             foreach ($groupedItems as $storeId => $items) {
                 foreach ($items as $item) {
-                    Log::info("Stok Güncelleme İşlemi Başlatılıyor: " . json_encode([
-                        'product_sku' => $item->product_sku,
-                        'product_piece' => 1,
-                        'store_id' => $storeId,
-                        'size_id' => $item->size_id,
-                    ]));
+                    $this->logRequest(
+                        'Stok Güncelleme Başladı',
+                        'Stok azaltma işlemi başlatılıyor',
+                        [
+                            'product_sku' => $item->product_sku,
+                            'product_piece' => 1,
+                            'store_id' => $storeId,
+                            'size_id' => $item->size_id,
+                        ]
+                    );
 
                     $affectedRows = DB::table('stocks')
                         ->where('product_sku', $item->product_sku)
@@ -377,11 +392,16 @@ class BasketController extends Controller
                         ->decrement('product_piece', 1);
 
                     if ($affectedRows < 1) {
-                        Log::error("Stok Güncellenemedi! " . json_encode([
-                            'product_sku' => $item->product_sku,
-                            'store_id' => $storeId,
-                            'size_id' => $item->size_id,
-                        ]));
+                        $this->logRequest(
+                            'Stok Güncelleme Hatası',
+                            'Stok azaltma başarısız',
+                            [
+                                'product_sku' => $item->product_sku,
+                                'store_id' => $storeId,
+                                'size_id' => $item->size_id,
+                            ],
+                            'Stok azaltılamadı'
+                        );
                         return response()->json(['error' => 'Stok güncelleme sırasında bir hata oluştu!'], 500);
                     }
 
@@ -397,6 +417,7 @@ class BasketController extends Controller
 
             $basket->update(['is_active' => 0]);
             BasketItem::where('order_id', $basket->id)->delete();
+            
             return response()->json(['success' => 'Sipariş onaylandı!']);
         }
 

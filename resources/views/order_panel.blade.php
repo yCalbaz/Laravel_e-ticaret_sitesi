@@ -8,7 +8,7 @@
     <link rel="icon" href="{{ asset('storage/images/flo-logo-Photoroom.png') }}" type="image/png">
 </head>
 <body>
-@include('layouts.panel_header')
+    @include('layouts.panel_header')
     <div class="container">
         <h1>Sipariş Listesi</h1>
         <table class="table">

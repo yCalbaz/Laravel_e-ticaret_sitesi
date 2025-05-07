@@ -510,4 +510,23 @@ th{
     padding-left: 1rem;
     text-align: left;
 }
+ /* admin sipariş detay */
+ .table td {
+    font-size: 14px;
+}
 
+.order_image {
+    max-width: 100px;
+    height: auto;
+}
+
+@media (max-width: 768px) {
+    .table td {
+        font-size: 12px;
+        padding: 3px;
+    }
+
+    .order_image {
+        max-width: 80px;
+    }
+}

@@ -15,7 +15,6 @@ use App\Models\Order;
 
 
 Route::get('/', [HomeProductController::class, 'productHome'])->name('home.product');
-
 Route::get('/urun', [ProductController::class, 'index'])->name('urun');
 
 Route::get('/giris', [AuthController::class, 'showLoginForm'])->name('login'); 
@@ -23,7 +22,6 @@ Route::post('/giris', [AuthController::class, 'login'])->name('login.post');
 
 Route::post('/cıkıs', [AuthController::class, 'logout'])->name('admin.logout');
 Route::get('/cıkıs', [AuthController::class, 'logout'])->name('admin.logout');
-
 
 
 Route::middleware(['auth'])->group(function () {
@@ -54,11 +52,8 @@ Route::delete('/cart/{id}', [BasketController::class, 'delete'])->name('cart.del
 Route::post('/sepet/onay', [BasketController::class, 'approvl'])->name('sepet.approvl');
 Route::get('/sepet/onay', [BasketController::class, 'approvl'])->name('sepet.approvl');
 
-
-
 Route::get('/musteri/uye-ol', [AuthController::class, 'showRegisterForm'])->name('musteri.uye_ol');
 Route::post('/musteri/uye-ol', [AuthController::class, 'customerRegister'])->name('musteri.uye_ol.kayit');
-
 Route::get('/urun/{sku}', [ProductController::class, 'showDetails'])->name('product.details');
 
 
@@ -76,7 +71,7 @@ Route::put('/sepet/guncelle/{id}', [BasketController::class, 'update'])->name('c
 Route::get('/search', [App\Http\Controllers\ProductController::class, 'search'])->name('search');
 
 Route::get('/kategori/{category_slug}', [ProductController::class, 'productCategory'])->name('category.product');
-Route::get('/get-products-by-category', [ProductController::class, 'getProductsByCategory'])->name('get.products.by.category');
+Route::get('/get-products-by-category', [ProductController::class, '  sByCategory'])->name('get.products.by.category');
 
  
 Route::get('/product/{sku}/sizes', [ProductController::class, 'getSizes'])->name('product.sizes');

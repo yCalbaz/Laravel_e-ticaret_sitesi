@@ -151,3 +151,84 @@
     object-fit: contain;
 }
 
+/* satıcı ürünleri */
+.stok-warn {
+    color: red;
+    font-size: 1.2em;
+    margin-left: 5px;
+}
+.stok-ap {
+    color: green;
+    font-size: 1.2em;
+    margin-left: 5px;
+}
+.custom-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.card-body {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    height: 350px;
+    padding-bottom: 60px;
+}
+
+.add-to-cart-button {
+    background-color: #ff671d;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: auto;
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 150px;
+    align-self: center;
+    text-align: center;
+}
+
+.add-to-cart-button:hover {
+    background-color: #e65c17;
+}
+.kampanya-ekle-button-container {
+position: absolute;
+bottom: 45px; 
+left: 50%;
+transform: translateX(-50%);
+width: 150px;
+text-align: center;
+}
+
+.kampanya-ekle-button {
+background-color: #ffc107; 
+color: #212529; 
+border: none;
+padding: 8px 16px;
+border-radius: 5px;
+cursor: pointer;
+width: 100%;
+font-size: 0.9em;
+}
+
+.kampanya-ekle-button:hover {
+background-color: #e0a800;
+}
+.select-filter-button {
+    background-color: #ff671d;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    height: 36px;
+    width: 80px;
+}
+
+.select-filter-button:hover {
+    background-color: #e65c17;
+}

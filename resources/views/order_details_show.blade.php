@@ -50,7 +50,7 @@
             @php
                 $hasCanceledOrRequestedForStore = false;
                 $isCancelableForStore = true; // Varsayılan olarak iptal edilebilir kabul edelim (satıcı özelinde)
-
+ 
                 // Satıcıya ait ürünleri kontrol et
                 foreach ($lines as $line) {
                     if (in_array($line->order_status, [\App\Http\Controllers\OrderDetailController::ORDER_STATUS_CANCEL_REQUESTED, \App\Http\Controllers\OrderDetailController::ORDER_STATUS_CANCEL_APPROVED])) {
@@ -72,7 +72,7 @@
             </span>
         </div>
         <div class="card-body">
-        <div class="table-responsive">
+        <div class="table-responsive">  
             <table class="table">
                 <thead>
                     <tr>

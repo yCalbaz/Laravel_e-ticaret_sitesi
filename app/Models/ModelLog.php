@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Log extends Model
+class ModelLog extends Model
 {
     Use HasFactory;
     protected $table= 'logs';
@@ -20,6 +20,6 @@ class Log extends Model
         'request',
         'response',
         'created_at',
-        'uptdated_at'
+        'updated_at'
     ];
 }

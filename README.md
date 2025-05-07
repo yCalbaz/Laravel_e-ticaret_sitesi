@@ -1,5 +1,5 @@
 ## Proje Hakkında
-Bu proje, Laravel, Go ve Docker kullanılarak geliştirilmiştir. Kullanıcılar  sepetlerine ürün ekleyebilir, sipariş verebilirler.Ayrıca kullanıcı kendi bilgileri ile kayıt olabilir ve oturumu içinde yaptığı sepete ekleme işlemlerini ve önceki sipariş bilgilerini görebilirler.Önceden onaylanmış siparişlere iade taleb oluşturabilirler. Satıcı paneli üzerinden ürün, stok, depo yönetimi, sipariş kontrolu ve statu değişimi yapılabilir. Admin paneli üzerinden ürün, stok, depo, siparişlerin, kullanıcıların yönetimi yapılabilir.
+Bu proje, Laravel, Go ve Docker kullanılarak geliştirilmiş bir e-ticaret sitesidir. Kullanıcılar  sepetlerine ürün ekleyebilir, sipariş verebilirler.Ayrıca kullanıcı kendi bilgileri ile kayıt olabilir ve oturumu içinde yaptığı sepete ekleme işlemlerini ve önceki sipariş bilgilerini görebilirler.Önceden onaylanmış siparişlere iade taleb oluşturabilirler. Satıcı paneli üzerinden ürün, stok, depo yönetimi, sipariş kontrolu, kampanya ekleme ve statu değişimi yapılabilir. Admin paneli üzerinden ürün eklenebilir, stok eklenebilir, depo eklenebilir, tüm siparişler listelenebilir ve kullanıcıların yetkilendirebilir veya silebilir.
 
 ## Temel Özellikler
 - Ürün ekleme, düzenleme ve silme
@@ -28,7 +28,8 @@ Bu proje, Laravel, Go ve Docker kullanılarak geliştirilmiştir. Kullanıcılar
 - app/: Uygulamanın tüm iş mantığını barındırır.
 - resources/views/: Blade şablon dosyalarını içerir.
 - routes/: Laravel yönlendirme dosyaları.
-- go/: Go ile yazılmış stok kontrol servisi.(Ayrı bir proje dosyası olarak mevcut)
+- tests/: Unit testlerinin bulunduğu yer.
+- go/: Go ile yazılmış stok kontrol servisi.(Ayrı bir proje dosyası olarak)
 
 ## Kullanılan Teknolojiler
 - Laravel: PHP framework

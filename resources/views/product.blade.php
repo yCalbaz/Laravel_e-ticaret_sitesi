@@ -10,10 +10,9 @@
 
 </head>
 <body>
-@include('layouts.header')   
-<div class="container mt-5">
-    <div class="row">
-</div>
+    @include('layouts.header')   
+    <div class="container mt-5">
+        <div class="row"></div>
             <div class="row" id="product-list">
             @foreach($urunler as $urun)
                     <div class="col-lg-3 col-md-6 col-sm-12 mb-4 d-flex justify-content-center">
@@ -38,7 +37,7 @@
                 
         </div>
     </div>
-</div>
-@include('layouts.footer')
+
+    @include('layouts.footer')
 </body>
 </html>

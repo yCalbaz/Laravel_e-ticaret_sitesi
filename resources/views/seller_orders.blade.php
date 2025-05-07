@@ -12,109 +12,109 @@
 </head>
 <body>
 
-@include('layouts.panel_header')
+    @include('layouts.panel_header')
 
-<div class="container mt-5">
-    <h2>Gelen Siparişler</h2>
-    <br>
-    <div class="container">
-        <form method="GET" action="{{ url()->current() }}" class="form-inline">
-        <button type="submit" class="color">Filtrele</button>
-            <select name="order_status" id="status_filter" class="form-control form-control-sm mr-2">
-                <option value="">Tümü</option>
-                <option value="sipariş alındı" {{ request('order_status') == 'sipariş alındı' ? 'selected' : '' }}>Gelen Siparişler</option>
-                <option value="hazırlanıyor" {{ request('order_status') == 'hazırlanıyor' ? 'selected' : '' }}>Hazırlanan Siparişler </option>
-                <option value="kargoya verildi" {{ request('order_status') == 'kargoya verildi' ? 'selected' : '' }}>Kargoya Verilen Siparişler</option>
-                <option value="iptal talebi alındı" {{ request('order_status') == 'iptal talebi alındı' ? 'selected' : '' }}>İptal Talebi Gelen</option>
-                <option value="iptal talebi onaylandı" {{ request('order_status') == 'iptal talebi onaylandı' ? 'selected' : '' }}>İptal Talebi Onaylanan</option>
+    <div class="container mt-5">
+        <h2>Gelen Siparişler</h2>
+        <br>
+        <div class="container">
+            <form method="GET" action="{{ url()->current() }}" class="form-inline">
+            <button type="submit" class="color">Filtrele</button>
+                <select name="order_status" id="status_filter" class="form-control form-control-sm mr-2">
+                    <option value="">Tümü</option>
+                    <option value="sipariş alındı" {{ request('order_status') == 'sipariş alındı' ? 'selected' : '' }}>Gelen Siparişler</option>
+                    <option value="hazırlanıyor" {{ request('order_status') == 'hazırlanıyor' ? 'selected' : '' }}>Hazırlanan Siparişler </option>
+                    <option value="kargoya verildi" {{ request('order_status') == 'kargoya verildi' ? 'selected' : '' }}>Kargoya Verilen Siparişler</option>
+                    <option value="iptal talebi alındı" {{ request('order_status') == 'iptal talebi alındı' ? 'selected' : '' }}>İptal Talebi Gelen</option>
+                    <option value="iptal talebi onaylandı" {{ request('order_status') == 'iptal talebi onaylandı' ? 'selected' : '' }}>İptal Talebi Onaylanan</option>
 
-            </select>
-        </form>
-    </div>
-
-    @php
-        $orderStatusFilter = request('order_status');
-        $filteredOrders = collect($siparisler)->filter(function($orderLine) use ($orderStatusFilter) {
-            return !$orderStatusFilter || $orderLine->order_status == $orderStatusFilter;
-        });
-        $groupedByOrder = $filteredOrders->groupBy('order_id');
-    @endphp
-
-    @foreach ($groupedByOrder as $orderId => $orderLines)
-    <div class="card mb-3">
-        <div class="card-header">
-            <span>Sipariş İD: {{ $orderId }}</span>
+                </select>
+            </form>
         </div>
-        <div class="card-body">
-            @php
-                $groupedByStore = $orderLines->groupBy('store_id');
-            @endphp
 
-            @foreach ($groupedByStore as $storeId => $storeOrderLines)
-                <h5>
-                    Depo: {{ App\Models\Store::find($storeId)->store_name ?? 'Bilinmeyen Depo' }}
-                    @if ($storeOrderLines->contains(function ($line) { return $line->order_status == 'sipariş alındı' || $line->order_status == 'iptal talebi alındı'; }))
-                        <i class="fas fa-exclamation-triangle warning-icon" title="Yeni sipariş veya iptal talebi var!"></i>
-                    @endif
-                </h5>
-                <div class="d-flex justify-content-end mb-2">
-                    @if ($storeOrderLines->contains(function ($line) { return $line->order_status == 'iptal talebi alındı'; }))
-                        <form method="POST" action="#" class="form-inline approve-cancellation-form">
-                            @csrf
-                            <input type="hidden" name="order_id" value="{{ $orderId }}">
-                            <input type="hidden" name="store_id" value="{{ $storeId }}">
-                            <button type="submit" class="btn btn-warning btn-sm">Bu Depodaki İptal Taleplerini Onayla</button>
-                        </form>
-                    @elseif (!$storeOrderLines->contains(function ($line) { return $line->order_status == 'iptal talebi onaylandı'; }))
-                    <form method="POST" action="#" class="update-store-status-form form-inline">
-                            @csrf
-                            <input type="hidden" name="order_id" value="{{ $orderId }}">
-                            <input type="hidden" name="store_id" value="{{ $storeId }}">
-                            <select name="order_status" class="form-control form-control-sm mr-2">
-                            <option value="sipariş alındı" {{ $storeOrderLines->first()->order_status == 'sipariş alındı' ? 'selected' : '' }}>Sipariş Alındı</option>
-                            <option value="hazırlanıyor" {{ $storeOrderLines->first()->order_status == 'hazırlanıyor' ? 'selected' : '' }}>Hazırlanıyor</option>
-                            <option value="kargoya verildi" {{ $storeOrderLines->first()->order_status == 'kargoya verildi' ? 'selected' : '' }}>Kargoya Verildi</option>
-                            </select>
-                            <button type="submit" class="approvl"> Güncelle</button>
-                        </form>
-                    @endif
+        @php
+            $orderStatusFilter = request('order_status');
+            $filteredOrders = collect($siparisler)->filter(function($orderLine) use ($orderStatusFilter) {
+                return !$orderStatusFilter || $orderLine->order_status == $orderStatusFilter;
+            });
+            $groupedByOrder = $filteredOrders->groupBy('order_id');
+        @endphp
+
+            @foreach ($groupedByOrder as $orderId => $orderLines)
+            <div class="card mb-3">
+                <div class="card-header">
+                    <span>Sipariş İD: {{ $orderId }}</span>
                 </div>
-                <div class="table-responsive">
-                    <table class="table table-sm">
-                        <thead>
-                            <tr>
-                                <th>Ürün Resmi</th>
-                                <th>Ürün Adı</th>
-                                <th>Beden</th>
-                                <th>Adet</th>
-                                <th>Durum</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($storeOrderLines as $line)
-                                <tr>
-                                    <td>
-                                        @if(App\Models\Product::where('product_sku', $line->product_sku)->first())
-                                            <img src="{{ asset(App\Models\Product::where('product_sku', $line->product_sku)->first()->product_image) }}" class="order_image img-fluid">
-                                        @else
-                                            Ürün Bulunamadı.
-                                        @endif
-                                    </td>
-                                    <td>{{ $line->product_name }}</td>
-                                    <td>{{ $line->size->size_name }}</td>
-                                    <td>{{ $line->quantity }}</td>
-                                    <td>{{ $line->order_status }}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                <div class="card-body">
+                    @php
+                        $groupedByStore = $orderLines->groupBy('store_id');
+                    @endphp
+
+                    @foreach ($groupedByStore as $storeId => $storeOrderLines)
+                        <h5>
+                            Depo: {{ App\Models\Store::find($storeId)->store_name ?? 'Bilinmeyen Depo' }}
+                            @if ($storeOrderLines->contains(function ($line) { return $line->order_status == 'sipariş alındı' || $line->order_status == 'iptal talebi alındı'; }))
+                                <i class="fas fa-exclamation-triangle warning-icon" title="Yeni sipariş veya iptal talebi var!"></i>
+                            @endif
+                        </h5>
+                        <div class="d-flex justify-content-end mb-2">
+                            @if ($storeOrderLines->contains(function ($line) { return $line->order_status == 'iptal talebi alındı'; }))
+                                <form method="POST" action="#" class="form-inline approve-cancellation-form">
+                                    @csrf
+                                    <input type="hidden" name="order_id" value="{{ $orderId }}">
+                                    <input type="hidden" name="store_id" value="{{ $storeId }}">
+                                    <button type="submit" class="btn btn-warning btn-sm">Bu Depodaki İptal Taleplerini Onayla</button>
+                                </form>
+                            @elseif (!$storeOrderLines->contains(function ($line) { return $line->order_status == 'iptal talebi onaylandı'; }))
+                            <form method="POST" action="#" class="update-store-status-form form-inline">
+                                    @csrf
+                                    <input type="hidden" name="order_id" value="{{ $orderId }}">
+                                    <input type="hidden" name="store_id" value="{{ $storeId }}">
+                                    <select name="order_status" class="form-control form-control-sm mr-2">
+                                    <option value="sipariş alındı" {{ $storeOrderLines->first()->order_status == 'sipariş alındı' ? 'selected' : '' }}>Sipariş Alındı</option>
+                                    <option value="hazırlanıyor" {{ $storeOrderLines->first()->order_status == 'hazırlanıyor' ? 'selected' : '' }}>Hazırlanıyor</option>
+                                    <option value="kargoya verildi" {{ $storeOrderLines->first()->order_status == 'kargoya verildi' ? 'selected' : '' }}>Kargoya Verildi</option>
+                                    </select>
+                                    <button type="submit" class="approvl"> Güncelle</button>
+                                </form>
+                            @endif
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Ürün Resmi</th>
+                                        <th>Ürün Adı</th>
+                                        <th>Beden</th>
+                                        <th>Adet</th>
+                                        <th>Durum</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($storeOrderLines as $line)
+                                        <tr>
+                                            <td>
+                                                @if(App\Models\Product::where('product_sku', $line->product_sku)->first())
+                                                    <img src="{{ asset(App\Models\Product::where('product_sku', $line->product_sku)->first()->product_image) }}" class="order_image img-fluid">
+                                                @else
+                                                    Ürün Bulunamadı.
+                                                @endif
+                                            </td>
+                                            <td>{{ $line->product_name }}</td>
+                                            <td>{{ $line->size->size_name }}</td>
+                                            <td>{{ $line->quantity }}</td>
+                                            <td>{{ $line->order_status }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                        <hr>
+                    @endforeach
                 </div>
-                <hr>
-            @endforeach
-        </div>
+            </div>
+        @endforeach
     </div>
-@endforeach
-</div>
 
 </body>
 <script>

@@ -11,7 +11,6 @@
 </head>
 <body>
     @include('layouts.header')
-
     <div class="container mt-5">
         <h2>Arama Sonuçları: "{{ $query }}"</h2>
 

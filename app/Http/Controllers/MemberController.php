@@ -1,9 +1,8 @@
 <?php
 namespace App\Http\Controllers;
 
-
 use App\Models\Member;
-
+use Illuminate\Http\Response as HttpResponse;
 
 class MemberController extends Controller
 {
@@ -21,6 +20,6 @@ class MemberController extends Controller
         $member = Member::findOrFail($id);
         $member->delete();
 
-        return redirect()->route('members.index')->with('success', 'Kullanıcı silindi!');
+        return response()->json(['success' => 'Kullanıcı silindi!'], 200);
     }
 }

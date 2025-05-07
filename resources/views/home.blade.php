@@ -10,7 +10,6 @@
 </head>
 <body>
     @include('layouts.header')
-
     <div class="container-fluid mt-5 ">
         <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
             <ol class="carousel-indicators">
@@ -98,31 +97,23 @@
             @endforeach
         </div>
         <div class="container mt-5">
-    <div class="row">
-        <div class="col-md-6">
-            <img src="{{ asset('storage/images/afis11.png') }}" alt="Afiş 1" class="img-fluid"> 
+            <div class="row">
+                <div class="col-md-6">
+                    <img src="{{ asset('storage/images/afis11.png') }}" alt="Afiş 1" class="img-fluid"> 
+                </div>
+                <div class="col-md-6">
+                    <img src="{{ asset('storage/images/afis4.png') }}" alt="Afiş 2" class="img-fluid">
+                </div>
+            </div>
         </div>
-        <div class="col-md-6">
-            <img src="{{ asset('storage/images/afis4.png') }}" alt="Afiş 2" class="img-fluid">
-        </div>
-       
-        
-    </div>
-</div>
-<div class="container mt-5">
+        <div class="container mt-5">
             <a href="{{ route('category.product', ['category_slug' => 'adidas']) }}">
                 <img src="{{ asset('storage/images/banner12.png') }}" class="img-fluid" alt="Banner">
             </a>
         </div>
-
-
-        
         <br>
-    </div> </div>
-
+    </div> 
     @include('layouts.footer')
-
-    
 </body>
 
 </html>

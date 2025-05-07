@@ -13,6 +13,7 @@ class ManagerController extends Controller
     const ADMIN_ROLE_ID = 1;
     const SELLER_ROLE_ID = 2;
     const CUSTOMER_ROLE_ID = 3;
+    
     protected function getProduct()
     {
         return Product::orderBy('id', 'desc')->take(10)->get();
