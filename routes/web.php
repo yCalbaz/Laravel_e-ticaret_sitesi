@@ -40,6 +40,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/stok/ekle/{product_sku}', [StockController::class, 'showCreateForm'])->name('stock.create.form');
     Route::post('/seller/products/{id}/kampanya-ekle', [ManagerController::class, 'campaignAdd'])->name('seller.products.kampanya.ekle');
+    Route::post('/seller/orders/approve-cancellation', [ManagerController::class, 'approveCancellation'])->name('seller.approveCancellation');
 });
 
 Route::post('/products', [HomeProductController::class, 'store'])->name('products.store'); 
@@ -61,8 +62,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/siparisler', [OrderDetailController::class, 'index'])->name('orders.index');
     Route::get('/siparis/{orderId}/detaylar', [OrderDetailController::class, 'showDetails'])->name('order.showDetails');
     Route::get('/orders/{orderId}/return/{store_id}', [OrderDetailController::class, 'showReturnForm'])->name('order.returnForm');
-    Route::post('/siparis/iade', [OrderDetailController::class, 'processReturn'])->name('order.processReturn');
-    Route::post('/seller/orders/approve-cancellation', [ManagerController::class, 'approveCancellation'])->name('seller.approveCancellation');});
+    Route::post('/siparis/iade', [OrderDetailController::class, 'processReturn'])->name('order.processReturn');});
     Route::get('/order-canseled-form', [OrderDetailController::class, 'showCanceledForm'])->name('order.canceledForm');
     Route::get('/admin/siparisler', [OrderDetailController::class, 'adminOrders'])->name('orders.indexAdmin');
     Route::get('/admin/siparis/{orderId}/detaylar', [OrderDetailController::class, 'showAdminDetails'])->name('order.showAdminDetails');
@@ -71,7 +71,6 @@ Route::put('/sepet/guncelle/{id}', [BasketController::class, 'update'])->name('c
 Route::get('/search', [App\Http\Controllers\ProductController::class, 'search'])->name('search');
 
 Route::get('/kategori/{category_slug}', [ProductController::class, 'productCategory'])->name('category.product');
-Route::get('/get-products-by-category', [ProductController::class, '  sByCategory'])->name('get.products.by.category');
 
  
 Route::get('/product/{sku}/sizes', [ProductController::class, 'getSizes'])->name('product.sizes');

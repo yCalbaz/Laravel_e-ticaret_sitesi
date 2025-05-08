@@ -79,10 +79,11 @@
 </body>
 
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://kit.fontawesome.com/your-font-awesome-kit.js" crossorigin="anonymous"></script>
 
     <script>
          let selectedSizeId = null;
@@ -97,7 +98,9 @@
         if (!selectedSizeId) {
             Swal.fire({
                 title: "Lütfen bir beden seçin!",
-                icon: "warning",
+                icon: "warning", customClass: {
+                        confirmButton: "btn btn-warning",
+                    },
                 confirmButtonText: "Beden seç"
             }).then((result) => {
                 if (result.dismiss === Swal.DismissReason.confirm) {
@@ -154,54 +157,6 @@
         });
     }
 
-
-    $(document).ready(function() {
-    $('.category-filter').change(function() {
-        var selectedCategories = $('.category-filter:checked').map(function() {
-            return this.value;
-        }).get();
-
-        $.ajax({
-            url: "{{ route('get.products.by.category') }}",
-            type: "GET",
-            data: {
-                categories: selectedCategories
-            },
-                success: function(response) {
-                    var productList = $('#product-list');
-                    productList.empty();
-
-                    if (response.length > 0) {
-                        $.each(response, function(index, urun) {
-                            var productHtml = `
-                                <div class="col-lg-4 col-md-6 col-sm-12 mb-4 d-flex justify-content-center">
-                                    <div class="card shadow-sm custom-card">
-                                        <a href="{{ route('product.details', ['sku' => '` + urun.product_sku + `']) }}">
-                                            <img src="{{ asset('` + urun.product_image + `') }}" class="card-img-top custom-img">
-                                        </a>
-                                        <div class="card-body">
-                                            <h5 class="card-title">` + urun.product_name + `</h5>
-                                            <p class="card-text">` + urun.product_price + ` TL</p>
-                                            <button type="submit" class="btn btn-primary btn-sm" onclick="addCart('` + urun.product_sku + `')">Sepete Ekle</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            `;
-                            productList.append(productHtml);
-                        });
-                    } else {
-                        productList.html('<div class="col-12 text-center">Ürün bulunamadı.</div>');
-                    }
-                },
-                error: function(xhr) {
-                    console.log("Hata oluştu! Durum kodu:", xhr.status);
-                    console.log("Hata mesajı:", xhr.responseText);
-                    alert("Hata oluştu! " + xhr.responseText);
-                }
-            });
-        });
-    });
-
     /*iade butonu*/
     $(document).ready(function() {
     $('.iptalEtBtnClass').click(function() {
@@ -216,6 +171,10 @@
                     Swal.fire({
                         title: 'İptal etmek istediğine emin misin?',
                         icon: 'warning',
+                        customClass: {
+                        confirmButton: "btn btn-success",
+                        cancelButton: "btn btn-danger"
+                    },
                         showCancelButton: true,
                         confirmButtonText: 'Evet, iptal et!',
                         cancelButtonText: 'Hayır, vazgeç!',
@@ -307,5 +266,68 @@
             });
         });
     });
+
+    /* sepet silme ve güncelleme */
+    function cartDelete(productId) {
+            $.ajax({
+                url: "{{ route('cart.delete', ':id') }}".replace(':id', productId),
+                type: "DELETE",
+                data: {
+                    _token: "{{ csrf_token() }}",
+                },
+                success: function(response) {
+                    Swal.fire({
+                                title: "Ürün Sepetten Silindi!",
+                                icon: "success",
+                                confirmButtonText: "Tamam",
+                                customClass: {
+                                    confirmButton: "btn btn-success"
+                                },
+                            }).then(() => {
+                                location.reload(); 
+                            });
+                },
+                error: function(error) {
+                    console.error("Delete error:", error);
+                    Swal.fire({
+                        title: "Error!",
+                        text: "An error occurred while deleting the item.",
+                        icon: "error"
+                    });
+                }
+            });
+        }
+        function updateCart(productId, adet) {
+            $.ajax({
+                url: "{{ route('cart.update', ':id') }}".replace(':id', productId),
+                type: "PUT",
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    adet: adet,
+                },
+                success: function(response) {
+                    $('#total-price').text(response.totalPrice);
+                    Swal.fire({
+                    title: " Sepet Güncellendi!",
+                    icon: "success",
+                    confirmButtonText: "Tamam",
+                    customClass: {
+                        confirmButton: "btn btn-success",
+                    },
+                    draggable: true
+                    }).then(() => {
+                            location.reload(); 
+                        });
+                },
+                error: function(xhr) {
+                    console.log(xhr);
+                    Swal.fire({
+                    title: "Error!",
+                    text: "Hata Oluştu Daha Sonra Tekrar Deneyiniz",
+                    icon: "error"
+                });
+                }
+            });
+        }
     </script>
 </html>

@@ -21,6 +21,7 @@ class OrderDetailController extends Controller
     const ORDER_STATUS_DELIVERED = 'teslim edildi';
     const ORDER_STATUS_CANCEL_REQUESTED = 'iptal talebi alındı';
     const ORDER_STATUS_CANCEL_APPROVED = 'iptal talebi onaylandı';
+    const RETURN_REQUEST_WINDOW_DAYS = 15;
     public function index()
     {
         if (Auth::check()) {
@@ -56,24 +57,37 @@ class OrderDetailController extends Controller
     
     }
     
-    public function showDetails($orderId) 
-    {
-        $order = OrderBatch::with(['orderLines.product', 'orderLines.store', 'orderLines.size'])->where('order_id', $orderId)->first();
-        if (!$order) {
-            return back()->with('error', 'Sipariş bulunamadı.');
-        }
+    public function showDetails($orderId)
+{
+    $order = OrderBatch::with(['orderLines.product:product_sku,product_name,product_image,product_price', 'orderLines.store:id,store_name', 'orderLines.size'])
+        ->where('order_id', $orderId)
+        ->firstOrFail();
 
-        $allOrderStatuses = ['sipariş alındı', 'hazırlanıyor', 'kargoya verildi',];
-        $orderStatusHistory = $order->orderLines->pluck('order_status')->toArray();
-        $isCancelable = true;
-        foreach ($order->orderLines as $line) {
-            if (in_array($line->order_status, ['iptal talebi alındı', 'iptal talebi onaylandı'])) {
-                $isCancelable = false;
-                break; 
-            }
-        }
-        return view('order_details_show', compact('order', 'allOrderStatuses', 'orderStatusHistory','isCancelable'));
-    }
+    $groupedOrderLines = $order->orderLines->groupBy('store_id')->map(function ($lines) use ($order) {
+        $hasCanceledOrRequestedForStore = $lines->contains(function ($line) {
+            return in_array($line->order_status, [self::ORDER_STATUS_CANCEL_REQUESTED, self::ORDER_STATUS_CANCEL_APPROVED]);
+        });
+
+        $isCancelableForStore = !$hasCanceledOrRequestedForStore && $order->created_at->diffInDays(now()) <= self::RETURN_REQUEST_WINDOW_DAYS;
+
+        return [
+            'lines' => $lines,
+            'store' => $lines->first()->store ?? null,
+            'hasCanceledOrRequested' => $hasCanceledOrRequestedForStore,
+            'isCancelable' => $isCancelableForStore,
+        ];
+    });
+
+    $allOrderStatuses = [
+        self::ORDER_STATUS_RECEIVED,
+        self::ORDER_STATUS_PREPARING,
+        self::ORDER_STATUS_SHIPPED,
+        self::ORDER_STATUS_DELIVERED,
+    ];
+    $orderStatusHistory = $order->orderLines->pluck('order_status')->unique()->toArray();
+
+    return view('order_details_show', compact('order', 'groupedOrderLines', 'allOrderStatuses', 'orderStatusHistory'));
+}
 
     public function showReturnForm(Request $request)
     {

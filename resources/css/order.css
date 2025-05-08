@@ -40,16 +40,16 @@ body {
     padding: 15px;
     border-radius: 5px;
     background-color: #f9f9f9;
-    display: flex; /* Ana konteyneri flex yapıyoruz */
-    align-items: flex-start; /* Öğeleri yukarı hizalıyoruz */
-    justify-content: space-between; /* Resimler ve sağ tarafı ayırıyoruz */
+    display: flex;
+    align-items: flex-start; 
+    justify-content: space-between; 
 }
 
 .order-images-container {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
-    margin-right: 20px; /* Resimler ile sağ taraf arasında boşluk */
+    margin-right: 20px; 
 }
 
 
@@ -62,13 +62,13 @@ body {
 }
 
 .order-info-container {
-    display: flex; /* Sipariş no, durum ve butonu yan yana yapmak için */
-    flex-direction: column; /* Öğeleri dikey sıralıyoruz */
-    align-items: flex-end; /* Sağa hizalıyoruz */
+    display: flex; 
+    flex-direction: column; 
+    align-items: flex-end; 
 }
 
 .order-info-line {
-    display: flex; /* Sipariş no ve durumu yan yana */
+    display: flex; 
     gap: 10px;
     margin-bottom: 5px;
     align-items: center;
@@ -125,11 +125,11 @@ body {
     }
 
     .order-info-container {
-        align-items: flex-start; /* Küçük ekranlarda sola hizala */
+        align-items: flex-start; 
     }
 
     .order-info-line {
-        flex-direction: column; /* Küçük ekranlarda alt alta */
+        flex-direction: column; 
         align-items: flex-start;
         gap: 5px;
         margin-bottom: 5px;
@@ -187,6 +187,27 @@ background-color: #fff;
 border-color: #dee2e6;
 }
 .pagination .page-link {
-padding: 0.3rem 0.5rem; /* Daha küçük padding */
-font-size: 0.8rem; /* Daha küçük font boyutu */
+padding: 0.3rem 0.5rem; 
+font-size: 0.8rem; 
 }
+
+/* siparişler */ 
+.advertisement-container 
+    {
+    display: flex; 
+    flex-direction: column; 
+    gap: 15px; 
+    }
+
+    .advertisement-item {
+        
+        border: 1px solid #eee;
+        border-radius: 8px; 
+        overflow: hidden; 
+    }
+
+    .advertisement-image {
+        width: 100%;
+        height: auto; 
+        display: block;
+    }

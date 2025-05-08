@@ -111,12 +111,12 @@
 
     function updateCartCount(count) {
         let cartCountElement = $('#cart-count');
-    if (cartCountElement.length) {
-        cartCountElement.text(count);
-    } else {
-        console.error("Sepet sayacı elementi bulunamadı!");
+        if (cartCountElement.length) {
+            cartCountElement.text(count);
+        } else {
+            console.error("Sepet sayacı elementi bulunamadı!");
+        }
     }
-}
 
 </script>
 

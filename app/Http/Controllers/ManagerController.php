@@ -82,17 +82,27 @@ class ManagerController extends Controller
         return view('seller_store_selection', ['stores' => $stores]);
     }
 
-    public function showSellerOrders($storeId)
+    public function showSellerOrders(Request $request, $storeId)
     {
         if (session('user_authority') !== self::SELLER_ROLE_ID) {
             return redirect()->route('login');
         }
-        
-        $orders = OrderLine::with('size')
-        ->where('store_id', $storeId)
-        ->orderBy('id', 'desc')
-        ->get(); 
-        return view('seller_orders', ['siparisler' => $orders]);
+    
+        $orderStatusFilter = $request->query('order_status');
+    
+        $orders = OrderLine::with('size', 'product') // Ürün bilgisini de alalım
+            ->where('store_id', $storeId)
+            ->when($orderStatusFilter, function ($query, $orderStatusFilter) {
+                return $query->where('order_status', $orderStatusFilter);
+            })
+            ->orderBy('id', 'desc')
+            ->get()
+            ->groupBy('order_id') // Sipariş ID'sine göre gruplandır
+            ->map(function ($orderLines) {
+                return $orderLines->groupBy('store_id'); // Her sipariş içindeki ürünleri depo ID'sine göre gruplandır
+            });
+    
+        return view('seller_orders', ['groupedOrders' => $orders, 'orderStatusFilter' => $orderStatusFilter]);
     }
 
     public function updateLineStatus(Request $request, $lineId)
