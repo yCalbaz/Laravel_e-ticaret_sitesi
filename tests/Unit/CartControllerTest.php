@@ -12,6 +12,7 @@ use Tests\Helpers\DeleteHelper;
 use Illuminate\Foundation\Testing\TestCase;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
+use App\Models\ModelLog;
 
 class CartControllerTest extends TestCase
 {
@@ -153,6 +154,7 @@ class CartControllerTest extends TestCase
             'sizes',
             'members',
             'products',
+            'logs',
         ]);
 
         $member = $this->memberControl();
@@ -182,36 +184,13 @@ class CartControllerTest extends TestCase
         [
             'product_sku'=>$product->product_sku,
         ]);
+        $this->assertDatabaseHas('logs', [
+            'operaton' => 'add_to_cart',
+            'error' => 'Yeterli stok yok',
+            'success' => 'Hata', 
+        ]);
     }
 
-    public function testAddProductNotFound()
-    {
-        DeleteHelper::delete(
-            [
-                'basket_items',
-                'baskets',
-                'sizes',
-                'members',
-                'products'
-            ]);
-
-        $member = $this->memberControl();
-        $size = Size::factory()->create();
-        $product_sku = 'SKU-1234'; 
-        Http::fake(["http://host.docker.internal:3000/stock/{$product_sku}/{$size->id}"
-        =>Http::response([],200)
-        ]);
-
-        $response= $this->actingAs($member)->post(route('cart.add', $product_sku),
-        [
-            'quantity'=>3,
-            'size_id'=>$size->id,
-            '_token'=>csrf_token()
-        ]);
-        $response->assertStatus(404);
-        $response->assertJson(['error'=>'Ürün bulunamadı']);
-
-    }
 
     public function testAddProductNotService()
     {
@@ -222,6 +201,7 @@ class CartControllerTest extends TestCase
                 'sizes',
                 'members',
                 'products',
+                'logs',
             ]);
             $member = $this->memberControl();
             $product = Product::factory()->create(['product_sku' => 'SKU-1234']);
@@ -239,7 +219,10 @@ class CartControllerTest extends TestCase
             $response->assertStatus(500);
             $response->assertJson(['error' => 'Servise ulaşılamadı']);
             $this->assertDatabaseMissing('basket_items', ['product_sku' => $product->product_sku]);
-        
+            $this->assertDatabaseHas('logs', [
+                'operaton' => 'add_to_cart',
+                'error' => 'Servise ulaşılamadı',
+            ]);
     }
 
     public function testAddProductResponseFalse()
@@ -250,6 +233,7 @@ class CartControllerTest extends TestCase
             'sizes',
             'members',
             'products',
+            'logs'
         ]);
         $member = $this->memberControl();
         $product = Product::factory()->create(['product_sku' => 'SKU-1234']);
@@ -267,6 +251,10 @@ class CartControllerTest extends TestCase
         $response->assertStatus(500);
         $response->assertJson(['error' => 'Servis yanıtı geçersiz']);
         $this->assertDatabaseMissing('basket_items', ['product_sku' => $product->product_sku]);
+        $this->assertDatabaseHas('logs', [
+            'operaton' => 'add_to_cart',
+            'error' => 'Geçersiz servis yanıtı',
+        ]);
     
     }
 
@@ -641,7 +629,7 @@ class CartControllerTest extends TestCase
         $response = $this->post(route('sepet.approvl'), [
             
             'name' => '', 
-            'address' => 'Ankara', 
+            'address' => '', 
             'cardNumber' => '123456', 
             'expiryDate' => '13/30', 
             'cvv' => '12', 

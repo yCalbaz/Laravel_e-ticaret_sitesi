@@ -98,6 +98,35 @@ class ProductController extends Controller
                 $q->where('category_name', 'LIKE', "%$query%");
             })
             ->get()
+            ->filter(function ($product) {
+                $apiConfig = ConfigModel::where('api_name','stok_api')->first();
+                $apiUrl= $apiConfig->api_url;
+                foreach ($product->stocks as $stock) {
+                    try {
+                        $response = Http::timeout(4)->get($apiUrl . "{$product->product_sku}/{$stock->size_id}");
+
+                        if ($response->successful()) {
+                            $stockData = $response->json();
+                            $stockAdedi = $stockData['stores'][0]['stock'] ?? 0;
+                            $this->logRequest(
+                                'ProductController/productCategory',  
+                                'Stok API isteği gönderildi', 
+                                ["product_sku" => $product->product_sku, "size_id" => $stock->size_id],
+                                $response->failed() ?  'Stok servisine ulaşılamadı' : null, 
+                                $response->successful() ? $response->json() : null  
+                            );
+                            return $stockAdedi > 0;
+                        }
+                    } catch (\Exception $e) {
+                        $this->logRequest(
+                            'ProductController/search',
+                            'Stok API isteği sırasında hata oluştu',
+                            ["product_sku" => $product->product_sku, "size_id" => $stock->size_id],
+                            $e->getMessage());
+                    }
+                }
+                return false;
+            })
             ->map(function ($product) {
                 if ($product->discount_rate > 0) {
                     $product->discounted_price = $product->product_price - ($product->product_price * ($product->discount_rate / 100));
@@ -123,7 +152,7 @@ class ProductController extends Controller
             if (!$altKategori) {
                 return abort(404, 'Kategori bulunamadı.');
             }
-        }  
+        }
 
         $productsQuery = ($kategori ? $kategori->products() : $altKategori->products());
         $products = $productsQuery->get()->filter(function ($product) {
@@ -136,9 +165,23 @@ class ProductController extends Controller
                     if ($response->successful()) {
                         $stockData = $response->json();
                         $stockAdedi = $stockData['stores'][0]['stock'] ?? 0;
+                        $this->logRequest(
+                            'ProductController/productCategory',  
+                            'Stok API isteği gönderildi', 
+                            ["product_sku" => $product->product_sku, "size_id" => $stock->size_id],
+                            $response->failed() ?  'Stok servisine ulaşılamadı' : null, 
+                            $response->successful() ? $response->json() : null  
+                        );
                         return $stockAdedi > 0;
+                        
                     }
                 } catch (\Exception $e) {
+                    $this->logRequest(
+                        'ProductController/productCategory',
+                        'Stok API isteği sırasında hata oluştu',
+                        ["product_sku" => $product->product_sku, "size_id" => $stock->size_id],
+                        $e->getMessage()
+                    );
                 }
             }
             return false;

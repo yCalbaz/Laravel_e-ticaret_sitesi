@@ -177,7 +177,6 @@ use Tests\TestCase;
 
             $order = OrderBatch::factory()->create(['created_at' => now()->subDays(16)]);
 
-            
             $returnDetails = [
                 'order_id' => $order->id,
                 'details' => 'deneme test',
@@ -192,9 +191,6 @@ use Tests\TestCase;
             
             $request->assertStatus(400);
             $request->assertJson(['error' => 'Bu sipariş için iade süresi dolmuştur.']);
-
-            
-            
         }
 
         public function testProcessReturnSuccess()

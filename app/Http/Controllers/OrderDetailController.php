@@ -58,40 +58,39 @@ class OrderDetailController extends Controller
     }
     
     public function showDetails($orderId)
-{
-    $order = OrderBatch::with(['orderLines.product:product_sku,product_name,product_image,product_price', 'orderLines.store:id,store_name', 'orderLines.size'])
-        ->where('order_id', $orderId)
-        ->firstOrFail();
+    {
+        $order = OrderBatch::with(['orderLines.product:product_sku,product_name,product_image,product_price', 'orderLines.store:id,store_name', 'orderLines.size'])
+            ->where('order_id', $orderId)
+            ->firstOrFail();
 
-    $groupedOrderLines = $order->orderLines->groupBy('store_id')->map(function ($lines) use ($order) {
-        $hasCanceledOrRequestedForStore = $lines->contains(function ($line) {
-            return in_array($line->order_status, [self::ORDER_STATUS_CANCEL_REQUESTED, self::ORDER_STATUS_CANCEL_APPROVED]);
+        $groupedOrderLines = $order->orderLines->groupBy('store_id')->map(function ($lines) use ($order) {
+            $hasCanceledOrRequestedForStore = $lines->contains(function ($line) {
+                return in_array($line->order_status, [self::ORDER_STATUS_CANCEL_REQUESTED, self::ORDER_STATUS_CANCEL_APPROVED]);
+            });
+
+            $isCancelableForStore = !$hasCanceledOrRequestedForStore && $order->created_at->diffInDays(now()) <= self::RETURN_REQUEST_WINDOW_DAYS;
+
+            return [
+                'lines' => $lines,
+                'store' => $lines->first()->store ?? null,
+                'hasCanceledOrRequested' => $hasCanceledOrRequestedForStore,
+                'isCancelable' => $isCancelableForStore,
+            ];
         });
 
-        $isCancelableForStore = !$hasCanceledOrRequestedForStore && $order->created_at->diffInDays(now()) <= self::RETURN_REQUEST_WINDOW_DAYS;
-
-        return [
-            'lines' => $lines,
-            'store' => $lines->first()->store ?? null,
-            'hasCanceledOrRequested' => $hasCanceledOrRequestedForStore,
-            'isCancelable' => $isCancelableForStore,
+        $allOrderStatuses = [
+            self::ORDER_STATUS_RECEIVED,
+            self::ORDER_STATUS_PREPARING,
+            self::ORDER_STATUS_SHIPPED,
+            self::ORDER_STATUS_DELIVERED,
         ];
-    });
+        $orderStatusHistory = $order->orderLines->pluck('order_status')->unique()->toArray();
 
-    $allOrderStatuses = [
-        self::ORDER_STATUS_RECEIVED,
-        self::ORDER_STATUS_PREPARING,
-        self::ORDER_STATUS_SHIPPED,
-        self::ORDER_STATUS_DELIVERED,
-    ];
-    $orderStatusHistory = $order->orderLines->pluck('order_status')->unique()->toArray();
-
-    return view('order_details_show', compact('order', 'groupedOrderLines', 'allOrderStatuses', 'orderStatusHistory'));
-}
+        return view('order_details_show', compact('order', 'groupedOrderLines', 'allOrderStatuses', 'orderStatusHistory'));
+    }
 
     public function showReturnForm(Request $request)
     {
-        //ajax uyarısı için 
         $orderId = $request->orderId;
     
         $order = OrderBatch::find($orderId);

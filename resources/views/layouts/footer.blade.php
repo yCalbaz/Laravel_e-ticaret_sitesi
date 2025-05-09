@@ -254,7 +254,7 @@
                     }
 
                     Swal.fire({
-                        title: 'İade Başarısız!',
+                        title: 'Şipariş Onaylanmadı!',
                         html: errorMessages,
                         icon: 'error',
                         confirmButtonText: 'Tamam',

@@ -31,7 +31,7 @@ class BasketController extends Controller
             'operaton' => $operation,
             'message' => $message,
             'error' => $error ?? "",
-            'success' => $error ? null : 'Başarılı İstek',
+            'success' => $error ? 'Hata' : 'Başarılı İstek',
             'request' => json_encode($requestData),
             'response' => $response ? json_encode($response) : null,
         ]);
@@ -55,11 +55,16 @@ class BasketController extends Controller
             return view('cart', ['cartItems' => [], 'sepetSayisi' => 0]); 
         }
     
-        $size = new Size();//kullanıma bak
         $cartItems = BasketItem::where('order_id', $basket->id)->get();
+        $sizeIds = $cartItems->pluck('size_id')->unique();
+        $sizes = Size::whereIn('id', $sizeIds)->get()->keyBy('id');
+
+        $productSkus = $cartItems->pluck('product_sku')->unique();
+        $products = Product::whereIn('product_sku', $productSkus)->get()->keyBy('product_sku'); 
+
         foreach ($cartItems as $item) {
-            $size = $size::find($item->size_id);
-            $product = Product::where('product_sku', $item->product_sku)->first();
+            $size = $sizes->get($item->size_id);
+            $product = $products->get($item->product_sku);
             //dd($item->size_id, $size);
             $item->size_name = $size ? $size->size_name : 'Beden Yok';
             $item->discount_rate = $product ? $product->discount_rate : 0;
@@ -80,7 +85,6 @@ class BasketController extends Controller
         return view('cart', compact('cartItems', 'totalPrice','cargoTotalPrice','cargoPrice'));
     }
     
-
     public function add(Request $request, $product_sku)
     {
         
@@ -244,20 +248,22 @@ class BasketController extends Controller
     
 
                 $cartItems = BasketItem::where('order_id', $basket->id)->get();
+                $productSkus = $cartItems->pluck('product_sku')->unique();
+                $products = Product::whereIn('product_sku', $productSkus)->get()->keyBy('product_sku'); 
+                $apiConfig = ConfigModel::where('api_name', 'stok_api')->first();
+
                 $totalPrice = 0;
 
             $stokError = false;
 
             $groupedItems = [];
             foreach ($cartItems as $item) {
-                $product = Product::where('product_sku', $item->product_sku)->first();
+                $product = $products->get($item->product_sku);
                 $item->discount_rate = $product ? $product->discount_rate : 0;
                 $item->discounted_price = $product && $product->discount_rate > 0 ? ($item->product_price - ($item->product_price * ($product->discount_rate / 100))) : null;
                 if ($item->product_piece < 1) {
                     return response()->json(['error' => 'Sepette geçersiz ürün adedi var!'], 400);
                 }
-                
-                $apiConfig = ConfigModel::where('api_name', 'stok_api')->first();
                 $apiUrl= $apiConfig->api_url;
                 $response = Http::get($apiUrl."{$item->product_sku}/{$item->size_id}");
 
