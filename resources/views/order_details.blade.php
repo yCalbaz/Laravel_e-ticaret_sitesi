@@ -7,6 +7,25 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="icon" href="{{ asset('storage/images/flo-logo-Photoroom.png') }}" type="image/png">
     @vite(['resources/js/app.js', 'resources/css/header.css', 'resources/css/order.css'])
+    <style>.order-info-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.order-id {
+    font-weight: bold;
+}
+
+.order-status p {
+    margin: 0;
+}
+
+.order-status-badge {
+    padding: 4px 8px;
+    border-radius: 5px;
+    background-color: #eee;
+}</style>
 </head>
 <body>
         @include('layouts.header')
@@ -14,7 +33,7 @@
             <div class="row">
             <div class="col-md-8">
                     <div class="card-header">
-                        <h5>Tüm Siparişlerim:</h5>
+                        <h5>Tüm Siparişlerim:</h5> 
                     </div>
                     <div class="card-body">
             @if(isset($orders) && $orders->isNotEmpty())
@@ -51,7 +70,7 @@
                             @endif
                         </div>
                         <div class="order-info-container">
-                            <div class="order-info-line">
+                            <div class="order-info-line" >
                                 <div class="order-id">Sipariş No: {{ $order->order_id }}</div>
                                 <div class="order-status">
                                 <p>

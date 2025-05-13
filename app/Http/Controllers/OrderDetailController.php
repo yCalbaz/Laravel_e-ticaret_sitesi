@@ -37,7 +37,7 @@ class OrderDetailController extends Controller
         $orders = OrderBatch::with('orderLines.product')
         ->where('customer_id', $customer)
         ->orderBy('created_at', 'desc')
-        ->paginate(5);  
+        ->paginate(4);  
 
 
         foreach ($orders as $order) {

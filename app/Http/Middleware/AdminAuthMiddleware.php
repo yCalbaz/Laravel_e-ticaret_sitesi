@@ -12,7 +12,7 @@ class AdminAuthMiddleware extends Middleware
     const SATICI_ROLE_ID = 2;
     const MUSTERI_ROLE_ID=3;
     /**
-     * Get the path the user should be redirected to when they are not authenticated.
+     * oturum kontrollerim
      */
     protected function redirectTo(Request $request): ?string
     {

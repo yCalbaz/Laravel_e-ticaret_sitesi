@@ -46,9 +46,11 @@
                 @endguest
                 <li class="nav-item"><a class="nav-link" href="{{ route('cart.index') }}">
                         Sepetim
-                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-light text-dark">
-                            {{ $sepetSayisi ?? 0 }}
-                        </span>
+                        @if ($sepetSayisi > 0)
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style=" color: red; font-size:13px; ">
+                                {{ $sepetSayisi }}
+                            </span>
+                            @endif
                     </a></li>
                 <li class="nav-item"><a class="nav-link" href="{{ route('orders.index') }}">Siparişlerim</a></li>
             </ul>

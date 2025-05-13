@@ -20,7 +20,7 @@ class AuthController extends Controller
         });
         return $lastCustomer ? $lastCustomer->customer_id + 1 : 1;
     }
-
+ 
     protected function redirectUser($user)
     {
         $authority = Session::get('user_authority');

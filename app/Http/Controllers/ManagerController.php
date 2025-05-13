@@ -90,43 +90,21 @@ class ManagerController extends Controller
     
         $orderStatusFilter = $request->query('order_status');
     
-        $orders = OrderLine::with('size', 'product') // Ürün bilgisini de alalım
+        $orders = OrderLine::with('size', 'product') 
             ->where('store_id', $storeId)
             ->when($orderStatusFilter, function ($query, $orderStatusFilter) {
                 return $query->where('order_status', $orderStatusFilter);
             })
             ->orderBy('id', 'desc')
             ->get()
-            ->groupBy('order_id') // Sipariş ID'sine göre gruplandır
+            ->groupBy('order_id') 
             ->map(function ($orderLines) {
-                return $orderLines->groupBy('store_id'); // Her sipariş içindeki ürünleri depo ID'sine göre gruplandır
+                return $orderLines->groupBy('store_id'); 
             });
     
         return view('seller_orders', ['groupedOrders' => $orders, 'orderStatusFilter' => $orderStatusFilter]);
     }
 
-    public function updateLineStatus(Request $request, $lineId)
-    {
-        $orderLine = OrderLine::findOrFail($lineId);
-        $currentStatus = $orderLine->order_status;
-        $newStatus = $request->input('order_status');
-
-        $allowedTransitions = [
-            'sipariş alındı' => ['hazırlanıyor', 'iptal talebi alındı'],
-            'hazırlanıyor' => ['kargoya verildi', 'iptal talebi alındı'],
-            'kargoya verildi' => [],
-            'iptal talebi alındı' => ['iptal talebi onaylandı'],
-            'iptal talebi onaylandı' => [],
-        ];
-
-        if (!isset($allowedTransitions[$currentStatus]) || !in_array($newStatus, $allowedTransitions[$currentStatus])) {
-            return response()->json(['error' => "Geçersiz statü geçişi: '$currentStatus' -> '$newStatus'."], 400);
-        }
-
-        $orderLine->update(['order_status' => $newStatus]);
-        return response()->json(['success' => true, 'message' => 'Sipariş durumu güncellendi.']);
-    }
-        
     public function updateLineStatusForStore(Request $request)
     {
         $orderId = $request->input('order_id');
@@ -155,7 +133,7 @@ class ManagerController extends Controller
             $orderLine->update(['order_status' => $newStatus]);
         }
 
-        return response()->json(['success' => true, 'message' =>'Sipariş Durumu' . $newStatus . ' olarak güncellendi.']);
+        return response()->json(['success' => true, 'message' =>'Sipariş Durumu: ' . $newStatus . ' olarak güncellendi.']);
     }
 
     public function approveCancellation(Request $request) 

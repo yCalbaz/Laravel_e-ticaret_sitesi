@@ -254,18 +254,18 @@ th{
 
 .brand-container {
     display: flex;
-    justify-content: center; /* Markaları yatayda ortalar */
-    flex-wrap: wrap; /* Gerekirse markaları alt satıra geçirir */
+    justify-content: center; 
+    flex-wrap: wrap; 
 }
 
 .brand-container .img-fluid {
-    max-width: 150px; /* Marka resimlerinin maksimum genişliği */
+    max-width: 150px; 
     height: auto;
 }
 
 @media (max-width: 768px) {
     .brand-container .img-fluid {
-        max-width: 100px; /* Küçük ekranlarda marka resimlerinin maksimum genişliği */
+        max-width: 100px; 
     }
 }
 
@@ -296,13 +296,17 @@ th{
     cursor: pointer;
     display: flex; 
     align-items: center; 
+    color: #333;
 }
 
 .filter-button .arrow {
     margin-left: 5px; 
+    color: #333;
+    
 }
 
 .filter-options {
+    list-style-type: none;
     display: none;
     position: absolute;
     background-color: #fff;
@@ -319,6 +323,7 @@ th{
 
 .filter-dropdown:hover .filter-options {
     display: block;
+    
 }
 
 .footer{
@@ -393,7 +398,7 @@ th{
     display: flex;
     justify-content: space-between;
     align-items: center;
-    flex-wrap: wrap; /* Yeni eklenen özellik */
+    flex-wrap: wrap; 
 }
 
 .table-responsive {
@@ -401,19 +406,19 @@ th{
 }
 @media (max-width: 768px) {
     td, th {
-        padding: 8px; /* Daha küçük padding */
-        font-size: 0.9rem; /* Daha küçük font boyutu */
+        padding: 8px; 
+        font-size: 0.9rem; 
     }
 
     .btn-sm {
-        padding: 4px 8px; /* Daha küçük buton padding'i */
-        font-size: 0.8rem; /* Daha küçük buton font boyutu */
+        padding: 4px 8px; 
+        font-size: 0.8rem; 
     }
 }
 
 .form-inline {
     display: flex;
-    flex-wrap: wrap; /* Yeni eklenen özellik */
+    flex-wrap: wrap; 
     align-items: center;
 }
 
@@ -438,7 +443,7 @@ th{
     }
 
     .card-header {
-        flex-direction: column; /* Küçük ekranlarda dikey sıralama */
+        flex-direction: column; 
         align-items: flex-start;
     }
 
@@ -551,3 +556,4 @@ th{
         max-width: 80px;
     }
 }
+

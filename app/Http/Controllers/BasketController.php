@@ -100,10 +100,6 @@ class BasketController extends Controller
             'size_id.integer' => 'Beden ID\'si sayı olmalıdır.',
             'size_id.exists' => 'Seçilen beden geçersizdir.',
         ]);
-       
-        //tokenin validasyonunu da ekle!!
-
-        
         $product = Product::where('product_sku', $product_sku)->first();
         
         if (!$product) {
@@ -189,12 +185,12 @@ class BasketController extends Controller
         $cartItem->delete();
 
         return response()->json(['message' => 'Ürün sepetten kaldırıldı!'], 200);
-    }
+    } 
 
     public function approvl(Request $request)
     {
         $customerId = Session::get('customer_id');
-
+        
         if (!$customerId) {
             if (Auth::check()) {
                 $member = Member::where('id', Auth::id())->first();
@@ -205,22 +201,25 @@ class BasketController extends Controller
                 }
             } else {
                 $customerId = mt_rand(10000000, 99999999);
+                $memberName = $request->input('name'); 
                 $member = new Member();
                 $member->id = $customerId;
-                $member->name = 'Misafir Kullanıcı';
+                $member->name = $memberName ?? 'Misafir Kullanıcı'; 
                 $member->email = 'misafir_' . $customerId . '@gmail.com';
                 $member->password = bcrypt(Str::random(10));
+                $member->authority_id = 3;
                 $member->save();
                 Session::put('customer_id', $customerId);
             }
         } else {
             if (!Member::where('id', $customerId)->exists()) {
+                $memberName = $request->input('name'); 
                 $member = new Member();
                 $member->id = $customerId;
-                $member->name = 'Misafir Kullanıcı';
+                $member->name = $memberName ?? 'Misafir Kullanıcı'; 
                 $member->email = 'misafir_' . $customerId . '@gmail.com';
                 $member->password = bcrypt(Str::random(10));
-                $member->save();
+                $member->save();;
             }
         }
 

@@ -11,10 +11,10 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\StockController;
 use App\Http\Controllers\OrderDetailController;
 use App\Http\Controllers\ProductController;
-use App\Models\Order;
+use App\Models\Order; 
 
 
-Route::get('/', [HomeProductController::class, 'productHome'])->name('home.product');
+Route::get('/', [ProductController::class, 'productHome'])->name('home.product');
 Route::get('/urun', [ProductController::class, 'index'])->name('urun');
 
 Route::get('/giris', [AuthController::class, 'showLoginForm'])->name('login'); 
@@ -29,7 +29,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/saticiPanel', [ManagerController::class, 'showSaticiPanel'])->name('saticiPanel');
     Route::get('/saticiPanelDepo', [ManagerController::class, 'showSellerStores'])->name('saticiPanel'); 
     Route::get('/satici/siparisler/{storeId}', [ManagerController::class, 'showSellerOrders'])->name('seller.orders');
-    Route::post('/seller/orders/{lineId}/status', [ManagerController::class, 'updateLineStatus'])->name('seller.updateLineStatus');
     Route::get('/musteriPanel', [ManagerController::class, 'showMusteriPanel'])->name('musteriPanel'); 
     Route::post('/seller/orders/store/update-status', [ManagerController::class, 'updateLineStatusForStore'])->name('seller.updateLineStatusForStore');
     Route::get('/urunPanel', [HomeProductController::class, 'index'])->name('product.index.form');
@@ -43,20 +42,20 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/seller/orders/approve-cancellation', [ManagerController::class, 'approveCancellation'])->name('seller.approveCancellation');
 });
 
-Route::post('/products', [HomeProductController::class, 'store'])->name('products.store'); 
-Route::post('/store', [StoreController::class, 'store'])->name('store.store');
-Route::post('/stock', [StockController::class, 'store'])->name('stock.store');
+Route::post('/Urun', [HomeProductController::class, 'store'])->name('products.store'); 
+Route::post('/Depo', [StoreController::class, 'store'])->name('store.store');
+Route::post('/Stok', [StockController::class, 'store'])->name('stock.store');
 
-Route::post('/cart/add/{product_sku}', [BasketController::class, 'add'])->name('cart.add');
+Route::post('/sepet/ekle/{product_sku}', [BasketController::class, 'add'])->name('cart.add');
 Route::get('/sepet', [BasketController::class, 'index'])->name('cart.index');
-Route::delete('/cart/{id}', [BasketController::class, 'delete'])->name('cart.delete');
+Route::delete('/sepet/{id}', [BasketController::class, 'delete'])->name('cart.delete');
 Route::post('/sepet/onay', [BasketController::class, 'approvl'])->name('sepet.approvl');
 Route::get('/sepet/onay', [BasketController::class, 'approvl'])->name('sepet.approvl');
 
 Route::get('/musteri/uye-ol', [AuthController::class, 'showRegisterForm'])->name('musteri.uye_ol');
 Route::post('/musteri/uye-ol', [AuthController::class, 'customerRegister'])->name('musteri.uye_ol.kayit');
 Route::get('/urun/{sku}', [ProductController::class, 'showDetails'])->name('product.details');
-
+ 
 
 Route::middleware(['auth'])->group(function () {        
     Route::get('/siparisler', [OrderDetailController::class, 'index'])->name('orders.index');

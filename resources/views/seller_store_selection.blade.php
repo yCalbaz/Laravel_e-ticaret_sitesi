@@ -31,9 +31,9 @@
                                 ->where('order_status', 'iptal talebi alındı')
                                 ->exists();
                         @endphp
-                        <div class="col-md-4 mb-3">
-                            <div class="card {{ $hasNewOrders ? 'has-new-orders' : '' }} {{ $hasRefundRequests ? 'has-refund-requests' : '' }}">
-                                <div class="card-header">
+                        <div class="col-md-4 mb-3" >
+                            <div class="card {{ $hasNewOrders ? 'has-new-orders' : '' }} {{ $hasRefundRequests ? 'has-refund-requests' : '' }}" style="height: 200px;">
+                                <div class="card-header" >
                                     <span class="card-header-text">{{ $store->store_name }}</span>
                                     <div class="card-header-icons">
                                         @if($hasRefundRequests)

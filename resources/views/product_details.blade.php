@@ -16,7 +16,7 @@
                 <img src="{{ asset($product->product_image) }}" class="product-image" alt="{{ $product->product_name }}">
             </div>
             <div class="col-md-6 product-info">
-                <h2>{{ $product->product_name }}</h2>
+                <h2 style="color: #333;">{{ $product->product_name }}</h2>
                 @if ($discountRate > 0 && $discountedPrice !== null)
                     <p class="original-price" style=" color: red; margin-bottom:2px;">Önceki Fiyat:</p>
                     <p class="original-price" style="text-decoration: line-through; color: red;">{{ $product->product_price }} TL</p>

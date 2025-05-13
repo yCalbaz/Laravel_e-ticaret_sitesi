@@ -36,7 +36,7 @@
                 <div class="card-header">
                     <span>Sipariş İD: {{ $orderId }}</span>
                 </div>
-                <div class="card-body">
+                <div class="card-body"> 
                     @foreach ($storeOrders as $storeId => $orderLines)
                         <h5>
                             Depo: {{ App\Models\Store::find($storeId)->store_name ?? 'Bilinmeyen Depo' }}
@@ -46,8 +46,8 @@
                         </h5>
                         <div class="d-flex justify-content-end mb-2">
                             @if ($orderLines->contains(function ($line) { return $line->order_status == 'iptal talebi alındı'; }))
-                                <form method="POST" action="{{ route('seller.orders.approve-cancellation') }}" class="form-inline approve-cancellation-form">
-                                    @csrf
+                                <form method="POST" action="{{ route('seller.approveCancellation') }}" class="form-inline approve-cancellation-form">
+                                    @csrf 
                                     <input type="hidden" name="order_id" value="{{ $orderId }}">
                                     <input type="hidden" name="store_id" value="{{ $storeId }}">
                                     <button type="submit" class="btn btn-warning btn-sm">Bu Depodaki İptal Taleplerini Onayla</button>
