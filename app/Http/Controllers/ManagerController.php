@@ -1,6 +1,8 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Models\ConfigModel;
+use App\Models\ModelLog;
 use App\Models\OrderLine;
 use App\Models\Product;
 use Illuminate\Http\Request;
@@ -18,7 +20,20 @@ class ManagerController extends Controller
     {
         return Product::orderBy('id', 'desc')->take(10)->get();
     }
-    
+
+    private function logRequest($operation, $message = null, $requestData = null, $error = null, $response = null)
+    {
+        ModelLog::create([
+            'log_title' => 'API Request',
+            'operaton' => $operation,
+            'message' => $message,
+            'error' => $error ?? "",
+            'success' => $error ? 'Hata' : 'Başarılı İstek',
+            'request' => json_encode($requestData),
+            'response' => $response ? json_encode($response) : null,
+        ]);
+    }
+     
     public function showAdminPanel()
     {
         if(session('user_authority') !== self::ADMIN_ROLE_ID){
@@ -42,17 +57,30 @@ class ManagerController extends Controller
             return redirect()->route('login');
         }
         $products = Product::orderBy('id', 'desc')->get()->filter(function($product) {
+            $apiConfig = ConfigModel::where('api_name', 'stok_api')->first();
+            $apiUrl= $apiConfig->api_url;
             foreach ($product->stocks as $stock){
             try {
-                $response = Http::timeout(4)->get("http://host.docker.internal:3000/stock/{$product->product_sku}/{$stock->size_id}");
-                
+                $response = Http::timeout(4)->get($apiUrl."{$product->product_sku}/{$stock->size_id}");
+                $this->logRequest(
+                    'Stok API isteği gönderildi',
+                    " {$product->product_sku}, Size ID: {$stock->size_id}",
+                    ['url' => $apiUrl."{$product->product_sku}/{$stock->size_id}"],
+                    null, 
+                    $response->json() 
+                );
                 if ($response->successful()) {
                     $stockData = $response->json();
                     $stock = $stockData['stores'][0]['stock'] ?? 0; 
                     return $stock > 0;
                 }
             } catch (\Exception $e) {
-                
+                $this->logRequest(
+                    'Stok API Hatası', 
+                    "{$product->product_sku}, Size ID: {$stock->size_id}", 
+                    ['url' => $apiUrl."{$product->product_sku}/{$stock->size_id}"], 
+                    $e->getMessage() 
+                );
             }}
             return false;
         })->map(function ($product) {
