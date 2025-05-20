@@ -22,7 +22,7 @@ Bu proje, Laravel, Go ve Docker kullanılarak geliştirilmiş bir e-ticaret site
 - Go (stok kontrol servisi için)
 - Ajax
 - Ngnix
-- [github](https://github.com/yCalbaz/staj_proje)
+- [github](https://github.com/yCalbaz/Laravel_e-ticaret_sitesi)
 
 ## Proje Yapısı
 - app/: Uygulamanın tüm iş mantığını barındırır.

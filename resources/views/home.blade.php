@@ -44,7 +44,7 @@
  
         <div class="container mt-5">
             <a href="{{ route('category.product', ['category_slug' => 'adidas']) }}">
-                <img src="{{ asset('storage/images/banner31.png') }}" class="img-fluid" alt="Banner">
+                <img src="{{ asset('storage/images/banner15.png') }}" class="img-fluid" alt="Banner">
             </a>
         </div>
         <div class="mt-5 brand-container">
@@ -67,9 +67,10 @@
             </div>
             
         </div>
-
-        <h2>Popüler Ürünler</h2>
-        <div class="row" id="product-list"> 
+        <div class="container mt-5" >
+            <h2 style="margin-bottom: 0;">Popüler Ürünler</h2>
+        </div>
+        <div class="row container mt-5" id="product-list" style="margin-top: 0 !important;"> 
             @foreach($products as $product)
                 <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-4 d-flex justify-content-center">
                     <div class="card shadow-sm custom-card">
@@ -98,12 +99,13 @@
         </div>
         <div class="container mt-5">
             <div class="row">
-                <div class="col-md-6">
-                    <img src="{{ asset('storage/images/afis11.png') }}" alt="Afiş 1" class="img-fluid"> 
+            <div class="col-md-6">
+                    <img src="{{ asset('storage/images/afis1.png') }}" alt="Afiş 2" class="img-fluid">
                 </div>
                 <div class="col-md-6">
-                    <img src="{{ asset('storage/images/afis4.png') }}" alt="Afiş 2" class="img-fluid">
+                    <img src="{{ asset('storage/images/afis2.png') }}" alt="Afiş 1" class="img-fluid"> 
                 </div>
+                
             </div>
         </div>
         <div class="container mt-5">
