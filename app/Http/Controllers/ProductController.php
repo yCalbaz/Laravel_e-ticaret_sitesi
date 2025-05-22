@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Http;
 
 class ProductController extends Controller
 {
+    const CUSTOMER_ROLE_ID = 3;
     private function logRequest($operation, $message = null, $requestData = null, $error = null, $response = null)
     {
         ModelLog::create([
@@ -289,4 +290,47 @@ class ProductController extends Controller
         return view('home', compact('products'));
     }
 
+    public function showCustomerPanel()
+    {
+        if(session('user_authority') !== self::CUSTOMER_ROLE_ID){
+            return redirect()->route('login');
+        }
+        $products = Product::orderBy('id', 'desc')->get()->filter(function($product) {
+            $apiConfig = ConfigModel::where('api_name', 'stok_api')->first();
+            $apiUrl= $apiConfig->api_url;
+            foreach ($product->stocks as $stock){
+            try {
+                $response = Http::timeout(4)->get($apiUrl."{$product->product_sku}/{$stock->size_id}");
+                $this->logRequest(
+                    'Stok API isteği gönderildi',
+                    " {$product->product_sku}, Size ID: {$stock->size_id}",
+                    ['url' => $apiUrl."{$product->product_sku}/{$stock->size_id}"],
+                    null, 
+                    $response->json() 
+                );
+                if ($response->successful()) {
+                    $stockData = $response->json();
+                    $stock = $stockData['stores'][0]['stock'] ?? 0; 
+                    return $stock > 0;
+                }
+            } catch (\Exception $e) {
+                $this->logRequest(
+                    'Stok API Hatası', 
+                    "{$product->product_sku}, Size ID: {$stock->size_id}", 
+                    ['url' => $apiUrl."{$product->product_sku}/{$stock->size_id}"], 
+                    $e->getMessage() 
+                );
+            }}
+            return false;
+        })->map(function ($product) {
+            if ($product->discount_rate > 0) {
+                $product->discounted_price = $product->product_price - ($product->product_price * ($product->discount_rate / 100));
+            } else {
+                $product->discounted_price = null;
+            }
+            return $product;
+        })->take(4);
+    
+        return view('home', compact('products'));
+    }
 }

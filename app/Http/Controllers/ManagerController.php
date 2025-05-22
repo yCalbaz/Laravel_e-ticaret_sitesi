@@ -1,14 +1,13 @@
 <?php
 namespace App\Http\Controllers;
 
-use App\Models\ConfigModel;
 use App\Models\ModelLog;
 use App\Models\OrderLine;
 use App\Models\Product;
+use App\Models\Stock;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Http;
 
 class ManagerController extends Controller
 {
@@ -20,19 +19,6 @@ class ManagerController extends Controller
     {
         return Product::orderBy('id', 'desc')->take(10)->get();
     }
-
-    private function logRequest($operation, $message = null, $requestData = null, $error = null, $response = null)
-    {
-        ModelLog::create([
-            'log_title' => 'API Request',
-            'operaton' => $operation,
-            'message' => $message,
-            'error' => $error ?? "",
-            'success' => $error ? 'Hata' : 'Başarılı İstek',
-            'request' => json_encode($requestData),
-            'response' => $response ? json_encode($response) : null,
-        ]);
-    }
      
     public function showAdminPanel()
     {
@@ -42,7 +28,7 @@ class ManagerController extends Controller
         return view('admin_panel');
     }
 
-    public function showSaticiPanel()
+    public function showSellerPanel()
     {
         if (session('user_authority') !== self::SELLER_ROLE_ID) {
             return redirect()->route('login');
@@ -51,49 +37,7 @@ class ManagerController extends Controller
         return redirect()->route('saticiPanel');
     }
     
-    public function showMusteriPanel()
-    {
-        if(session('user_authority') !== self::CUSTOMER_ROLE_ID){
-            return redirect()->route('login');
-        }
-        $products = Product::orderBy('id', 'desc')->get()->filter(function($product) {
-            $apiConfig = ConfigModel::where('api_name', 'stok_api')->first();
-            $apiUrl= $apiConfig->api_url;
-            foreach ($product->stocks as $stock){
-            try {
-                $response = Http::timeout(4)->get($apiUrl."{$product->product_sku}/{$stock->size_id}");
-                $this->logRequest(
-                    'Stok API isteği gönderildi',
-                    " {$product->product_sku}, Size ID: {$stock->size_id}",
-                    ['url' => $apiUrl."{$product->product_sku}/{$stock->size_id}"],
-                    null, 
-                    $response->json() 
-                );
-                if ($response->successful()) {
-                    $stockData = $response->json();
-                    $stock = $stockData['stores'][0]['stock'] ?? 0; 
-                    return $stock > 0;
-                }
-            } catch (\Exception $e) {
-                $this->logRequest(
-                    'Stok API Hatası', 
-                    "{$product->product_sku}, Size ID: {$stock->size_id}", 
-                    ['url' => $apiUrl."{$product->product_sku}/{$stock->size_id}"], 
-                    $e->getMessage() 
-                );
-            }}
-            return false;
-        })->map(function ($product) {
-            if ($product->discount_rate > 0) {
-                $product->discounted_price = $product->product_price - ($product->product_price * ($product->discount_rate / 100));
-            } else {
-                $product->discounted_price = null;
-            }
-            return $product;
-        })->take(4);
-    
-        return view('home', compact('products'));
-    }
+
     public function showSellerStores()
     {
         if (session('user_authority') !== self::SELLER_ROLE_ID) {
@@ -168,41 +112,71 @@ class ManagerController extends Controller
     {
         $orderId = $request->input('order_id');
         $storeId = $request->input('store_id');
-    
-        $orderLinesToCancel = OrderLine::where('order_id', $orderId)
-            ->where('store_id', $storeId)
-            ->where('order_status', 'iptal talebi alındı')
-            ->get();
-    
+
         DB::beginTransaction();
         try {
-            foreach ($orderLinesToCancel as $orderLine) {
-                $orderLine->update(['order_status' => 'iptal talebi onaylandı']);
-    
-                $product = Product::where('product_sku', $orderLine->product_sku)->first();
-                if ($product) {
-                    $stock = \App\Models\Stock::where('product_sku', $orderLine->product_sku)
-                        ->where('store_id', $orderLine->store_id)
-                        ->where('size_id', $orderLine->product_size_id)
-                        ->first();
-                    if ($stock) {
-                        $stock->increment('product_piece', $orderLine->quantity);
-                    } else {
-                        \App\Models\Stock::create([
-                            'product_sku' => $orderLine->product_sku,
-                            'store_id' => $orderLine->store_id,
-                            'product_piece' => $orderLine->quantity,
-                            'size_id' => $orderLine->product_size_id,
-                        ]);
-                    }
+            $orderLineIdsToCancel = OrderLine::where('order_id', $orderId)
+                ->where('store_id', $storeId)
+                ->where('order_status', 'iptal talebi alındı')
+                ->pluck('id');
+
+            if ($orderLineIdsToCancel->isEmpty()) {
+                DB::rollBack();
+                return response()->json([
+                    'success' => false,
+                    'error' => 'Bu sipariş ID\'si ve mağaza ID\'si ile iptal talebi alınmış sipariş kalemi bulunamadı.'
+                ]);
+            }
+
+            OrderLine::whereIn('id', $orderLineIdsToCancel)->update(['order_status' => 'iptal talebi onaylandı']);
+
+            $cancelledOrderLinesDetails = OrderLine::whereIn('id', $orderLineIdsToCancel)
+                ->select('product_sku', 'store_id', 'product_size_id', 'quantity')
+                ->get();
+
+            $stockChanges = [];
+            foreach ($cancelledOrderLinesDetails as $orderLine) {
+                $key = $orderLine->product_sku . '_' . $orderLine->store_id . '_' . $orderLine->product_size_id;
+                if (!isset($stockChanges[$key])) {
+                    $stockChanges[$key] = [
+                        'product_sku' => $orderLine->product_sku,
+                        'store_id' => $orderLine->store_id,
+                        'product_size_id' => $orderLine->product_size_id,
+                        'total_quantity' => 0,
+                    ];
+                }
+                $stockChanges[$key]['total_quantity'] += $orderLine->quantity;
+            }
+
+            foreach ($stockChanges as $change) {
+                $stock = Stock::where('product_sku', $change['product_sku'])
+                    ->where('store_id', $change['store_id'])
+                    ->where('size_id', $change['product_size_id'])
+                    ->first();
+
+                if ($stock) {
+                    $stock->increment('product_piece', $change['total_quantity']);
+                } else {
+                    Stock::create([
+                        'product_sku' => $change['product_sku'],
+                        'store_id' => $change['store_id'],
+                        'product_piece' => $change['total_quantity'],
+                        'size_id' => $change['product_size_id'],
+                    ]);
                 }
             }
+
             DB::commit();
-            return response()->json(['success' => true, 'message' => $orderId . ' ID\'li siparişin iptal talebi onaylandı ve stoklar güncellendi.']);
-    
+            return response()->json([
+                'success' => true,
+                'message' => $orderId . ' ID\'li siparişin iptal talebi onaylandı ve stoklar güncellendi.'
+            ]);
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json(['success' => false, 'error' => 'İptal talebi onaylanırken bir hata oluştu: ' . $e->getMessage()]);
+            return response()->json([
+                'success' => false,
+                'error' => 'İptal talebi onaylanırken bir hata oluştu: ' . $e->getMessage()
+            ]);
         }
     }
 

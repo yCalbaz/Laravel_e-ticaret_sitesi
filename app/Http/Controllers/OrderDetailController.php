@@ -135,10 +135,11 @@ class OrderDetailController extends Controller
     
         DB::beginTransaction();
         try {
-            
-            $allOrderLinesOfStore = $order->orderLines()->where('store_id', $storeId)->get();
+            $order->orderLines()
+              ->where('store_id', $storeId)
+              ->update(['order_status' => self::ORDER_STATUS_CANCEL_REQUESTED]);
+              $allOrderLinesOfStore = $order->orderLines()->where('store_id', $storeId)->get();
             foreach ($allOrderLinesOfStore as $orderLine) {
-                $orderLine->update(['order_status' => self::ORDER_STATUS_CANCEL_REQUESTED]);
                 if ($orderLine->product) {
                     $productImages[] = $orderLine->product->product_image;
                     $productPrices[] = $orderLine->product->product_price;

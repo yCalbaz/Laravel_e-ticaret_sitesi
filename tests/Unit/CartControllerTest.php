@@ -380,34 +380,8 @@ class CartControllerTest extends TestCase
             'product_piece' => 1,
         ]);
     }
-    /*public function testAddProductTokenError()
-{
-    DeleteHelper::delete([
-        'basket_items',
-        'baskets',
-        'sizes',
-        'members',
-        'products',
-    ]);
-    $member= Member::factory()->create(['customer_id'=>1111222]);
-    $product= Product::factory()->create(['product_sku'=>'SKU-1324', 'product_price'=>100]);
-    $size= Size::factory()->create();
-
-    Session::put('customer_id',$member->customer_id);
-    $invalidToken= 'invalid_token';
-
-    $response = $this->actingAs($member)->post(route('cart.add', $product->product_sku), [
-        'quantity' => 2,
-        'size_id' => $size->id,
-        '_token' => $invalidToken 
-    ]);
-
-    $response->assertStatus(419);
-    $response->assertJson([
-        'error' => 'CSRF token uyuşmazlığı. Lütfen sayfayı yenileyin ve tekrar deneyin.'
-    ]);
-}*/
-
+   
+  
 /* Delete fonksiyonu */
 
     public function testDeleteTrue()
@@ -489,6 +463,7 @@ class CartControllerTest extends TestCase
         ]); 
         $requestData = [
             'name' => 'Test İsim',
+            'email'=>'test@gmail.com',
             'address' => 'Test adres, Test adres, Test adres, Test adres, 12345, Test adres',
             'cardNumber' => '1234567890123456',
             'expiryDate' => '12/24',
@@ -540,6 +515,7 @@ class CartControllerTest extends TestCase
         ]); 
         $requestData = [
             'name' => 'Test İsim',
+            'email'=>'test@gmail.com',
             'address' => 'Test adres, Test adres, Test adres, Test adres, 12345, Test adres',
             'cardNumber' => '1234567890123456',
             'expiryDate' => '12/24',
@@ -581,6 +557,7 @@ class CartControllerTest extends TestCase
         ]); 
         $requestData = [
             'name' => 'Test İsim',
+            'email'=>'test@gmail.com',
             'address' => 'Test adres, Test adres, Test adres, Test adres, 12345, Test adres',
             'cardNumber' => '1234567890123456',
             'expiryDate' => '12/24',

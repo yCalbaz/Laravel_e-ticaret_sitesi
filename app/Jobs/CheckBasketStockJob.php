@@ -10,13 +10,27 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use App\Models\Basket;
 use App\Models\BasketItem;
+use App\Models\ConfigModel;
+use App\Models\ModelLog;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class CheckBasketStockJob implements ShouldQueue
 {
+    private function logRequest($operation, $message = null, $requestData = null, $error = null, $response = null)
+    {
+        ModelLog::create([
+            'log_title' => 'API Request',
+            'operaton' => $operation,
+            'message' => $message,
+            'error' => $error ?? "",
+            'success' => $error ? 'Hata' : 'Başarılı İstek',
+            'request' => json_encode($requestData),
+            'response' => $response ? json_encode($response) : null,
+        ]);
+    }
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
+ 
     public function handle()
     {
         Log::info('Job başladı!');
@@ -24,9 +38,10 @@ class CheckBasketStockJob implements ShouldQueue
 
         foreach ($baskets as $basket) {
             $basketItems = BasketItem::where('order_id', $basket->id)->get();
-
+            $apiConfig = ConfigModel::where('api_name', 'stok_api')->first();
+            $apiUrl= $apiConfig->api_url;
             foreach ($basketItems as $item) {
-                $response = Http::get("http://host.docker.internal:3000/stock/{$item->product_sku}");
+                $response = Http::get($apiUrl."{$item->product_sku}");
 
                 if ($response->failed()) {
                     Log::error("Stok servisine ulaşılmıyor {$item->product_sku}");

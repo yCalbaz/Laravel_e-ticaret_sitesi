@@ -26,10 +26,10 @@ Route::get('/cıkıs', [AuthController::class, 'logout'])->name('admin.logout');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/adminPanel', [ManagerController::class, 'showAdminPanel'])->name('adminPanel'); 
-    Route::get('/saticiPanel', [ManagerController::class, 'showSaticiPanel'])->name('saticiPanel');
+    Route::get('/saticiPanel', [ManagerController::class, 'showSellerPanel'])->name('saticiPanel');
     Route::get('/saticiPanelDepo', [ManagerController::class, 'showSellerStores'])->name('saticiPanel'); 
     Route::get('/satici/siparisler/{storeId}', [ManagerController::class, 'showSellerOrders'])->name('seller.orders');
-    Route::get('/musteriPanel', [ManagerController::class, 'showMusteriPanel'])->name('musteriPanel'); 
+    Route::get('/musteriPanel', [ProductController::class, 'showCustomerPanel'])->name('musteriPanel'); 
     Route::post('/seller/orders/store/update-status', [ManagerController::class, 'updateLineStatusForStore'])->name('seller.updateLineStatusForStore');
     Route::get('/urunPanel', [HomeProductController::class, 'index'])->name('product.index.form');
     Route::get('Urunlerim' , [OrderController::class, 'sellerProduct'])->name('seller.products');
