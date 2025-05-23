@@ -180,12 +180,9 @@ class BasketController extends Controller
     }
 
     public function approvl(Request $request)
-    {
-        
+    {  
         $customerId = Session::get('customer_id');
-        
-        
-
+    
         $basket = Basket::where('customer_id', $customerId)->where('is_active', 1)->first();
 
         if (!$basket) {
@@ -207,9 +204,7 @@ class BasketController extends Controller
                 'cvv' => ['required', 'digits:3', 'regex:/^[0-9]{3}$/'],
                 'cardHolderName' => ['required', 'string', 'min:3', 'max:255']
             ]);
-
             $cartItems = BasketItem::where('order_id', $basket->id)->get();
-
             if ($cartItems->isEmpty()) {
                 return response()->json(['error' => 'Sepette ürün bulunamadı.'], 400);
             }
@@ -235,11 +230,9 @@ class BasketController extends Controller
                     $member->save();
                 }
             }
-
             $productSkus = $cartItems->pluck('product_sku')->unique();
             $products = Product::whereIn('product_sku', $productSkus)->get()->keyBy('product_sku');
             $apiConfig = ConfigModel::where('api_name', 'stok_api')->first();
-
             if (!$apiConfig) {
                 return response()->json(['error' => 'Stok API yapılandırması bulunamadı.'], 500);
             }

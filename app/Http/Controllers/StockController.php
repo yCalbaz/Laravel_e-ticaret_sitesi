@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Models\MemberStore;
 use App\Models\Product;
 use App\Models\Size;
 use Illuminate\Http\Request;
@@ -18,8 +19,7 @@ class StockController extends Controller
         $sizes = Size::all();
         $memberID = Auth::id();
     
-        $memberStore = DB::table('member_store')
-        ->where('member_id',$memberID)
+        $memberStore = MemberStore::where('member_id',$memberID)
         ->join('stores','member_store.store_id','=','stores.id')
         ->select('stores.id' , 'stores.store_name')
         ->get();

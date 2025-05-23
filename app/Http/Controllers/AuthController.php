@@ -93,8 +93,7 @@ class AuthController extends Controller
 
         return redirect()->route('musteri.uye_ol')->with('success', 'Müşteri üye eklendi :)');
     }
-
-
+    
     public function logout(Request $request)
     {
         Auth::logout();

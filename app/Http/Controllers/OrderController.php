@@ -79,7 +79,7 @@ class OrderController extends Controller
             $products = $products->where('stokta_var', false);
         }
 
-        $stores = \App\Models\Stock::with('store')
+        $stores = Stock::with('store')
             ->whereHas('product', function ($q) use ($memberId) {
                 $q->where('customer_id', $memberId);
             })

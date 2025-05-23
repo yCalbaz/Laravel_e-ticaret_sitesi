@@ -5,6 +5,7 @@ use App\Models\ModelLog;
 use App\Models\OrderLine;
 use App\Models\Product;
 use App\Models\Stock;
+use App\Models\Store;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -37,7 +38,6 @@ class ManagerController extends Controller
         return redirect()->route('saticiPanel');
     }
     
-
     public function showSellerStores()
     {
         if (session('user_authority') !== self::SELLER_ROLE_ID) {
@@ -45,8 +45,7 @@ class ManagerController extends Controller
         }
 
         $memberId = Auth::id();
-        $stores = DB::table('stores')
-            ->join('member_store', 'stores.id', '=', 'member_store.store_id')
+        $stores = Store::join('member_store', 'stores.id', '=', 'member_store.store_id')
             ->where('member_store.member_id', $memberId)
             ->select('stores.id', 'stores.store_name') 
             ->get();
