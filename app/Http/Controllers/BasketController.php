@@ -224,7 +224,7 @@ class BasketController extends Controller
                     $member->id = $customerId;
                     $member->name = $request->input('name')  ?? 'Misafir Kullanıcı'; 
                     $member->email = $request->input('email');
-                    $member->password = bcrypt(Str::random(10));
+                    $member->password = null;
                     $member->authority_id = 3;
                     $member->customer_id = $customerId;
                     $member->save();

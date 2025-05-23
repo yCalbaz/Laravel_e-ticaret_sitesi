@@ -50,7 +50,7 @@ class HomeProductController extends Controller
         if(Auth::check()){
             $customer_id =Auth::id();
         }else{
-            return redirect()->back()->withErrors(['error'=>'Ürün eklemek için oturum açın']);
+            return response()->json(['error' => 'Ürün eklemek için oturum açın.'], 401);
         }
 
         $image = $request->file('product_image');
@@ -73,9 +73,9 @@ class HomeProductController extends Controller
 
         $productCategories = $product->categories()->pluck('category_name')->toArray();
 
-        return redirect()->route('product.index.form')
-            ->with('success', 'Ürün başarıyla eklendi.')
-            ->with('product_categories', $productCategories);  
+        return response()->json([
+            'success' => 'Ürün başarıyla eklendi :)'
+        ], 200);
 
     }
 

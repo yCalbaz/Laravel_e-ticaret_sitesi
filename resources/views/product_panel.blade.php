@@ -17,9 +17,9 @@
     <div class="container mt-3">
         <div class="card shadow-lg">
             <div class="card-body p-4"> <h2 class="text-center mb-4">ÜRÜN EKLE</h2>
-                @include('components.alert')
+                
 
-                <form action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data" id="productForm">
                     @csrf
                     <div class="row">
                     <div class="col-md-6 mb-3">
@@ -90,6 +90,64 @@
                     var categoryName = option.text;
                     var categoryBadge = $('<span class="badge bg-primary me-1"></span>').text(categoryName);
                     selectedCategoriesDiv.append(categoryBadge);
+                });
+            });
+            $('#productForm').on('submit', function(e) {
+                e.preventDefault();
+
+                let form = $(this);
+                let url = form.attr('action');
+                let formData = new FormData(form[0]); 
+
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    processData: false, 
+                    contentType: false, 
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            Swal.fire({
+                                title: 'Başarılı!',
+                                text: response.success,
+                                icon: 'success',
+                                confirmButtonText: 'Tamam',
+                                customClass: {
+                                    confirmButton: 'btn btn-success'
+                                }
+                            }).then(() => {
+                                window.location.href = "{{ route('product.index.form') }}";
+                            });
+                        }
+                    },
+                    error: function(xhr) {
+                        let errorMessages = '';
+                        if (xhr.status === 422) {
+                            let errors = xhr.responseJSON.errors;
+                            Object.values(errors).forEach(function(messages) {
+                                errorMessages += `${messages[0]}<br>`;
+                            });
+                        } else if (xhr.status === 401) {
+                            errorMessages = xhr.responseJSON.error || 'Bir hata oluştu.';
+                        } else {
+                            
+                            errorMessages = xhr.responseJSON.message || 'Bir hata oluştu. Lütfen konsolu kontrol edin.';
+                            console.error('AJAX Hatası:', xhr); 
+                        }
+
+                        Swal.fire({
+                            title: 'Hata!',
+                            html: errorMessages,
+                            icon: 'error',
+                            confirmButtonText: 'Tamam',
+                            customClass: {
+                                confirmButton: 'btn btn-danger'
+                            }
+                        });
+                    }
                 });
             });
         });
