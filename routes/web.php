@@ -36,6 +36,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/depoPanel', [StoreController::class, 'index'])->name('store.index.form');
     Route::get('/uyeler', [MemberController::class, 'index'])->name('members.index');
     Route::delete('/uyeler/{id}', [MemberController::class, 'delete'])->name('members.delete');
+    Route::post('/members/update-authority/{id}', [MemberController::class, 'updateAuthority'])->name('members.updateAuthority');
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/stok/ekle/{product_sku}', [StockController::class, 'showCreateForm'])->name('stock.create.form');
     Route::post('/seller/products/{id}/kampanya-ekle', [ManagerController::class, 'campaignAdd'])->name('seller.products.kampanya.ekle');

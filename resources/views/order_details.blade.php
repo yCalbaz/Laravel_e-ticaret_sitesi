@@ -7,25 +7,27 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="icon" href="{{ asset('storage/images/flo-logo-Photoroom.png') }}" type="image/png">
     @vite(['resources/js/app.js', 'resources/css/header.css', 'resources/css/order.css'])
-    <style>.order-info-line {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
+    <style>
+        .order-info-line {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        }
 
-.order-id {
-    font-weight: bold;
-}
+        .order-id {
+            font-weight: bold;
+        }
 
-.order-status p {
-    margin: 0;
-}
+        .order-status p {
+            margin: 0;
+        }
 
-.order-status-badge {
-    padding: 4px 8px;
-    border-radius: 5px;
-    background-color: #eee;
-}</style>
+        .order-status-badge {
+            padding: 4px 8px;
+            border-radius: 5px;
+            background-color: #eee;
+        }
+    </style>
 </head>
 <body>
         @include('layouts.header')

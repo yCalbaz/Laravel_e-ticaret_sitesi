@@ -8,7 +8,6 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    
     <style>
         .fix{
             position: fixed;
@@ -64,37 +63,48 @@
     <div class="filter-dropdown"> 
         <button class="filter-button">Kadın <span class="arrow">▼</span></button>
         <div class="filter-options ">
-            <li><a class="category" href="{{ route('category.product', ['category_slug' => 'kadinAyakkabi']) }}">Kadın Ayakkkabı</a></li>
+            <li><a class="category" href="{{ route('category.product', ['category_slug' => 'kadinAyakkabi']) }}">Ayakkkabı</a></li>
+            <li><a class="category" href="{{ route('category.product', ['category_slug' => 'kadin-giyim']) }}">Giyim</a></li>
             <li><a class="category" href="{{ route('category.product', ['category_slug' => 'gunlukAyakkabi']) }}">Günlük Ayakkabı</a></li>
             <li><a class="category" href="{{ route('category.product', ['category_slug' => 'sporAyakkabi']) }}">Spor Ayakkabı</a></li>
-            <li><a class="category" href="{{ route('category.product', ['category_slug' => 'bot']) }}">Bot</a></li>
+            <li><a class="category" href="{{ route('category.product', ['category_slug' => 'kadin-bot']) }}">Bot</a></li>
          </div>
     </div>
     <div class="filter-dropdown">
         <button class="filter-button">Erkek <span class="arrow">▼</span></button>
         <div class="filter-options">
-            <li><a class="category" href="{{ route('category.product', ['category_slug' => 'erkekAyakkabi']) }}">Erkek Ayakkkabı</a></li>
+            <li><a class="category" href="{{ route('category.product', ['category_slug' => 'erkekAyakkabi']) }}">Ayakkkabı</a></li>
+            <li><a class="category" href="{{ route('category.product', ['category_slug' => 'erkek-giyim']) }}">Giyim</a></li>
             <li><a class="category" href="{{ route('category.product', ['category_slug' => 'gunlukAyakkabi']) }}">Günlük Ayakkabı</a></li>
             <li><a class="category" href="{{ route('category.product', ['category_slug' => 'sporAyakkabi']) }}">Spor Ayakkabı</a></li>
-            <li><a class="category" href="{{ route('category.product', ['category_slug' => 'bot']) }}">Bot</a></li>
+            <li><a class="category" href="{{ route('category.product', ['category_slug' => 'erkek-bot']) }}">Bot</a></li>
         </div>
     </div>
     <div class="filter-dropdown">
         <button class="filter-button">Çocuk <span class="arrow">▼</span></button>
         <div class="filter-options ">
-        <li> <a class="category" href="{{ route('category.product', ['category_slug' => 'cocukAyakkabi']) }}">Çocuk Ayakkkabı</a></li>
+            <li> <a class="category" href="{{ route('category.product', ['category_slug' => 'cocukAyakkabi']) }}">Ayakkkabı</a></li>
+            <li><a class="category" href="{{ route('category.product', ['category_slug' => 'cocuk-giyim']) }}">Giyim</a></li>
             <li><a class="category" href="{{ route('category.product', ['category_slug' => 'gunlukAyakkabi']) }}">Günlük Ayakkabı</a></li>
             <li><a class="category" href="{{ route('category.product', ['category_slug' => 'sporAyakkabi']) }}">Spor Ayakkabı</a></li>
-            <li><a class="category" href="{{ route('category.product', ['category_slug' => 'bot']) }}">Bot</a></li>
+            <li><a class="category" href="{{ route('category.product', ['category_slug' => 'cocuk-bot']) }}">Bot</a></li>
+         </div>
+    </div>
+    <div class="filter-dropdown">
+        <button class="filter-button">Aksesuar <span class="arrow">▼</span></button>
+        <div class="filter-options ">
+            <li><a class="category" href="{{ route('category.product', ['category_slug' => 'cocuk-canta']) }}">Çocuk Çanta</a></li>
+            <li><a class="category" href="{{ route('category.product', ['category_slug' => 'erkek-canta']) }}">Erkek Çanta</a></li>
+            <li><a class="category" href="{{ route('category.product', ['category_slug' => 'kadın-canta']) }}">Kadın Çanta</a></li>
+            <li><a class="category" href="{{ route('category.product', ['category_slug' => 'sapka']) }}">Şapka</a></li>
          </div>
     </div>
     <div class="filter-dropdown">
         <button class="filter-button">Marka <span class="arrow">▼</span></button>
         <div class="filter-options">
-        <li> <a class="category" href="{{ route('category.product', ['category_slug' => 'nike']) }}">Nike</a></li>
-        <li> <a class="category" href="{{ route('category.product', ['category_slug' => 'adidas']) }}">Adidas</a></li>
-        <li> <a class="category" href="{{ route('category.product', ['category_slug' => 'lumberjack']) }}">Lumberjack</a></li>
-            
+            <li> <a class="category" href="{{ route('category.product', ['category_slug' => 'nike']) }}">Nike</a></li>
+            <li> <a class="category" href="{{ route('category.product', ['category_slug' => 'adidas']) }}">Adidas</a></li>
+            <li> <a class="category" href="{{ route('category.product', ['category_slug' => 'lumberjack']) }}">Lumberjack</a></li> 
         </div>
     </div>
     

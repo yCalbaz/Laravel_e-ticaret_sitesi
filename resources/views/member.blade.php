@@ -33,7 +33,7 @@
                                 <th class="d-none d-md-table-cell">Güncelleme Tarihi</th>
                                 <th class="d-none d-lg-table-cell">Müşteri ID</th>
                                 <th >Yetki ID</th>
-                                <th>İşlemler</th>
+                                <th>Yetki Değişimi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -45,6 +45,15 @@
                                     <td class="d-none d-md-table-cell">{{ $member->updated_at }}</td>
                                     <td class="d-none d-lg-table-cell">{{ $member->customer_id }}</td>
                                     <td >{{ $member->authority_id }}</td>
+                                    <td>
+                                        <select class="form-control form-control-sm authority-select" data-id="{{ $member->id }}">
+                                            <option value="2" {{ $member->authority_id == 2 ? 'selected' : '' }}>Satıcı</option>
+                                            <option value="3" {{ $member->authority_id == 3 ? 'selected' : '' }}>Müşteri</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                    <button type="button" class="btn btn-primary btn-sm updateAuthority" data-id="{{ $member->id }}">Güncelle</button>
+                                    </td>
                                     <td>
                                         <form action="{{ route('members.delete', $member->id) }}" method="POST">
                                             @csrf
@@ -67,55 +76,76 @@
     
     <script>
         $(document).ready(function() {
-    $('.uyeDelete').click(function() {
-        var memberId = $(this).data('id');
+            $('.updateAuthority').click(function() {
+                const memberId = $(this).data('id');
+                const authorityId = $(`.authority-select[data-id="${memberId}"]`).val();
 
-        Swal.fire({
-            title: 'Emin misiniz?',
-            text: "Bu kullanıcıyı silmek istediğinize emin misiniz?",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Evet, sil!',
-            cancelButtonText: 'Hayır, vazgeç!',
-            reverseButtons: true
-        }).then((result) => {
-            if (result.isConfirmed) {
                 $.ajax({
-                    url: "{{ route('members.delete', ':id') }}".replace(':id', memberId),
-                    type: "DELETE",
+                    url: `/members/update-authority/${memberId}`,
+                    type: 'POST',
                     data: {
                         _token: "{{ csrf_token() }}",
+                        authority_id: authorityId
                     },
                     success: function(response) {
-                        if (response.success) {
-                            Swal.fire(
-                                'Silindi!',
-                                response.success,
-                                'success'
-                            ).then(() => {
-                                location.reload();
-                            });
-                        } else if (response.error) {
-                            Swal.fire(
-                                'Hata!',
-                                response.error,
-                                'error'
-                            );
-                        }
+                        Swal.fire('Başarılı!', response.success, 'success');
                     },
                     error: function(error) {
-                        console.error("Silme hatası:", error);
-                        Swal.fire({
-                            title: "Hata!",
-                            text: "Kullanıcı silinirken bir hata oluştu.",
-                            icon: "error"
+                        console.error("Güncelleme hatası:", error);
+                        Swal.fire('Hata!', 'Yetki güncellenirken bir hata oluştu.', 'error');
+                    }
+                });
+            });
+
+            $('.uyeDelete').click(function() {
+                var memberId = $(this).data('id');
+
+                Swal.fire({
+                    title: 'Emin misiniz?',
+                    text: "Bu kullanıcıyı silmek istediğinize emin misiniz?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Evet, sil!',
+                    cancelButtonText: 'Hayır, vazgeç!',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: "{{ route('members.delete', ':id') }}".replace(':id', memberId),
+                            type: "DELETE",
+                            data: {
+                                _token: "{{ csrf_token() }}",
+                            },
+                            success: function(response) {
+                                if (response.success) {
+                                    Swal.fire(
+                                        'Silindi!',
+                                        response.success,
+                                        'success'
+                                    ).then(() => {
+                                        location.reload();
+                                    });
+                                } else if (response.error) {
+                                    Swal.fire(
+                                        'Hata!',
+                                        response.error,
+                                        'error'
+                                    );
+                                }
+                            },
+                            error: function(error) {
+                                console.error("Silme hatası:", error);
+                                Swal.fire({
+                                    title: "Hata!",
+                                    text: "Kullanıcı silinirken bir hata oluştu.",
+                                    icon: "error"
+                                });
+                            }
                         });
                     }
                 });
-            }
+            });
         });
-    });
-});
     </script>
 </body>
 </html>

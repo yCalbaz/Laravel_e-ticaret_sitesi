@@ -119,7 +119,7 @@
                                     confirmButton: 'btn btn-success'
                                 }
                             }).then(() => {
-                                window.location.href = "{{ route('product.index.form') }}";
+                                window.location.href = "{{ route('seller.products') }}";
                             });
                         }
                     },

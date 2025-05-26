@@ -71,8 +71,7 @@
                                 <td>{{ $order->customer_name }}</td>
                                 <td>{{ $order->created_at->format('d.m.Y') }}<br>{{ $order->created_at->format('H:i') }}</td>
                                 <td>
-                                    <a href="{{ route('order.showAdminDetails', $order->id) }}" class="custom-details-button" style=" width: 80px; /* Buton genişliğini ayarla, değeri ihtiyacına göre değiştir */
-        white-space: nowrap;">
+                                    <a href="{{ route('order.showAdminDetails', $order->id) }}" class="custom-details-button" style=" width: 80px; white-space: nowrap;">
                                         Detay
                                     </a>
                                 </td>

@@ -18,8 +18,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Str;
-
  
 class BasketController extends Controller
 {
@@ -473,7 +471,6 @@ class BasketController extends Controller
 
         return response()->json(['message' => 'Ürün sepetten kaldırıldı!'], 200);
     } 
-    
        
     public function update(Request $request, $id)
     {
