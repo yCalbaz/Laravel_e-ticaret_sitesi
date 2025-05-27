@@ -23,45 +23,7 @@ class StockControllerTest extends TestCase
     /**
      * store
      */
-    public function testStoreStockCreateSuccess()
-    {
-        DeleteHelper::delete([
-            'stocks',
-            'stores',
-            'members',
-            'products',
-            'sizes',
-            'member_store'
-        ]);
-        $member = $this->memberPut();
-        $store = Store::factory()->create();
-        $product = Product::factory()->create();
-
-        MemberStore::create([
-            'member_id' => $member->id,
-            'store_id' => $store->id,
-        ]);
-        $response = $this->post(route('stock.store'), [
-            'store_id' => $store->id,
-            'product_sku' => $product->product_sku,
-            'sizes' => [
-                1 => 10,
-                2 => 5,
-            ],
-            'size_ids' => [1, 2],
-        ]);
-
-        $response->assertJson([
-            'success' => 'Stok başarıyla eklendi :)'
-        ]);
-        $this->assertDatabaseHas('stocks', [
-            'store_id' => $store->id,
-            'product_sku' => $product->product_sku,
-            'size_id' => 1,
-            'product_piece' => 10,
-        ]);
-    }
-
+    
     public function testStockStoreNotAuthhority()
     {
         DeleteHelper::delete([

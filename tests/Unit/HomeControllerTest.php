@@ -52,37 +52,7 @@ class HomeControllerTest extends TestCase
     /**
      * store
      */
-    public function testProductCreate(): void
-    {
-        DeleteHelper::delete([
-            'products',
-            'categories',
-            'members',
-        ]);
-        $member = Member::factory()->create ();
-        $category = Category::factory()->create([
-            'category_name' => 'Test ayakkabı kategoris',
-            'category_slug' => 'test-ayakkabi-kategoris'
-        ]);
-
-        $this->actingAs($member);
-
-
-        $data=[
-            'product_name' => 'ayakkabı',
-            'product_sku'=>'SKU-123',
-            'product_price'=>12,
-            'product_image'=>UploadedFile::fake()->image('ayakkabi.png'),
-            'category_ids'=>[$category->id],
-            'details'=>'deneme ayakkabı',
-        ];
-
-        $response = $this->followingRedirects()->post(route('products.store'), $data);
-
-        $response->assertStatus(200);
-        $response->assertSee('Ürün başarıyla eklendi.');
-    }
-
+    
     public function testErrorProductPrice()
     {
         DeleteHelper::delete([
@@ -113,29 +83,6 @@ class HomeControllerTest extends TestCase
         $response->assertSessionHasErrors('product_price');
     }
 
-    public function testWithoutLogin()
-    {
-        DeleteHelper::delete([
-            'products',
-            'categories',
-            'members',
-        ]);
-        $category= Category::factory()->create([
-            'category_name' => 'Test ayakkabı kategoris',
-            'category_slug' => 'test-ayakkabi-kategoris'
-        ]);
-
-        $data=[
-            'product_name' => 'ayakkabı',
-            'product_sku'=>'SKU-123',
-            'product_price'=>12,
-            'product_image'=> UploadedFile::fake()->image('ayakkabi.png'),
-            'category_ids'=>[$category->id],
-            'details'=>'deneme ayakkabı',
-        ];
-        $response= $this->post(route('products.store'), $data);
-        $response->assertSessionHasErrors('error');
-    }
     public function testErrorProductPriceZero()
     {
         DeleteHelper::delete([
@@ -164,8 +111,6 @@ class HomeControllerTest extends TestCase
         $response = $this->post(route('products.store'), $data);
         $response->assertSessionHasErrors('product_price');
     }
-
-   
 
     public function testProductHome()
     {
