@@ -9,7 +9,7 @@
     <link rel="icon" href="{{ asset('storage/images/flo-logo-Photoroom.png') }}" type="image/png">
 </head>
 <body>
-    @include('layouts.panel_header')
+    @include('layouts.admin_header')
 
     <div class="container mt-5">
         <div class="card mb-3">

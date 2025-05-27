@@ -38,7 +38,7 @@
 </head>
 <body>
 
-@include('layouts.panel_header')
+@include('layouts.admin_header')
 
 @if(session('success'))
     <div class="alert alert-success">

@@ -43,10 +43,10 @@
     
  
         <div class="container mt-5">
-            <a href="{{ route('category.product', ['category_slug' => 'adidas']) }}">
+            <a href="{{ route('category.product', ['category_slug' => 'giyim']) }}">
                 <img src="{{ asset('storage/images/banner15.png') }}" class="img-fluid" alt="Banner">
             </a>
-        </div>
+        </div> 
         <div class="mt-5 brand-container">
             <div class="row brand-row">
                 <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-4">
@@ -100,10 +100,14 @@
         <div class="container mt-5">
             <div class="row">
             <div class="col-md-6">
+                <a href="{{ route('category.product', ['category_slug' => 'giyim']) }}">
                     <img src="{{ asset('storage/images/afis1.png') }}" alt="Afiş 2" class="img-fluid">
+                </a>
                 </div>
                 <div class="col-md-6">
+                <a href="{{ route('category.product', ['category_slug' => 'ayakkabi']) }}">
                     <img src="{{ asset('storage/images/afis2.png') }}" alt="Afiş 1" class="img-fluid"> 
+                </a>
                 </div>
                 
             </div>

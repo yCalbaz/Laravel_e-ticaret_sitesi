@@ -14,32 +14,11 @@
     </style>
 </head>
 <body> 
-    @include('layouts.panel_header')
+    @include('layouts.admin_header')
     <div class="header">
     <br><br>
     <div class="container text-center">
         <div class="row justify-content-center">
-            <div class="col-md-4 mx-2 mb-4">
-                <a href="{{ route('product.index.form') }}" class="panel-box">
-                    <div class="box">
-                        <h2>Ürün Paneli</h2>
-                    </div>
-                </a>
-            </div>
-            <div class="col-md-4 mx-2 mb-4">
-                <a href="{{ route('store.index.form' )}}" class="panel-box">
-                    <div class="box">
-                        <h2>Depo Paneli</h2>
-                    </div>
-                </a>
-            </div>
-            <div class="col-md-4 mx-2 mb-4">
-                <a href="{{ route('seller.products' )}}" class="panel-box">
-                    <div class="box">
-                        <h2>Stok Paneli</h2>
-                    </div>
-                </a>
-            </div>
             <div class="col-md-4 mx-2 mb-4">
                 <a href="{{ route('members.index' )}}" class="panel-box">
                     <div class="box">
